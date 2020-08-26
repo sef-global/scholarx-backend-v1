@@ -2,12 +2,33 @@ package org.sefglobal.scholarx.model;
 
 import org.sefglobal.scholarx.util.ProgramState;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "program")
 public class Program extends BaseScholarxModel{
+
+    @Column
     private String title;
+
+    @Column
     private String headline;
+
+    @Column
     private String imageUrl;
+
+    @Column
     private String landingPageUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10,
+            nullable = false)
     private ProgramState state;
+
+    @OneToMany(mappedBy = "program")
+    private List<EnrolledUser> enrolledUsers = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -47,5 +68,13 @@ public class Program extends BaseScholarxModel{
 
     public void setState(ProgramState state) {
         this.state = state;
+    }
+
+    public List<EnrolledUser> getEnrolledUsers() {
+        return enrolledUsers;
+    }
+
+    public void setEnrolledUsers(List<EnrolledUser> enrolledUsers) {
+        this.enrolledUsers = enrolledUsers;
     }
 }

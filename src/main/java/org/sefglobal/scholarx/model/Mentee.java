@@ -1,7 +1,15 @@
 package org.sefglobal.scholarx.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "mentee")
 public class Mentee extends EnrolledUser{
+
+    @ManyToOne(optional = false)
     private Mentor mentor;
+
+    @Column(nullable = false)
     private String submissionUrl;
 
     public Mentor getMentor() {
