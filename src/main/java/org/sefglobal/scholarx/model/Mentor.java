@@ -1,15 +1,21 @@
 package org.sefglobal.scholarx.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "mentor")
-public class Mentor extends EnrolledUser{
+public class Mentor extends EnrolledUser {
 
     @Column
     private String questionnaire;
+
+    public Mentor() {
+    }
 
     @OneToMany(mappedBy = "mentor")
     private List<Mentee> mentees = new ArrayList<>();

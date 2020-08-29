@@ -2,13 +2,18 @@ package org.sefglobal.scholarx.model;
 
 import org.sefglobal.scholarx.util.ProfileType;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "profile")
-public class Profile extends BaseScholarxModel{
+public class Profile extends BaseScholarxModel {
 
     @Column(length = 36,
             nullable = false)

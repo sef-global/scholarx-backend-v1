@@ -1,10 +1,13 @@
 package org.sefglobal.scholarx.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "mentee")
-public class Mentee extends EnrolledUser{
+public class Mentee extends EnrolledUser {
 
     @ManyToOne(optional = false)
     private Mentor mentor;
