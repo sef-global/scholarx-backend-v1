@@ -16,7 +16,7 @@ public abstract class BaseScholarxModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt",
@@ -31,11 +31,11 @@ public abstract class BaseScholarxModel implements Serializable {
     @LastModifiedDate
     private Date updatedAt;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
