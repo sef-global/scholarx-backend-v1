@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.sefglobal.scholarx.util.ProgramState;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "program")
+@JsonIgnoreProperties({"createdAt", "updatedAt", "enrolledUsers"})
 public class Program extends BaseScholarxModel{
 
     @Column
@@ -23,12 +25,24 @@ public class Program extends BaseScholarxModel{
     private String landingPageUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10,
+    @Column(length = 20,
             nullable = false)
     private ProgramState state;
 
     @OneToMany(mappedBy = "program")
     private List<EnrolledUser> enrolledUsers = new ArrayList<>();
+
+    public Program() {
+    }
+
+    public Program(String title, String headline, String imageUrl, String landingPageUrl,
+                   ProgramState state) {
+        this.title = title;
+        this.headline = headline;
+        this.imageUrl = imageUrl;
+        this.landingPageUrl = landingPageUrl;
+        this.state = state;
+    }
 
     public String getTitle() {
         return title;
