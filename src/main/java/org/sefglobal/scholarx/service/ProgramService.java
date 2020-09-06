@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.service;
 
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,7 +45,6 @@ public class ProgramService {
      * @param id    which is the {@link Program} to be updated
      * @param state which is the updated {@link ProgramState}
      * @return the updated {@link Program}
-     *
      * @throws ResourceNotFoundException is thrown if the requesting {@link Program} doesn't exist
      */
     public Program updateState(long id, ProgramState state)
@@ -76,5 +77,23 @@ public class ProgramService {
         menteeRepository.deleteByMentorProgramId(id);
         mentorRepository.deleteByProgramId(id);
         programRepository.deleteById(id);
+    }
+
+    /**
+     * Retrieves all the {@link Mentor} objects filtered from {@link Program} {@code id}
+     *
+     * @param id which is the Category id of the filtering {@link Mentor} objects
+     * @return {@link List} of {@link Mentor} objects
+     * @throws ResourceNotFoundException if the requesting {@link Program} to filter {@link
+     *                                   Mentor} objects doesn't exist
+     */
+    public List<Mentor> getAllMentorsByProgramId(long id)
+            throws ResourceNotFoundException {
+        if (!programRepository.existsById(id)) {
+            String msg = "Error, Program by id: " + id + " doesn't exist";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        return mentorRepository.findAllByProgramId(id);
     }
 }

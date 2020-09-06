@@ -3,14 +3,19 @@ package org.sefglobal.scholarx.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.sefglobal.scholarx.util.ProgramState;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "program")
 @JsonIgnoreProperties({"createdAt", "updatedAt", "enrolledUsers"})
-public class Program extends BaseScholarxModel{
+public class Program extends BaseScholarxModel {
 
     @Column
     private String title;

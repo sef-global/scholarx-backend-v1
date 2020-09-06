@@ -20,7 +20,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ProgramController.class)
 public class ProgramControllerTest {
@@ -94,6 +94,22 @@ public class ProgramControllerTest {
                 .deleteProgram(anyLong());
 
         mockMvc.perform(delete("/admin/programs/{id}", programId))
+               .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getAllMentorsByProgramId_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/admin/programs/{id}/mentors", programId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAllMentorsByProgramId_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .getAllMentorsByProgramId(anyLong());
+
+        mockMvc.perform(get("/admin/programs/{id}/mentors", programId))
                .andExpect(status().isNotFound());
     }
 }

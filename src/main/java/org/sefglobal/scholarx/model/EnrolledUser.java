@@ -2,11 +2,17 @@ package org.sefglobal.scholarx.model;
 
 import org.sefglobal.scholarx.util.EnrolmentState;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class EnrolledUser extends BaseScholarxModel{
+public abstract class EnrolledUser extends BaseScholarxModel {
 
     @ManyToOne(optional = false)
     private Profile profile;

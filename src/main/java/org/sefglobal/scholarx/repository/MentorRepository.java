@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 @Transactional
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
+
+    List<Mentor> findAllByProgramId(long id);
 
     @Modifying
     @Query(
