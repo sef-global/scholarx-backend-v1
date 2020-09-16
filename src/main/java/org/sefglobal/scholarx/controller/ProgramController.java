@@ -1,26 +1,20 @@
-package org.sefglobal.scholarx.controller.admin;
+package org.sefglobal.scholarx.controller;
 
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
-import org.sefglobal.scholarx.util.ProgramState;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@RestController("ProgramAdminController")
-@RequestMapping("/admin/programs")
+@RestController
+@RequestMapping("/programs")
 public class ProgramController {
     private final ProgramService programService;
 
@@ -28,24 +22,16 @@ public class ProgramController {
         this.programService = programService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Program addProgram(@Valid @RequestBody Program program) {
-        return programService.addProgram(program);
-    }
-
-    @PutMapping("/{id}/state")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Program updateState(@PathVariable long id,
-                               @Valid @RequestBody ProgramState state)
-            throws ResourceNotFoundException {
-        return programService.updateState(id, state);
+    public List<Program> getAllPrograms() {
+        return programService.getAllPrograms();
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProgram(@PathVariable long id) throws ResourceNotFoundException {
-        programService.deleteProgram(id);
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Program getProgramById(@PathVariable long id) throws ResourceNotFoundException {
+        return programService.getProgramById(id);
     }
 
     @GetMapping("/{id}/mentors")
