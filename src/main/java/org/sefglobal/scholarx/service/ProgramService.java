@@ -30,6 +30,33 @@ public class ProgramService {
     }
 
     /**
+     * Retrieves all the {@link Program} objects
+     *
+     * @return {@link List} of {@link Program} objects
+     */
+    public List<Program> getAllPrograms() {
+        return programRepository.findAll();
+    }
+
+    /**
+     * Retrieves the {@link Program} filtered from {@code id}
+     *
+     * @param id which is the id of the filtering {@link Program}
+     * @return {@link Program}
+     *
+     * @throws ResourceNotFoundException if the requesting {@link Program} doesn't exist
+     */
+    public Program getProgramById(long id) throws ResourceNotFoundException {
+        Optional<Program> program = programRepository.findById(id);
+        if (!program.isPresent()) {
+            String msg = "Error, Program by id: " + id + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        return program.get();
+    }
+
+    /**
      * Create new {@link Program}
      *
      * @param program which holds the data to be added
@@ -82,7 +109,7 @@ public class ProgramService {
     /**
      * Retrieves all the {@link Mentor} objects filtered from {@link Program} {@code id}
      *
-     * @param id which is the Category id of the filtering {@link Mentor} objects
+     * @param id which is the Program id of the filtering {@link Mentor} objects
      * @return {@link List} of {@link Mentor} objects
      * @throws ResourceNotFoundException if the requesting {@link Program} to filter {@link
      *                                   Mentor} objects doesn't exist

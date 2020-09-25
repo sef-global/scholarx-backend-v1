@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ProgramController.class)
+@WebMvcTest(controllers = {ProgramController.class, org.sefglobal.scholarx.controller.ProgramController.class})
 public class ProgramControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -98,8 +98,30 @@ public class ProgramControllerTest {
     }
 
     @Test
+    void getPrograms_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/programs"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProgramById_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/programs/{id}", programId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProgramById_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .getProgramById(anyLong());
+
+        mockMvc.perform(get("/programs/{id}", programId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void getAllMentorsByProgramId_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/admin/programs/{id}/mentors", programId))
+        mockMvc.perform(get("/programs/{id}/mentors", programId))
                 .andExpect(status().isOk());
     }
 
@@ -109,7 +131,7 @@ public class ProgramControllerTest {
                 .when(programService)
                 .getAllMentorsByProgramId(anyLong());
 
-        mockMvc.perform(get("/admin/programs/{id}/mentors", programId))
+        mockMvc.perform(get("/programs/{id}/mentors", programId))
                .andExpect(status().isNotFound());
     }
 }

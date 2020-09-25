@@ -68,4 +68,30 @@ public class ProgramServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Program with id: 1 cannot be deleted. Program doesn't exist.");
     }
+
+    @Test
+    void getAllMentorsByProgramId_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(false)
+                .when(programRepository)
+                .existsById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getAllMentorsByProgramId(programId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Program by id: 1 doesn't exist");
+    }
+
+    @Test
+    void getProgramById_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(programRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getProgramById(programId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Program by id: 1 doesn't exist.");
+    }
 }
