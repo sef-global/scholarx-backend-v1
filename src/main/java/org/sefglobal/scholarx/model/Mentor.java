@@ -23,6 +23,11 @@ public class Mentor extends EnrolledUser {
     public Mentor() {
     }
 
+    public Mentor(String application, String prerequisites) {
+        this.application = application;
+        this.prerequisites = prerequisites;
+    }
+
     @OneToMany(mappedBy = "mentor")
     private List<Mentee> mentees = new ArrayList<>();
 
