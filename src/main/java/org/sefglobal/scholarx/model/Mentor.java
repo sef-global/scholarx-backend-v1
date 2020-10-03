@@ -1,5 +1,7 @@
 package org.sefglobal.scholarx.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -9,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "mentor")
+@JsonIgnoreProperties({"createdAt", "updatedAt", "mentees"})
 public class Mentor extends EnrolledUser {
 
     @Column

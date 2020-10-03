@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.sefglobal.scholarx.util.ProfileType;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "profile")
+@JsonIgnoreProperties({"createdAt", "updatedAt", "enrolledUsers"})
 public class Profile extends BaseScholarxModel {
 
     @Column(length = 36,
