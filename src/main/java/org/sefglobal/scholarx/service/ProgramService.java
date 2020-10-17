@@ -123,4 +123,24 @@ public class ProgramService {
         }
         return mentorRepository.findAllByProgramId(id);
     }
+
+    public Program updateProgram(Program program, long programId) throws ResourceNotFoundException {
+        Optional<Program> existingProgram = programRepository.findById(programId);
+
+        if(!existingProgram.isPresent()) {
+            String msg = "Error, Program with id: " + program.getId() + " cannot be deleted. " +
+                    "Program doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+
+        existingProgram.get().setTitle(program.getTitle());
+        existingProgram.get().setHeadline(program.getHeadline());
+        existingProgram.get().setImageUrl(program.getImageUrl());
+        existingProgram.get().setLandingPageUrl(program.getLandingPageUrl());
+        existingProgram.get().setState(existingProgram.get().getState());
+        existingProgram.get().setEnrolledUsers(existingProgram.get().getEnrolledUsers());
+
+        return programRepository.save(existingProgram.get());
+    }
 }

@@ -94,4 +94,30 @@ public class ProgramServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Program by id: 1 doesn't exist.");
     }
+
+    @Test
+    void updateProgram_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(programRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getProgramById(programId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Program by id: 1 doesn't exist.");
+    }
+
+    @Test
+    void updateProgram_withValidData_thenReturnUpdatedProgram() throws ResourceNotFoundException {
+        doReturn(Optional.of(program))
+                .when(programRepository)
+                .findById(anyLong());
+        doReturn(program)
+                .when(programRepository)
+                .save(any(Program.class));
+
+        Program savedProgram = programService.updateProgram(program, programId);
+        assertThat(savedProgram).isNotNull();
+    }
 }

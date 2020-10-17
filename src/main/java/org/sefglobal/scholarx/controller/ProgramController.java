@@ -5,11 +5,7 @@ import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,5 +35,12 @@ public class ProgramController {
     public List<Mentor> getAllMentorsByProgramId(@PathVariable long id)
             throws ResourceNotFoundException {
         return programService.getAllMentorsByProgramId(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Program updateProgram(@PathVariable long id, @RequestBody Program program)
+            throws ResourceNotFoundException {
+        return programService.updateProgram(program, id);
     }
 }
