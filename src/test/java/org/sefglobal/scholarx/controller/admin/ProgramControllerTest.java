@@ -1,0 +1,119 @@
+package org.sefglobal.scholarx.controller.admin;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Program;
+import org.sefglobal.scholarx.service.ProgramService;
+import org.sefglobal.scholarx.util.ProgramState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(ProgramController.class)
+public class ProgramControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
+    private ProgramService programService;
+    private final Long programId = 1L;
+    private final Program program
+            = new Program("SCHOLARX-2020",
+            "SCHOLARX program of 2020",
+            "http://scholarx/images/SCHOLARX-2020",
+            "http://scholarx/SCHOLARX-2020/home",
+            ProgramState.CREATED);
+
+    @Test
+    void addProgram_withValidData_thenReturns201() throws Exception {
+        mockMvc.perform(post("/admin/programs")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(program)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void addProgram_withValidData_thenReturnsValidResponseBody() throws Exception {
+        mockMvc.perform(post("/admin/programs")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(program)))
+                .andReturn();
+
+        ArgumentCaptor<Program> programCaptor = ArgumentCaptor.forClass(Program.class);
+        verify(programService, times(1)).addProgram(programCaptor.capture());
+
+        program.setState(null);
+        String expectedResponse = objectMapper.writeValueAsString(program);
+        String actualResponse = objectMapper.writeValueAsString(programCaptor.getValue());
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void updateState_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(put("/admin/programs/{id}/state", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(program.getState())))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateState_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .updateState(anyLong());
+
+        mockMvc.perform(put("/admin/programs/{id}/state", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(program.getState())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateProgram_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(put("/admin/programs/{id}", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(program)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateProgram_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .updateProgram(anyLong(), any(Program.class));
+
+        mockMvc.perform(put("/admin/programs/{id}", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(program)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteProgram_withValidData_thenReturns204() throws Exception {
+        mockMvc.perform(delete("/admin/programs/{id}", programId))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteProgram_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .deleteProgram(anyLong());
+
+        mockMvc.perform(delete("/admin/programs/{id}", programId))
+                .andExpect(status().isNotFound());
+    }
+}

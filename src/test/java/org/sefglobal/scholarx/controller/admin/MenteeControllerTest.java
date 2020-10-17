@@ -1,4 +1,4 @@
-package org.sefglobal.scholarx.controller;
+package org.sefglobal.scholarx.controller.admin;
 
 import org.junit.jupiter.api.Test;
 import org.sefglobal.scholarx.controller.admin.MenteeController;

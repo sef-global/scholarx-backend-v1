@@ -1,4 +1,4 @@
-package org.sefglobal.scholarx.controller;
+package org.sefglobal.scholarx.controller.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
