@@ -1,6 +1,8 @@
 package org.sefglobal.scholarx.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.sefglobal.scholarx.util.ProgramState;
 
 import javax.persistence.Column;
@@ -29,6 +31,7 @@ public class Program extends BaseScholarxModel {
     @Column
     private String landingPageUrl;
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     @Column(length = 20,
             nullable = false)
@@ -81,10 +84,12 @@ public class Program extends BaseScholarxModel {
         this.landingPageUrl = landingPageUrl;
     }
 
+    @JsonProperty
     public ProgramState getState() {
         return state;
     }
 
+    @JsonIgnore
     public void setState(ProgramState state) {
         this.state = state;
     }

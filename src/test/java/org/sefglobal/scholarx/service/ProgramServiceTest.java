@@ -39,7 +39,7 @@ public class ProgramServiceTest {
                 .when(programRepository)
                 .save(any(Program.class));
 
-        Program savedProgram = programService.updateState(programId, program.getState());
+        Program savedProgram = programService.updateState(programId);
         assertThat(savedProgram).isNotNull();
     }
 
@@ -50,7 +50,33 @@ public class ProgramServiceTest {
                 .findById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.updateState(programId, program.getState()));
+                () -> programService.updateState(programId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Program with id: 1 cannot be updated. Program doesn't exist.");
+    }
+
+    @Test
+    void updateProgram_withValidData_thenReturnUpdatedData() throws ResourceNotFoundException {
+        doReturn(Optional.of(program))
+                .when(programRepository)
+                .findById(anyLong());
+        doReturn(program)
+                .when(programRepository)
+                .save(any(Program.class));
+
+        Program savedProgram = programService.updateProgram(programId, program);
+        assertThat(savedProgram).isNotNull();
+    }
+
+    @Test
+    void updateProgram_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(programRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateProgram(programId,program));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Program with id: 1 cannot be updated. Program doesn't exist.");

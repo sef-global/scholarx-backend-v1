@@ -8,5 +8,11 @@ public enum ProgramState {
     MENTEE_SELECTION,
     ONGOING,
     COMPLETED,
-    REMOVED
+    REMOVED;
+
+    private static ProgramState[] states = values();
+
+    public ProgramState next() {
+        return states[(this.ordinal() + 1) % states.length];
+    }
 }

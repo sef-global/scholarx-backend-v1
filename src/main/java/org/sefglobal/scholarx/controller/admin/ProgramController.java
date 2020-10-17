@@ -34,12 +34,17 @@ public class ProgramController {
         return programService.addProgram(program);
     }
 
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Program updateProgram(@PathVariable long id, @Valid @RequestBody Program program)
+            throws ResourceNotFoundException {
+        return programService.updateProgram(id, program);
+    }
+
     @PutMapping("/{id}/state")
     @ResponseStatus(HttpStatus.OK)
-    public Program updateState(@PathVariable long id,
-                               @Valid @RequestBody ProgramState state)
-            throws ResourceNotFoundException {
-        return programService.updateState(id, state);
+    public Program updateState(@PathVariable long id) throws ResourceNotFoundException {
+        return programService.updateState(id);
     }
 
     @DeleteMapping("/{id}")
