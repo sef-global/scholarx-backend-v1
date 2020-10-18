@@ -56,6 +56,7 @@ public class ProgramControllerTest {
         ArgumentCaptor<Program> programCaptor = ArgumentCaptor.forClass(Program.class);
         verify(programService, times(1)).addProgram(programCaptor.capture());
 
+        program.setState(null);
         String expectedResponse = objectMapper.writeValueAsString(program);
         String actualResponse = objectMapper.writeValueAsString(programCaptor.getValue());
         assertThat(actualResponse).isEqualTo(expectedResponse);
@@ -73,11 +74,31 @@ public class ProgramControllerTest {
     void updateState_withUnavailableData_thenReturn404() throws Exception {
         doThrow(ResourceNotFoundException.class)
                 .when(programService)
-                .updateState(anyLong(), any(ProgramState.class));
+                .updateState(anyLong());
 
         mockMvc.perform(put("/admin/programs/{id}/state", programId)
                                 .contentType("application/json")
                                 .content(objectMapper.writeValueAsString(program.getState())))
+               .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateProgram_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(put("/admin/programs/{id}", programId)
+                                .contentType("application/json")
+                                .content(objectMapper.writeValueAsString(program)))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateProgram_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .updateProgram(anyLong(), any(Program.class));
+
+        mockMvc.perform(put("/admin/programs/{id}", programId)
+                                .contentType("application/json")
+                                .content(objectMapper.writeValueAsString(program)))
                .andExpect(status().isNotFound());
     }
 

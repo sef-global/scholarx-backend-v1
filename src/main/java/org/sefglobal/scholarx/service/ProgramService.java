@@ -57,25 +57,54 @@ public class ProgramService {
     }
 
     /**
-     * Create new {@link Program}
+     * Create a new {@link Program}
      *
      * @param program which holds the data to be added
      * @return the created {@link Program}
      */
     public Program addProgram(Program program) {
+        ProgramState createdState = ProgramState.CREATED;
+        program.setState(createdState);
         return programRepository.save(program);
     }
 
     /**
-     * Update a {@link Program} by editing {@link ProgramState}
+     * Update a {@link Program} Only the {@link Program} specific data is updated(title, headline,
+     * etc.). Except {@link ProgramState} Children of the {@link Program} will not be updated by
+     * this method
      *
-     * @param id    which is the {@link Program} to be updated
-     * @param state which is the updated {@link ProgramState}
+     * @param id      which is the {@link Program} to be updated
+     * @param program which is the up-to-date object
      * @return the updated {@link Program}
+     *
      * @throws ResourceNotFoundException is thrown if the requesting {@link Program} doesn't exist
      */
-    public Program updateState(long id, ProgramState state)
-            throws ResourceNotFoundException {
+    public Program updateProgram(long id, Program program) throws ResourceNotFoundException {
+        Optional<Program> existingProgram = programRepository.findById(id);
+        if (!existingProgram.isPresent()) {
+            String msg = "Error, Program with id: " + id + " cannot be updated. " +
+                         "Program doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+
+        Program updatedProgram = existingProgram.get();
+        updatedProgram.setTitle(program.getTitle());
+        updatedProgram.setHeadline(program.getHeadline());
+        updatedProgram.setImageUrl(program.getImageUrl());
+        updatedProgram.setLandingPageUrl(program.getLandingPageUrl());
+        return programRepository.save(updatedProgram);
+    }
+
+    /**
+     * Update a {@link Program} by selecting the next {@link ProgramState}
+     *
+     * @param id which is the {@link Program} to be updated
+     * @return the updated {@link Program}
+     *
+     * @throws ResourceNotFoundException is thrown if the requesting {@link Program} doesn't exist
+     */
+    public Program updateState(long id) throws ResourceNotFoundException {
         Optional<Program> program = programRepository.findById(id);
         if (!program.isPresent()) {
             String msg = "Error, Program with id: " + id + " cannot be updated. " +
@@ -83,7 +112,9 @@ public class ProgramService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
-        program.get().setState(state);
+
+        ProgramState nextState = program.get().getState().next();
+        program.get().setState(nextState);
         return programRepository.save(program.get());
     }
 
