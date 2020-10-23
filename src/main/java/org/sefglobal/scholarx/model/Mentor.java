@@ -15,7 +15,10 @@ import java.util.List;
 public class Mentor extends EnrolledUser {
 
     @Column
-    private String questionnaire;
+    private String application;
+
+    @Column
+    private String prerequisites;
 
     public Mentor() {
     }
@@ -23,12 +26,20 @@ public class Mentor extends EnrolledUser {
     @OneToMany(mappedBy = "mentor")
     private List<Mentee> mentees = new ArrayList<>();
 
-    public String getQuestionnaire() {
-        return questionnaire;
+    public String getApplication() {
+        return application;
     }
 
-    public void setQuestionnaire(String questionnaire) {
-        this.questionnaire = questionnaire;
+    public void setApplication(String application) {
+        this.application = application;
+    }
+
+    public String getPrerequisites() {
+        return prerequisites;
+    }
+
+    public void setPrerequisites(String prerequisites) {
+        this.prerequisites = prerequisites;
     }
 
     public List<Mentee> getMentees() {
