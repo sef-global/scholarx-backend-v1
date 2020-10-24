@@ -63,8 +63,8 @@ public class ProgramService {
      * @return the created {@link Program}
      */
     public Program addProgram(Program program) {
-        ProgramStatus createdState = ProgramStatus.CREATED;
-        program.setState(createdState);
+        ProgramStatus createdStatus = ProgramStatus.CREATED;
+        program.setState(createdStatus);
         return programRepository.save(program);
     }
 
