@@ -10,9 +10,9 @@ public enum ProgramStatus {
     COMPLETED,
     REMOVED;
 
-    private static ProgramStatus[] states = values();
+    private static ProgramStatus[] statuses = values();
 
     public ProgramStatus next() {
-        return states[(this.ordinal() + 1) % states.length];
+        return statuses[(this.ordinal() + 1) % statuses.length];
     }
 }

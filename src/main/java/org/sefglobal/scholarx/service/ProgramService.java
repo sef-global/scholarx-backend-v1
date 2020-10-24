@@ -113,8 +113,8 @@ public class ProgramService {
             throw new ResourceNotFoundException(msg);
         }
 
-        ProgramStatus nextState = program.get().getState().next();
-        program.get().setState(nextState);
+        ProgramStatus nextStatatus = program.get().getState().next();
+        program.get().setState(nextStatatus);
         return programRepository.save(program.get());
     }
 
