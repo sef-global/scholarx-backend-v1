@@ -35,7 +35,7 @@ public class Program extends BaseScholarxModel {
     @Enumerated(EnumType.STRING)
     @Column(length = 20,
             nullable = false)
-    private ProgramStatus state;
+    private ProgramStatus status;
 
     @OneToMany(mappedBy = "program")
     private List<EnrolledUser> enrolledUsers = new ArrayList<>();
@@ -44,12 +44,12 @@ public class Program extends BaseScholarxModel {
     }
 
     public Program(String title, String headline, String imageUrl, String landingPageUrl,
-                   ProgramStatus state) {
+                   ProgramStatus status) {
         this.title = title;
         this.headline = headline;
         this.imageUrl = imageUrl;
         this.landingPageUrl = landingPageUrl;
-        this.state = state;
+        this.status = status;
     }
 
     public String getTitle() {
@@ -86,12 +86,12 @@ public class Program extends BaseScholarxModel {
 
     @JsonProperty
     public ProgramStatus getState() {
-        return state;
+        return status;
     }
 
     @JsonIgnore
-    public void setState(ProgramStatus state) {
-        this.state = state;
+    public void setState(ProgramStatus status) {
+        this.status = status;
     }
 
     public List<EnrolledUser> getEnrolledUsers() {
