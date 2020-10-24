@@ -7,7 +7,7 @@ import org.sefglobal.scholarx.controller.admin.ProgramController;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
-import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.ProgramStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,7 +36,7 @@ public class ProgramControllerTest {
                           "SCHOLARX program of 2020",
                           "http://scholarx/images/SCHOLARX-2020",
                           "http://scholarx/SCHOLARX-2020/home",
-                          ProgramState.CREATED);
+                          ProgramStatus.CREATED);
 
     @Test
     void addProgram_withValidData_thenReturns201() throws Exception {

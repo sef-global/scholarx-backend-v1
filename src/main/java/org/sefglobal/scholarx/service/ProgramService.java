@@ -6,7 +6,7 @@ import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProgramRepository;
-import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.ProgramStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -63,14 +63,14 @@ public class ProgramService {
      * @return the created {@link Program}
      */
     public Program addProgram(Program program) {
-        ProgramState createdState = ProgramState.CREATED;
+        ProgramStatus createdState = ProgramStatus.CREATED;
         program.setState(createdState);
         return programRepository.save(program);
     }
 
     /**
      * Update a {@link Program} Only the {@link Program} specific data is updated(title, headline,
-     * etc.). Except {@link ProgramState} Children of the {@link Program} will not be updated by
+     * etc.). Except {@link ProgramStatus} Children of the {@link Program} will not be updated by
      * this method
      *
      * @param id      which is the {@link Program} to be updated
@@ -97,7 +97,7 @@ public class ProgramService {
     }
 
     /**
-     * Update a {@link Program} by selecting the next {@link ProgramState}
+     * Update a {@link Program} by selecting the next {@link ProgramStatus}
      *
      * @param id which is the {@link Program} to be updated
      * @return the updated {@link Program}
@@ -113,7 +113,7 @@ public class ProgramService {
             throw new ResourceNotFoundException(msg);
         }
 
-        ProgramState nextState = program.get().getState().next();
+        ProgramStatus nextState = program.get().getState().next();
         program.get().setState(nextState);
         return programRepository.save(program.get());
     }

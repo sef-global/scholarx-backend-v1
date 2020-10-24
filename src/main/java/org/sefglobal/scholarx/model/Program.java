@@ -3,7 +3,7 @@ package org.sefglobal.scholarx.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.ProgramStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +35,7 @@ public class Program extends BaseScholarxModel {
     @Enumerated(EnumType.STRING)
     @Column(length = 20,
             nullable = false)
-    private ProgramState state;
+    private ProgramStatus state;
 
     @OneToMany(mappedBy = "program")
     private List<EnrolledUser> enrolledUsers = new ArrayList<>();
@@ -44,7 +44,7 @@ public class Program extends BaseScholarxModel {
     }
 
     public Program(String title, String headline, String imageUrl, String landingPageUrl,
-                   ProgramState state) {
+                   ProgramStatus state) {
         this.title = title;
         this.headline = headline;
         this.imageUrl = imageUrl;
@@ -85,12 +85,12 @@ public class Program extends BaseScholarxModel {
     }
 
     @JsonProperty
-    public ProgramState getState() {
+    public ProgramStatus getState() {
         return state;
     }
 
     @JsonIgnore
-    public void setState(ProgramState state) {
+    public void setState(ProgramStatus state) {
         this.state = state;
     }
 

@@ -1,6 +1,6 @@
 package org.sefglobal.scholarx.util;
 
-public enum ProgramState {
+public enum ProgramStatus {
     CREATED,
     MENTOR_APPLICATION,
     MENTOR_SELECTION,
@@ -10,9 +10,9 @@ public enum ProgramState {
     COMPLETED,
     REMOVED;
 
-    private static ProgramState[] states = values();
+    private static ProgramStatus[] states = values();
 
-    public ProgramState next() {
+    public ProgramStatus next() {
         return states[(this.ordinal() + 1) % states.length];
     }
 }

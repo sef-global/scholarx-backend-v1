@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.ProgramRepository;
-import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.ProgramStatus;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public class ProgramServiceTest {
     private final Program program =
             new Program("SCHOLARX-2020", "SCHOLARX program of 2020",
                         "http://scholarx/images/SCHOLARX-2020",
-                        "http://scholarx/SCHOLARX-2020/home", ProgramState.CREATED);
+                        "http://scholarx/SCHOLARX-2020/home", ProgramStatus.CREATED);
 
     @Test
     void updateState_withValidData_thenReturnUpdatedData() throws ResourceNotFoundException {
