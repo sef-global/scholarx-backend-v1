@@ -4,7 +4,6 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
-import org.sefglobal.scholarx.util.ProgramState;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

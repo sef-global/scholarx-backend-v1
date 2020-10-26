@@ -12,6 +12,13 @@ import javax.persistence.Table;
 @JsonIgnoreProperties({"createdAt", "updatedAt"})
 public class Mentee extends EnrolledUser {
 
+    public Mentee() {
+    }
+
+    public Mentee(String submissionUrl) {
+        this.submissionUrl = submissionUrl;
+    }
+
     @ManyToOne(optional = false)
     private Mentor mentor;
 

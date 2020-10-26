@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.sefglobal.scholarx.controller.admin.ProgramController;
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
 import org.sefglobal.scholarx.util.ProgramState;
@@ -16,9 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +37,9 @@ public class ProgramControllerTest {
                           "http://scholarx/images/SCHOLARX-2020",
                           "http://scholarx/SCHOLARX-2020/home",
                           ProgramState.CREATED);
+    private final Mentor mentor
+            = new Mentor("Sample application",
+                         "Sample prerequisites");
 
     @Test
     void addProgram_withValidData_thenReturns201() throws Exception {
@@ -154,5 +157,53 @@ public class ProgramControllerTest {
 
         mockMvc.perform(get("/programs/{id}/mentors", programId))
                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyAsMentor_withValidData_thenReturns201() throws Exception {
+        mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentor)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void applyAsMentor_withValidData_thenReturnsValidResponseBody() throws Exception {
+        mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentor)))
+                .andReturn();
+
+        ArgumentCaptor<Mentor> mentorArgumentCaptor = ArgumentCaptor.forClass(Mentor.class);
+        verify(programService, times(1)).applyAsMentor(anyLong(), anyLong(), mentorArgumentCaptor.capture());
+
+        mentor.setState(null);
+        String expectedResponse = objectMapper.writeValueAsString(mentor);
+        String actualResponse = objectMapper.writeValueAsString(mentorArgumentCaptor.getValue());
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void applyAsMentor_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .applyAsMentor(anyLong(), anyLong(), any(Mentor.class));
+
+        mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentor)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyAsMentor_withUnavailableData_thenReturn400() throws Exception {
+        doThrow(BadRequestException.class)
+                .when(programService)
+                .applyAsMentor(anyLong(), anyLong(), any(Mentor.class));
+
+        mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentor)))
+                .andExpect(status().isBadRequest());
     }
 }

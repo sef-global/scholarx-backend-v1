@@ -33,6 +33,7 @@ public class MenteeServiceTest {
                 () -> menteeService.deleteMentee(menteeId));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentee with id: 1 cannot be deleted. Mentee doesn't exist.");
+                .hasMessage("Error, Mentee with id: 1 cannot be deleted. " +
+                            "Mentee doesn't exist.");
     }
 }
