@@ -1,12 +1,12 @@
-package org.sefglobal.scholarx.controller.admin;
+package org.sefglobal.scholarx.controller;
 
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
-import org.sefglobal.scholarx.model.Mentor;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.service.MentorService;
-import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RestController("MentorAdminController")
-@RequestMapping("/admin/mentors")
+@RestController
+@RequestMapping("/mentors")
 public class MentorController {
 
     private final MentorService mentorService;
@@ -24,11 +24,12 @@ public class MentorController {
         this.mentorService = mentorService;
     }
 
-    @PutMapping("/{id}/state")
-    @ResponseStatus(HttpStatus.OK)
-    public Mentor updateState(@PathVariable long id,
-                              @Valid @RequestBody EnrolmentState enrolmentState)
-            throws ResourceNotFoundException {
-        return mentorService.updateState(id, enrolmentState);
+    @PostMapping("/{id}/mentee")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mentee applyAsMentee(@PathVariable long id,
+                                @Valid @RequestBody Mentee mentee)
+            throws ResourceNotFoundException, BadRequestException {
+        long profileId = 1; // TODO: Get the profileId from headers
+        return mentorService.applyAsMentee(id, profileId, mentee);
     }
 }
