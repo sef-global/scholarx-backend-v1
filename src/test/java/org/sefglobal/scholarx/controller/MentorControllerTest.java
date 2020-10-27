@@ -18,8 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = {MentorController.class, org.sefglobal.scholarx.controller.MentorController.class})
@@ -99,6 +98,32 @@ public class MentorControllerTest {
         mockMvc.perform(post("/mentors/{id}/mentee", mentorId)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getMenteesOfMentor_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/mentors/{mentorId}/mentees", mentorId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getMenteesOfMentor_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(mentorService)
+                .getAllMenteesOfMentor(anyLong(), any());
+
+        mockMvc.perform(get("/mentors/{mentorId}/mentees", mentorId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getMenteesOfMentor_withUnsuitableData_thenReturns400() throws Exception {
+        doThrow(BadRequestException.class)
+                .when(mentorService)
+                .getAllMenteesOfMentor(anyLong(), any());
+
+        mockMvc.perform(get("/mentors/{mentorId}/mentees", mentorId))
                 .andExpect(status().isBadRequest());
     }
 }

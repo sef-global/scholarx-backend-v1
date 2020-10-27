@@ -13,8 +13,10 @@ import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.repository.ProgramRepository;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +48,8 @@ public class ProgramServiceTest {
             new Profile();
 
     @Test
-    void updateState_withValidData_thenReturnUpdatedData() throws ResourceNotFoundException {
+    void updateState_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException {
         doReturn(Optional.of(program))
                 .when(programRepository)
                 .findById(anyLong());
@@ -68,11 +71,13 @@ public class ProgramServiceTest {
                 () -> programService.updateState(programId));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Program with id: 1 cannot be updated. Program doesn't exist.");
+                .hasMessage("Error, Program with id: 1 cannot be updated. " +
+                            "Program doesn't exist.");
     }
 
     @Test
-    void updateProgram_withValidData_thenReturnUpdatedData() throws ResourceNotFoundException {
+    void updateProgram_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException {
         doReturn(Optional.of(program))
                 .when(programRepository)
                 .findById(anyLong());
@@ -94,7 +99,8 @@ public class ProgramServiceTest {
                 () -> programService.updateProgram(programId,program));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Program with id: 1 cannot be updated. Program doesn't exist.");
+                .hasMessage("Error, Program with id: 1 cannot be updated. " +
+                            "Program doesn't exist.");
     }
 
     @Test
@@ -107,7 +113,8 @@ public class ProgramServiceTest {
                 () -> programService.deleteProgram(programId));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Program with id: 1 cannot be deleted. Program doesn't exist.");
+                .hasMessage("Error, Program with id: 1 cannot be deleted. " +
+                            "Program doesn't exist.");
     }
 
     @Test
@@ -169,7 +176,8 @@ public class ProgramServiceTest {
                 () -> programService.applyAsMentor(programId, profileId, mentor));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Unable to apply as a mentor. Program with id: 1 doesn't exist.");
+                .hasMessage("Error, Unable to apply as a mentor. " +
+                            "Program with id: 1 doesn't exist.");
     }
 
     @Test
@@ -182,7 +190,8 @@ public class ProgramServiceTest {
                 () -> programService.applyAsMentor(programId, profileId, mentor));
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error, Unable to apply as a mentor. Program with id: 1 is not in the applicable status.");
+                .hasMessage("Error, Unable to apply as a mentor. " +
+                            "Program with id: 1 is not in the applicable status.");
     }
 
     @Test
@@ -204,6 +213,81 @@ public class ProgramServiceTest {
                 () -> programService.applyAsMentor(programId, profileId, mentor));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Unable to apply as a mentor. Profile with id: 1 doesn't exist.");
+                .hasMessage("Error, Unable to apply as a mentor. " +
+                            "Profile with id: 1 doesn't exist.");
+    }
+
+    @Test
+    void getLoggedInMentor_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getLoggedInMentor(programId, profileId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentor by profile id: 1 " +
+                            "and program id: 1 doesn't exist.");
+    }
+
+    @Test
+    void updateMentorData_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException, BadRequestException {
+        mentor.setState(EnrolmentState.PENDING);
+        program.setState(ProgramState.MENTOR_APPLICATION);
+        mentor.setProgram(program);
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+        doReturn(mentor)
+                .when(mentorRepository)
+                .save(any(Mentor.class));
+
+        Mentor savedMentor = programService.updateMentorData(profileId, programId, mentor);
+        assertThat(savedMentor).isNotNull();
+    }
+
+    @Test
+    void updateMentorData_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateMentorData(profileId, programId, mentor));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentor by profile id: 1 and program id: 1 cannot be updated. " +
+                            "Mentor doesn't exist.");
+    }
+
+    @Test
+    void updateMentorData_withUnsuitableData_thenThrowBadRequest() {
+        mentor.setState(EnrolmentState.APPROVED);
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateMentorData(profileId, programId, mentor));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error,Application cannot be updated. " +
+                            "Mentor is not in a valid state.");
+    }
+
+    @Test
+    void getAllMenteesOfMentor_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getAllMenteesOfMentor(programId, profileId, Collections.emptyList()));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentor by profile id: 1 and " +
+                            "program id: 1 cannot be updated. Mentor doesn't exist.");
     }
 }

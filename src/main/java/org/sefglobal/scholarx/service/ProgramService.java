@@ -2,6 +2,7 @@ package org.sefglobal.scholarx.service;
 
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
@@ -203,5 +204,101 @@ public class ProgramService {
         mentor.setProgram(optionalProgram.get());
         mentor.setState(EnrolmentState.PENDING);
         return mentorRepository.save(mentor);
+    }
+
+    /**
+     * Retrieves the {@link Mentor} of a user if the user is a mentor
+     *
+     * @param programId which is the id of the {@link Program}
+     * @param profileId which is the id of the {@link Profile}
+     * @return {@link Mentor}
+     *
+     * @throws ResourceNotFoundException if the requesting {@link Mentor} doesn't exist
+     */
+    public Mentor getLoggedInMentor(long programId, long profileId)
+            throws ResourceNotFoundException {
+        Optional<Mentor> optionalMentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentor by profile id: " + profileId + " and " +
+                         "program id: " + programId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        return optionalMentor.get();
+    }
+
+    /**
+     * Update the application and prerequisites of a {@link Mentor}
+     *
+     * @param profileId which is the Profile id of the {@link Mentor} to be updated
+     * @param programId which is the Program id of the {@link Mentor} to be updated
+     * @param mentor    with the application and prerequisites of the mentor to be updated
+     * @return the updated {@link Mentor}
+     *
+     * @throws ResourceNotFoundException is thrown if the {@link Mentor} doesn't exist
+     * @throws BadRequestException       if the {@link Mentor} is not in the valid state
+     */
+    public Mentor updateMentorData(long profileId, long programId, Mentor mentor)
+            throws ResourceNotFoundException, BadRequestException {
+        Optional<Mentor> optionalMentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentor by profile id: " + profileId + " and " +
+                         "program id: " + programId + " cannot be updated. " +
+                         "Mentor doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+
+        Mentor existingMentor = optionalMentor.get();
+        if (!mentor.getApplication().isEmpty()) {
+            if (EnrolmentState.PENDING.equals(existingMentor.getState())) {
+                existingMentor.setApplication(mentor.getApplication());
+            } else {
+                String msg = "Error,Application cannot be updated. " +
+                             "Mentor is not in a valid state.";
+                log.error(msg);
+                throw new BadRequestException(msg);
+            }
+        }
+        if (!mentor.getPrerequisites().isEmpty()) {
+            if (EnrolmentState.APPROVED.isHigherThanOrEqual(existingMentor.getState())) {
+                if (ProgramState.MENTEE_APPLICATION.isHigherThan(existingMentor.getProgram().getState())) {
+                    existingMentor.setPrerequisites(mentor.getPrerequisites());
+                } else {
+                    String msg = "Error,Prerequisites cannot be updated. " +
+                                 "Mentor is not in a valid state.";
+                    log.error(msg);
+                    throw new BadRequestException(msg);
+                }
+            }
+        }
+        return mentorRepository.save(existingMentor);
+    }
+
+    /**
+     * Retrieves all the {@link Mentee} objects of a {@link Mentor}
+     *
+     * @param programId which is the program id of the {@link Program}
+     * @param profileId which is the profile id of the {@link Mentor}
+     * @param states    which is the list of states of the {@link Mentee} objects to be filtered
+     * @return {@link List} of {@link Mentee} objects filtered by {@link Mentee} and {@link EnrolmentState}
+     *
+     * @throws ResourceNotFoundException if the requesting {@link Mentor} object doesn't exist
+     */
+    public List<Mentee> getAllMenteesOfMentor(long programId, long profileId, List<EnrolmentState> states)
+            throws ResourceNotFoundException {
+        Optional<Mentor> optionalMentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentor by profile id: " + profileId + " and " +
+                    "program id: " + programId + " cannot be updated. " +
+                    "Mentor doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        if (states.isEmpty()) {
+            return optionalMentor.get().getMentees();
+        } else {
+            return menteeRepository.findAllByMentorIdAndStateIn(optionalMentor.get().getId(), states);
+        }
     }
 }

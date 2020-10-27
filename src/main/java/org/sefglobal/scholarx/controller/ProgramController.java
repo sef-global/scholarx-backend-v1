@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,5 +53,21 @@ public class ProgramController {
             throws ResourceNotFoundException, BadRequestException {
         long profileId = 1; // TODO: Get the profileId from headers
         return programService.applyAsMentor(id, profileId, mentor);
+    }
+
+    @GetMapping("/{id}/mentor")
+    @ResponseStatus(HttpStatus.OK)
+    public Mentor getLoggedInMentor(@PathVariable long id) throws ResourceNotFoundException {
+        long profileId = 1;  // TODO: Get the profileId from headers
+        return programService.getLoggedInMentor(id, profileId);
+    }
+
+    @PutMapping("/{id}/application")
+    @ResponseStatus(HttpStatus.OK)
+    public Mentor updateMentorData(@PathVariable long id,
+                                   @Valid @RequestBody Mentor mentor)
+            throws ResourceNotFoundException, BadRequestException{
+        long profileId = 1;  // TODO: Get the profileId from headers
+        return programService.updateMentorData(profileId, id, mentor);
     }
 }

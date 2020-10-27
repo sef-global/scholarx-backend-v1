@@ -1,8 +1,14 @@
 package org.sefglobal.scholarx.util;
 
 public enum EnrolmentState {
+    PENDING,
     APPROVED,
     REJECTED,
-    PENDING,
-    REMOVED
+    REMOVED;
+
+    public boolean isHigherThanOrEqual(EnrolmentState state){
+        return this.ordinal()>=state.ordinal();
+    }
 }
+
+
