@@ -8,12 +8,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
     List<Mentor> findAllByProgramId(long id);
+    Optional<Mentor> findByProfileIdAndProgramId(long profileId, long programId);
 
     @Modifying
     @Query(

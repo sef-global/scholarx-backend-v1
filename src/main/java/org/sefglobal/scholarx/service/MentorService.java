@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -93,5 +94,34 @@ public class MentorService {
         mentee.setMentor(optionalMentor.get());
         mentee.setState(EnrolmentState.PENDING);
         return menteeRepository.save(mentee);
+    }
+
+    /**
+     * Retrieves all the {@link Mentee} objects of a {@link Mentor}
+     *
+     * @param mentorId which is the Mentor id of the {@link Mentor}
+     * @param state    which is the state of the {@link Mentee} objects to be filtered
+     * @return {@link List} of {@link Mentee} objects
+     *
+     * @throws ResourceNotFoundException if the requesting {@link Mentor} object doesn't exist
+     * @throws BadRequestException       if the requesting {@link Mentor} object is not approved
+     */
+    public List<Mentee> getAllMenteesOfMentor(long mentorId, Optional<EnrolmentState> state)
+            throws ResourceNotFoundException, BadRequestException {
+        Optional<Mentor> optionalMentor = mentorRepository.findById(mentorId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentor by id: " + mentorId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        if (!EnrolmentState.APPROVED.equals(optionalMentor.get().getState())) {
+            String msg = "Error, Mentor by id: " + mentorId + " is not an approved mentor.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+        if (!state.isPresent()){
+            return optionalMentor.get().getMentees();
+        }
+        return menteeRepository.findAllByMentorIdAndState(mentorId,state.get());
     }
 }

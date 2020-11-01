@@ -206,4 +206,56 @@ public class ProgramControllerTest {
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void getLoggedInMentor_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/programs/{id}/mentor", programId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getLoggedInMentor_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .getLoggedInMentor(anyLong(), anyLong());
+
+        mockMvc.perform(get("/programs/{id}/mentor", programId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateMentorData_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(put("/programs/{programId}/application", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentor)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateMentorData_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .updateMentorData(anyLong(), anyLong(), any(Mentor.class));
+
+        mockMvc.perform(put("/programs/{programId}/application", programId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentor)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getMenteesOfMentor_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getMenteesOfMentor_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .getAllMenteesOfMentor(anyLong(), anyLong(), any());
+
+        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId))
+                .andExpect(status().isNotFound());
+    }
 }

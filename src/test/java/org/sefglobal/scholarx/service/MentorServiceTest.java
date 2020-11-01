@@ -42,7 +42,8 @@ public class MentorServiceTest {
             new Mentee("http://submission.url/");
 
     @Test
-    void updateState_withValidData_thenReturnUpdatedData() throws ResourceNotFoundException {
+    void updateState_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException {
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
                 .findById(anyLong());
@@ -84,7 +85,8 @@ public class MentorServiceTest {
                 () -> mentorService.applyAsMentee(programId, profileId, mentee));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Unable to apply as a mentee. Mentor with id: 1 doesn't exist.");
+                .hasMessage("Error, Unable to apply as a mentee. " +
+                            "Mentor with id: 1 doesn't exist.");
     }
 
     @Test
@@ -100,7 +102,8 @@ public class MentorServiceTest {
                 () -> mentorService.applyAsMentee(programId, profileId, mentee));
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error, Unable to apply as a mentee. Mentor with id: 1 is not in the applicable state.");
+                .hasMessage("Error, Unable to apply as a mentee. " +
+                            "Mentor with id: 1 is not in the applicable state.");
     }
 
     @Test
@@ -119,6 +122,34 @@ public class MentorServiceTest {
                 () -> mentorService.applyAsMentee(programId, profileId, mentee));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Unable to apply as a mentee. Profile with id: 1 doesn't exist.");
+                .hasMessage("Error, Unable to apply as a mentee. " +
+                            "Profile with id: 1 doesn't exist.");
+    }
+
+    @Test
+    void getAllMenteesOfMentor_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> mentorService.getAllMenteesOfMentor(mentorId, Optional.empty()));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentor by id: 1 doesn't exist.");
+    }
+
+    @Test
+    void getAllMenteesOfMentor_withUnsuitableData_thenThrowBadRequest() {
+        mentor.setState(EnrolmentState.PENDING);
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> mentorService.getAllMenteesOfMentor(mentorId, Optional.empty()));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error, Mentor by id: 1 is not an approved mentor.");
     }
 }

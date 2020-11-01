@@ -1,19 +1,13 @@
 package org.sefglobal.scholarx.controller.admin;
 
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -57,5 +51,14 @@ public class ProgramController {
     public List<Mentor> getAllMentorsByProgramId(@PathVariable long id)
             throws ResourceNotFoundException {
         return programService.getAllMentorsByProgramId(id);
+    }
+
+    @GetMapping("/{id}/mentor/mentees")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Mentee> getMenteesOfMentor(@PathVariable long id,
+                                           @RequestParam(required = false) List<EnrolmentState> states)
+            throws ResourceNotFoundException {
+        long profileId = 1; // TODO: Get the profileId from headers
+        return programService.getAllMenteesOfMentor(id, profileId, states);
     }
 }

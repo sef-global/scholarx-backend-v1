@@ -15,4 +15,8 @@ public enum ProgramState {
     public ProgramState next() {
         return states[(this.ordinal() + 1) % states.length];
     }
+
+    public boolean isHigherThan(ProgramState state){
+        return this.ordinal()>state.ordinal();
+    }
 }
