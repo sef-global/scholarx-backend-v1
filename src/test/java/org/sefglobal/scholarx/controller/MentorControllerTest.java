@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.sefglobal.scholarx.controller.admin.MentorController;
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.service.MentorService;
@@ -125,5 +126,53 @@ public class MentorControllerTest {
 
         mockMvc.perform(get("/mentors/{mentorId}/mentees", mentorId))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateMenteeData_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(put("/mentors/{mentorId}/mentee", mentorId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentee)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateMenteeData_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(mentorService)
+                .updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
+
+        mockMvc.perform(put("/mentors/{mentorId}/mentee", mentorId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentee)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateMenteeData_withUnsuitableData_thenReturn400() throws Exception {
+        doThrow(BadRequestException.class)
+                .when(mentorService)
+                .updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
+
+        mockMvc.perform(put("/mentors/{mentorId}/mentee", mentorId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(mentee)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getLoggedInMentee_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/mentors/{mentorId}/mentee", mentorId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getLoggedInMentee_withUnavailableData_thenReturns204() throws Exception {
+        doThrow(NoContentException.class)
+                .when(mentorService)
+                .getLoggedInMentee(anyLong(), anyLong());
+
+        mockMvc.perform(get("/mentors/{mentorId}/mentee", mentorId))
+                .andExpect(status().isNoContent());
     }
 }

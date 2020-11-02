@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
@@ -151,5 +152,64 @@ public class MentorServiceTest {
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Mentor by id: 1 is not an approved mentor.");
+    }
+
+    @Test
+    void updateMenteeData_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException, BadRequestException {
+        mentee.setState(EnrolmentState.PENDING);
+        mentee.setMentor(mentor);
+        doReturn(Optional.of(mentee))
+                .when(menteeRepository)
+                .findByProfileIdAndMentorId(anyLong(), anyLong());
+        doReturn(mentee)
+                .when(menteeRepository)
+                .save(any(Mentee.class));
+
+        Mentee savedMentee = mentorService.updateMenteeData(profileId, mentorId, mentee);
+        assertThat(savedMentee).isNotNull();
+    }
+
+    @Test
+    void updateMenteeData_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(menteeRepository)
+                .findByProfileIdAndMentorId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentee by profile id: 1 and mentor id: 1 cannot be updated. " +
+                            "Mentee doesn't exist.");
+    }
+
+    @Test
+    void updateMenteeData_withUnsuitableData_thenThrowBadRequest() {
+        mentee.setState(EnrolmentState.APPROVED);
+        doReturn(Optional.of(mentee))
+                .when(menteeRepository)
+                .findByProfileIdAndMentorId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error, Application cannot be updated. " +
+                            "Mentee is not in a valid state.");
+    }
+
+    @Test
+    void getLoggedInMentee_withUnavailableData_thenThrowNoContent() {
+        doReturn(Optional.empty())
+                .when(menteeRepository)
+                .findByProfileIdAndMentorId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> mentorService.getLoggedInMentee(mentorId, profileId));
+        assertThat(thrown)
+                .isInstanceOf(NoContentException.class)
+                .hasMessage("Error, User by profile id: 1 " +
+                            "hasn't applied for mentor with id: 1.");
     }
 }

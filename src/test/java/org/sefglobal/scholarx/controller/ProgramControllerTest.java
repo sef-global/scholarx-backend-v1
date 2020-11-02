@@ -258,4 +258,36 @@ public class ProgramControllerTest {
         mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void getAppliedMentors_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/programs/{id}/mentee/mentors", programId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAppliedMentors_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .getAppliedMentorsOfMentee(anyLong(), anyLong());
+
+        mockMvc.perform(get("/programs/{id}/mentee/mentors", programId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getSelectedMentor_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getSelectedMentor_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(programService)
+                .getSelectedMentor(anyLong(), anyLong());
+
+        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
+                .andExpect(status().isNotFound());
+    }
 }
