@@ -16,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.servlet.http.Cookie;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -41,6 +43,7 @@ public class ProgramControllerTest {
     private final Mentor mentor
             = new Mentor("Sample application",
                          "Sample prerequisites");
+    final Cookie profileIdCookie = new Cookie("profileId", "1");
 
     @Test
     void addProgram_withValidData_thenReturns201() throws Exception {
@@ -163,6 +166,7 @@ public class ProgramControllerTest {
     @Test
     void applyAsMentor_withValidData_thenReturns201() throws Exception {
         mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andExpect(status().isCreated());
@@ -171,6 +175,7 @@ public class ProgramControllerTest {
     @Test
     void applyAsMentor_withValidData_thenReturnsValidResponseBody() throws Exception {
         mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andReturn();
@@ -191,6 +196,7 @@ public class ProgramControllerTest {
                 .applyAsMentor(anyLong(), anyLong(), any(Mentor.class));
 
         mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andExpect(status().isNotFound());
@@ -203,6 +209,7 @@ public class ProgramControllerTest {
                 .applyAsMentor(anyLong(), anyLong(), any(Mentor.class));
 
         mockMvc.perform(post("/programs/{id}/mentor", programId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andExpect(status().isBadRequest());
@@ -210,7 +217,8 @@ public class ProgramControllerTest {
 
     @Test
     void getLoggedInMentor_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/programs/{id}/mentor", programId))
+        mockMvc.perform(get("/programs/{id}/mentor", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isOk());
     }
 
@@ -220,13 +228,15 @@ public class ProgramControllerTest {
                 .when(programService)
                 .getLoggedInMentor(anyLong(), anyLong());
 
-        mockMvc.perform(get("/programs/{id}/mentor", programId))
+        mockMvc.perform(get("/programs/{id}/mentor", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void updateMentorData_withValidData_thenReturns200() throws Exception {
         mockMvc.perform(put("/programs/{programId}/application", programId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andExpect(status().isOk());
@@ -239,6 +249,7 @@ public class ProgramControllerTest {
                 .updateMentorData(anyLong(), anyLong(), any(Mentor.class));
 
         mockMvc.perform(put("/programs/{programId}/application", programId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentor)))
                 .andExpect(status().isNotFound());
@@ -246,7 +257,8 @@ public class ProgramControllerTest {
 
     @Test
     void getMenteesOfMentor_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId))
+        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isOk());
     }
 
@@ -256,7 +268,8 @@ public class ProgramControllerTest {
                 .when(programService)
                 .getAllMenteesOfMentor(anyLong(), anyLong(), any());
 
-        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId))
+        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isNotFound());
     }
 

@@ -89,6 +89,6 @@ public class MenteeServiceTest {
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Mentee cannot be approved/rejected. " +
-                            "Mentee with id: 1 is not in the valid state.");
+                            "Mentee with id: 1 is removed.");
     }
 }

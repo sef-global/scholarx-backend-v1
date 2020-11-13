@@ -19,6 +19,7 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
     List<Mentee> findAllByMentorIdAndStateIn(long id, List<EnrolmentState> states);
     List<Mentee> findAllByProgramIdAndProfileId(long programId, long profileId);
     Optional<Mentee> findByProfileIdAndMentorId(long profileId, long mentorId);
+    List<Mentee> findAllByProfileId(long profileId);
 
     @Modifying
     @Query(

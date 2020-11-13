@@ -8,6 +8,7 @@ import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.service.MentorService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,9 +49,9 @@ public class MentorController {
     @PostMapping("/{id}/mentee")
     @ResponseStatus(HttpStatus.CREATED)
     public Mentee applyAsMentee(@PathVariable long id,
+                                @CookieValue(value = "profileId") long profileId,
                                 @Valid @RequestBody Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
-        long profileId = 1; // TODO: Get the profileId from headers
         return mentorService.applyAsMentee(id, profileId, mentee);
     }
 
