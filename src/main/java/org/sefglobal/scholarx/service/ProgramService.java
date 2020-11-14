@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -254,7 +255,7 @@ public class ProgramService {
             if (EnrolmentState.PENDING.equals(existingMentor.getState())) {
                 existingMentor.setApplication(mentor.getApplication());
             } else {
-                String msg = "Error,Application cannot be updated. " +
+                String msg = "Error, Application cannot be updated. " +
                              "Mentor is not in a valid state.";
                 log.error(msg);
                 throw new BadRequestException(msg);
@@ -265,7 +266,7 @@ public class ProgramService {
                 if (ProgramState.MENTEE_APPLICATION.isHigherThan(existingMentor.getProgram().getState())) {
                     existingMentor.setPrerequisites(mentor.getPrerequisites());
                 } else {
-                    String msg = "Error,Prerequisites cannot be updated. " +
+                    String msg = "Error, Prerequisites cannot be updated. " +
                                  "Mentor is not in a valid state.";
                     log.error(msg);
                     throw new BadRequestException(msg);
@@ -300,5 +301,66 @@ public class ProgramService {
         } else {
             return menteeRepository.findAllByMentorIdAndStateIn(optionalMentor.get().getId(), states);
         }
+    }
+
+    /**
+     * Retrieves the applied {@link Mentor} objects of the {@link Mentee}
+     *
+     * @param programId which is the id of the {@link Program}
+     * @param profileId which is the profile id of the {@link Mentee}
+     * @return {@link List} of {@link Mentor} objects
+     *
+     * @throws ResourceNotFoundException if the {@link Program} doesn't exist
+     */
+    public List<Mentor> getAppliedMentorsOfMentee(long programId, long profileId)
+            throws ResourceNotFoundException {
+        List<Mentee> menteeList = menteeRepository
+                .findAllByProgramIdAndProfileId(programId, profileId);
+        if (menteeList.isEmpty()) {
+            String msg = "Error, Mentee by program id: " + programId + " and " +
+                         "profile id: " + profileId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        List<Mentor> mentorList = new ArrayList<>();
+        for (Mentee mentee : menteeList) {
+            mentorList.add(mentee.getMentor());
+        }
+        if (mentorList.isEmpty()) {
+            String msg = "Error, Mentee hasn't applied for any mentor";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        return mentorList;
+    }
+
+    /**
+     * Retrieves the selected {@link Mentor} of the {@link Mentee}
+     *
+     * @param programId which is the id of the {@link Program}
+     * @param profileId which is the profile id of the {@link Mentee}
+     * @return {@link Mentor} object
+     *
+     * @throws ResourceNotFoundException if the {@link Program} doesn't exist
+     */
+    public Mentor getSelectedMentor(long programId, long profileId)
+            throws ResourceNotFoundException {
+        List<Mentee> menteeList = menteeRepository
+                .findAllByProgramIdAndProfileId(programId, profileId);
+        if (menteeList.isEmpty()) {
+            String msg = "Error, Mentee by program id: " + programId + " and " +
+                         "profile id: " + profileId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        for (Mentee mentee : menteeList) {
+            if (EnrolmentState.APPROVED.equals(mentee.getState())) {
+                return mentee.getMentor();
+            }
+        }
+
+        String msg = "Error, Mentee is not approved by any mentor yet.";
+        log.error(msg);
+        throw new ResourceNotFoundException(msg);
     }
 }

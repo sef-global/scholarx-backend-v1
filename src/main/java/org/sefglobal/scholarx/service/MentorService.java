@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.service;
 
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
@@ -123,5 +124,62 @@ public class MentorService {
             return optionalMentor.get().getMentees();
         }
         return menteeRepository.findAllByMentorIdAndState(mentorId,state.get());
+    }
+
+    /**
+     * Update the application of a {@link Mentee}
+     *
+     * @param profileId which is the Profile id of the {@link Mentee} to be updated
+     * @param mentorId  which is the Mentor id of the {@link Mentee} to be updated
+     * @param mentee    with the application of the mentee to be updated
+     * @return the updated {@link Mentee}
+     *
+     * @throws ResourceNotFoundException is thrown if the {@link Mentee} doesn't exist
+     * @throws BadRequestException       if the {@link Mentee} is not in the valid state
+     */
+    public Mentee updateMenteeData(long profileId, long mentorId, Mentee mentee)
+            throws ResourceNotFoundException, BadRequestException {
+        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndMentorId(profileId, mentorId);
+        if (!optionalMentee.isPresent()) {
+            String msg = "Error, Mentee by profile id: " + profileId + " and " +
+                         "mentor id: " + mentorId + " cannot be updated. " +
+                         "Mentee doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+
+        Mentee existingMentee = optionalMentee.get();
+        if (!mentee.getSubmissionUrl().isEmpty()) {
+            if (EnrolmentState.PENDING.equals(existingMentee.getState())) {
+                existingMentee.setSubmissionUrl(mentee.getSubmissionUrl());
+            } else {
+                String msg = "Error, Application cannot be updated. " +
+                             "Mentee is not in a valid state.";
+                log.error(msg);
+                throw new BadRequestException(msg);
+            }
+        }
+        return menteeRepository.save(existingMentee);
+    }
+
+    /**
+     * Retrieves the {@link Mentee} of a user if the user is a mentee
+     *
+     * @param mentorId  which is the id of the {@link Mentor}
+     * @param profileId which is the id of the {@link Profile}
+     * @return {@link Mentee}
+     *
+     * @throws NoContentException if the user hasn't applied for {@link Mentor}
+     */
+    public Mentee getLoggedInMentee(long mentorId, long profileId)
+            throws NoContentException {
+        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndMentorId(profileId, mentorId);
+        if (!optionalMentee.isPresent()) {
+            String msg = "Error, User by profile id: " + profileId + " hasn't applied for " +
+                         "mentor with id: " + mentorId + ".";
+            log.error(msg);
+            throw new NoContentException(msg);
+        }
+        return optionalMentee.get();
     }
 }

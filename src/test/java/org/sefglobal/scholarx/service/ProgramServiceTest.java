@@ -10,12 +10,14 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
+import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.repository.ProgramRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -33,6 +35,8 @@ public class ProgramServiceTest {
     private ProfileRepository profileRepository;
     @Mock
     private MentorRepository mentorRepository;
+    @Mock
+    private MenteeRepository menteeRepository;
     @InjectMocks
     private ProgramService programService;
     private final Long programId = 1L;
@@ -273,7 +277,7 @@ public class ProgramServiceTest {
                 () -> programService.updateMentorData(profileId, programId, mentor));
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error,Application cannot be updated. " +
+                .hasMessage("Error, Application cannot be updated. " +
                             "Mentor is not in a valid state.");
     }
 
@@ -289,5 +293,33 @@ public class ProgramServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Mentor by profile id: 1 and " +
                             "program id: 1 cannot be updated. Mentor doesn't exist.");
+    }
+
+    @Test
+    void getAppliedMentorsOfMentee_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(new ArrayList<>())
+                .when(menteeRepository)
+                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getAppliedMentorsOfMentee(programId, profileId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentee by program id: 1 and " +
+                            "profile id: 1 doesn't exist.");
+    }
+
+    @Test
+    void getSelectedMentorOfMentee_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(new ArrayList<>())
+                .when(menteeRepository)
+                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getSelectedMentor(programId, profileId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentee by program id: 1 and " +
+                            "profile id: 1 doesn't exist.");
     }
 }

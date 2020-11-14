@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -16,6 +17,8 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
     List<Mentee> findAllByMentorIdAndState(long id, EnrolmentState state);
     List<Mentee> findAllByMentorIdAndStateIn(long id, List<EnrolmentState> states);
+    List<Mentee> findAllByProgramIdAndProfileId(long programId, long profileId);
+    Optional<Mentee> findByProfileIdAndMentorId(long profileId, long mentorId);
 
     @Modifying
     @Query(
