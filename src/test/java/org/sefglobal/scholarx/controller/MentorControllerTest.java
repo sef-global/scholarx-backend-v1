@@ -35,6 +35,28 @@ public class MentorControllerTest {
             new Mentee("http://scholarx/SCHOLARX-2020/submission");
 
     @Test
+    void getMentors_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/mentors"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getMentorById_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/mentors/{id}", mentorId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getMentorById_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(mentorService)
+                .getMentorById(anyLong());
+
+        mockMvc.perform(get("/mentors/{id}", mentorId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void updateState_withValidData_thenReturns200() throws Exception {
         mockMvc.perform(put("/admin/mentors/{id}/state", mentorId)
                 .contentType("application/json")

@@ -6,7 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
@@ -19,6 +21,7 @@ import org.sefglobal.scholarx.util.ProgramState;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -296,7 +299,7 @@ public class ProgramServiceTest {
     }
 
     @Test
-    void getAppliedMentorsOfMentee_withUnavailableData_thenThrowResourceNotFound() {
+    void getAppliedMentorsOfMentee_withUnavailableData_thenThrowNoContent() {
         doReturn(new ArrayList<>())
                 .when(menteeRepository)
                 .findAllByProgramIdAndProfileId(anyLong(), anyLong());
@@ -304,7 +307,7 @@ public class ProgramServiceTest {
         Throwable thrown = catchThrowable(
                 () -> programService.getAppliedMentorsOfMentee(programId, profileId));
         assertThat(thrown)
-                .isInstanceOf(ResourceNotFoundException.class)
+                .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, Mentee by program id: 1 and " +
                             "profile id: 1 doesn't exist.");
     }
@@ -321,5 +324,20 @@ public class ProgramServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Mentee by program id: 1 and " +
                             "profile id: 1 doesn't exist.");
+    }
+
+    @Test
+    void getSelectedMentorOfMentee_withUnavailableData_thenThrowNoContent() {
+        List<Mentee> mentees = new ArrayList<>();
+        mentees.add(new Mentee("SubmissionURL"));
+        doReturn(mentees)
+                .when(menteeRepository)
+                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getSelectedMentor(programId, profileId));
+        assertThat(thrown)
+                .isInstanceOf(NoContentException.class)
+                .hasMessage("Error, Mentee is not approved by any mentor yet.");
     }
 }

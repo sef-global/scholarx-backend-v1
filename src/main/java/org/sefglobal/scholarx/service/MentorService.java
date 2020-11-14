@@ -34,6 +34,33 @@ public class MentorService {
     }
 
     /**
+     * Retrieves all the {@link Mentor} objects
+     *
+     * @return {@link List} of {@link Mentor} objects
+     */
+    public List<Mentor> getAllMentors() {
+        return mentorRepository.findAll();
+    }
+
+    /**
+     * Retrieves the {@link Mentor} filtered from {@code id}
+     *
+     * @param id which is the id of the filtering {@link Mentor}
+     * @return {@link Mentor}
+     *
+     * @throws ResourceNotFoundException if the requesting {@link Mentor} doesn't exist
+     */
+    public Mentor getMentorById(long id) throws ResourceNotFoundException {
+        Optional<Mentor> mentor = mentorRepository.findById(id);
+        if (!mentor.isPresent()) {
+            String msg = "Error, Mentor by id: " + id + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        return mentor.get();
+    }
+
+    /**
      * Update a {@link EnrolmentState} of a {@link Mentor}
      *
      * @param id             which is the {@link Mentor} to be updated
@@ -92,6 +119,7 @@ public class MentorService {
         }
 
         mentee.setProfile(optionalProfile.get());
+        mentee.setProgram(optionalMentor.get().getProgram());
         mentee.setMentor(optionalMentor.get());
         mentee.setState(EnrolmentState.PENDING);
         return menteeRepository.save(mentee);

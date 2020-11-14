@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.controller;
 
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
@@ -74,7 +75,7 @@ public class ProgramController {
     @GetMapping("/{id}/mentee/mentors")
     @ResponseStatus(HttpStatus.OK)
     public List<Mentor> getAppliedMentors(@PathVariable long id)
-            throws ResourceNotFoundException {
+            throws NoContentException {
         long profileId = 1;  // TODO: Get the profileId from headers
         return programService.getAppliedMentorsOfMentee(id, profileId);
     }
@@ -82,7 +83,7 @@ public class ProgramController {
     @GetMapping("/{id}/mentee/mentor")
     @ResponseStatus(HttpStatus.OK)
     public Mentor getSelectedMentor(@PathVariable long id)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, NoContentException {
         long profileId = 1;  // TODO: Get the profileId from headers
         return programService.getSelectedMentor(id, profileId);
     }

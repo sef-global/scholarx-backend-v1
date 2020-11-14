@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.service;
 
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
@@ -310,26 +311,21 @@ public class ProgramService {
      * @param profileId which is the profile id of the {@link Mentee}
      * @return {@link List} of {@link Mentor} objects
      *
-     * @throws ResourceNotFoundException if the {@link Program} doesn't exist
+     * @throws NoContentException if the user hasn't applied for {@link Mentor} objects
      */
     public List<Mentor> getAppliedMentorsOfMentee(long programId, long profileId)
-            throws ResourceNotFoundException {
+            throws NoContentException {
         List<Mentee> menteeList = menteeRepository
                 .findAllByProgramIdAndProfileId(programId, profileId);
         if (menteeList.isEmpty()) {
             String msg = "Error, Mentee by program id: " + programId + " and " +
                          "profile id: " + profileId + " doesn't exist.";
             log.error(msg);
-            throw new ResourceNotFoundException(msg);
+            throw new NoContentException(msg);
         }
         List<Mentor> mentorList = new ArrayList<>();
         for (Mentee mentee : menteeList) {
             mentorList.add(mentee.getMentor());
-        }
-        if (mentorList.isEmpty()) {
-            String msg = "Error, Mentee hasn't applied for any mentor";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
         }
         return mentorList;
     }
@@ -344,7 +340,7 @@ public class ProgramService {
      * @throws ResourceNotFoundException if the {@link Program} doesn't exist
      */
     public Mentor getSelectedMentor(long programId, long profileId)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, NoContentException {
         List<Mentee> menteeList = menteeRepository
                 .findAllByProgramIdAndProfileId(programId, profileId);
         if (menteeList.isEmpty()) {
@@ -361,6 +357,6 @@ public class ProgramService {
 
         String msg = "Error, Mentee is not approved by any mentor yet.";
         log.error(msg);
-        throw new ResourceNotFoundException(msg);
+        throw new NoContentException(msg);
     }
 }
