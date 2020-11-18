@@ -43,6 +43,19 @@ public class MentorServiceTest {
             new Mentee("http://submission.url/");
 
     @Test
+    void getMentorById_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> mentorService.getMentorById(mentorId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentor by id: 1 doesn't exist.");
+    }
+
+    @Test
     void updateState_withValidData_thenReturnUpdatedData()
             throws ResourceNotFoundException {
         doReturn(Optional.of(mentor))

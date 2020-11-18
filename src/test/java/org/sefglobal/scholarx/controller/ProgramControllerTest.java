@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.sefglobal.scholarx.controller.admin.ProgramController;
 import org.sefglobal.scholarx.exception.BadRequestException;
+import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
@@ -266,13 +267,13 @@ public class ProgramControllerTest {
     }
 
     @Test
-    void getAppliedMentors_withUnavailableData_thenReturns404() throws Exception {
-        doThrow(ResourceNotFoundException.class)
+    void getAppliedMentors_withUnavailableData_thenReturns204() throws Exception {
+        doThrow(NoContentException.class)
                 .when(programService)
                 .getAppliedMentorsOfMentee(anyLong(), anyLong());
 
         mockMvc.perform(get("/programs/{id}/mentee/mentors", programId))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -289,5 +290,15 @@ public class ProgramControllerTest {
 
         mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getSelectedMentor_withUnavailableData_thenReturns204() throws Exception {
+        doThrow(NoContentException.class)
+                .when(programService)
+                .getSelectedMentor(anyLong(), anyLong());
+
+        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
+                .andExpect(status().isNoContent());
     }
 }
