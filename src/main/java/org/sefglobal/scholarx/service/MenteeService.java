@@ -42,11 +42,11 @@ public class MenteeService {
      * Update a {@link EnrolmentState} of a {@link Mentee} to Approved or Rejected
      *
      * @param menteeId   which is the {@link Mentee} to be updated
-     * @param isApproved which states whether the {@link Mentee} to be approved or not
+     * @param isApproved which states whether the {@link Mentee} to be approved or rejected
      * @return the updated {@link Mentee}
      *
      * @throws ResourceNotFoundException is thrown if the {@link Mentee} doesn't exist
-     * @throws BadRequestException       is thrown if the {@link Mentee} is not in valid state
+     * @throws BadRequestException       is thrown if the {@link Mentee} is removed
      */
     public Mentee approveOrRejectMentee(long menteeId, boolean isApproved)
             throws ResourceNotFoundException, BadRequestException {
@@ -57,18 +57,14 @@ public class MenteeService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
-        if (!(EnrolmentState.PENDING.equals(optionalMentee.get().getState()))) {
+        if (EnrolmentState.REMOVED.equals(optionalMentee.get().getState())) {
             String msg = "Error, Mentee cannot be approved/rejected. " +
-                         "Mentee with id: " + menteeId + " is not in the valid state.";
+                         "Mentee with id: " + menteeId + " is removed.";
             log.error(msg);
             throw new BadRequestException(msg);
         }
 
-        if (isApproved) {
-            optionalMentee.get().setState(EnrolmentState.APPROVED);
-        } else {
-            optionalMentee.get().setState(EnrolmentState.REJECTED);
-        }
+        optionalMentee.get().setState(isApproved?EnrolmentState.APPROVED:EnrolmentState.REJECTED);
         return menteeRepository.save(optionalMentee.get());
     }
 }
