@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.servlet.http.Cookie;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -33,6 +35,7 @@ public class MentorControllerTest {
     private final Long mentorId = 1L;
     private final Mentee mentee =
             new Mentee("http://scholarx/SCHOLARX-2020/submission");
+    final Cookie profileIdCookie = new Cookie("profileId", "1");
 
     @Test
     void getMentors_withValidData_thenReturns200() throws Exception {
@@ -79,6 +82,7 @@ public class MentorControllerTest {
     @Test
     void applyAsMentee_withValidData_thenReturns201() throws Exception {
         mockMvc.perform(post("/mentors/{id}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andExpect(status().isCreated());
@@ -87,6 +91,7 @@ public class MentorControllerTest {
     @Test
     void applyAsMentee_withValidData_thenReturnsValidResponseBody() throws Exception {
         mockMvc.perform(post("/mentors/{id}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andReturn();
@@ -107,6 +112,7 @@ public class MentorControllerTest {
                 .applyAsMentee(anyLong(), anyLong(), any(Mentee.class));
 
         mockMvc.perform(post("/mentors/{id}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andExpect(status().isNotFound());
@@ -119,6 +125,7 @@ public class MentorControllerTest {
                 .applyAsMentee(anyLong(), anyLong(), any(Mentee.class));
 
         mockMvc.perform(post("/mentors/{id}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andExpect(status().isBadRequest());

@@ -56,9 +56,9 @@ public class ProgramController {
     @GetMapping("/{id}/mentor/mentees")
     @ResponseStatus(HttpStatus.OK)
     public List<Mentee> getMenteesOfMentor(@PathVariable long id,
+                                           @CookieValue(value = "profileId") long profileId,
                                            @RequestParam(required = false) List<EnrolmentState> states)
             throws ResourceNotFoundException {
-        long profileId = 1; // TODO: Get the profileId from headers
         return programService.getAllMenteesOfMentor(id, profileId, states);
     }
 }
