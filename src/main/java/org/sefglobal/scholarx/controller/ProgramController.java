@@ -76,17 +76,17 @@ public class ProgramController {
 
     @GetMapping("/{id}/mentee/mentors")
     @ResponseStatus(HttpStatus.OK)
-    public List<Mentor> getAppliedMentors(@PathVariable long id)
+    public List<Mentor> getAppliedMentors(@PathVariable long id,
+                                          @CookieValue(value = "profileId") long profileId)
             throws NoContentException {
-        long profileId = 1;  // TODO: Get the profileId from headers
         return programService.getAppliedMentorsOfMentee(id, profileId);
     }
 
     @GetMapping("/{id}/mentee/mentor")
     @ResponseStatus(HttpStatus.OK)
-    public Mentor getSelectedMentor(@PathVariable long id)
+    public Mentor getSelectedMentor(@PathVariable long id,
+                                    @CookieValue(value = "profileId") long profileId)
             throws ResourceNotFoundException, NoContentException {
-        long profileId = 1;  // TODO: Get the profileId from headers
         return programService.getSelectedMentor(id, profileId);
     }
 }
