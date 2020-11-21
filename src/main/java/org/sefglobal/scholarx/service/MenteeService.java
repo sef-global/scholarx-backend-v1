@@ -47,9 +47,15 @@ public class MenteeService {
      *
      * @throws ResourceNotFoundException is thrown if the {@link Mentee} doesn't exist
      * @throws BadRequestException       is thrown if the {@link Mentee} is removed
+     * @throws BadRequestException       is thrown if the {@link Boolean} is null
      */
-    public Mentee approveOrRejectMentee(long menteeId, boolean isApproved)
+    public Mentee approveOrRejectMentee(long menteeId, Boolean isApproved)
             throws ResourceNotFoundException, BadRequestException {
+        if (null == isApproved){
+            String msg = "Error, Value cannot be null.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
         Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee cannot be approved/rejected. " +

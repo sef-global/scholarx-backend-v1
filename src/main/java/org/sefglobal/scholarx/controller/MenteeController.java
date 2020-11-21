@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/mentees")
@@ -24,12 +25,15 @@ public class MenteeController {
         this.menteeService = menteeService;
     }
 
-
     @PutMapping("/{id}/state")
     @ResponseStatus(HttpStatus.OK)
     public Mentee approveOrRejectMentee(@PathVariable long id,
-                                        @Valid @RequestBody boolean isApproved)
+                                        @Valid @RequestBody Map<String, Boolean> payload)
             throws ResourceNotFoundException, BadRequestException {
-        return menteeService.approveOrRejectMentee(id, isApproved);
+        if (!payload.containsKey("isApproved")) {
+            String msg = "Error, Value cannot be null.";
+            throw new BadRequestException(msg);
+        }
+        return menteeService.approveOrRejectMentee(id, payload.get("isApproved"));
     }
 }

@@ -17,6 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.Cookie;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -61,21 +64,25 @@ public class MentorControllerTest {
 
     @Test
     void updateState_withValidData_thenReturns200() throws Exception {
+        Map<String, EnrolmentState> payload = new HashMap<>();
+        payload.put("state", EnrolmentState.APPROVED);
         mockMvc.perform(put("/admin/mentors/{id}/state", mentorId)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(EnrolmentState.APPROVED)))
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk());
     }
 
     @Test
     void updateState_withUnavailableData_thenReturn404() throws Exception {
+        Map<String, EnrolmentState> payload = new HashMap<>();
+        payload.put("state", EnrolmentState.APPROVED);
         doThrow(ResourceNotFoundException.class)
                 .when(mentorService)
                 .updateState(anyLong(), any(EnrolmentState.class));
 
         mockMvc.perform(put("/admin/mentors/{id}/state", mentorId)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(EnrolmentState.APPROVED)))
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isNotFound());
     }
 
