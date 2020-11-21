@@ -160,6 +160,7 @@ public class MentorControllerTest {
     @Test
     void updateMenteeData_withValidData_thenReturns200() throws Exception {
         mockMvc.perform(put("/mentors/{mentorId}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andExpect(status().isOk());
@@ -172,6 +173,7 @@ public class MentorControllerTest {
                 .updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
 
         mockMvc.perform(put("/mentors/{mentorId}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andExpect(status().isNotFound());
@@ -184,6 +186,7 @@ public class MentorControllerTest {
                 .updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
 
         mockMvc.perform(put("/mentors/{mentorId}/mentee", mentorId)
+                .cookie(profileIdCookie)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(mentee)))
                 .andExpect(status().isBadRequest());
@@ -191,7 +194,8 @@ public class MentorControllerTest {
 
     @Test
     void getLoggedInMentee_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/mentors/{mentorId}/mentee", mentorId))
+        mockMvc.perform(get("/mentors/{mentorId}/mentee", mentorId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isOk());
     }
 
@@ -201,7 +205,8 @@ public class MentorControllerTest {
                 .when(mentorService)
                 .getLoggedInMentee(anyLong(), anyLong());
 
-        mockMvc.perform(get("/mentors/{mentorId}/mentee", mentorId))
+        mockMvc.perform(get("/mentors/{mentorId}/mentee", mentorId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isNoContent());
     }
 }

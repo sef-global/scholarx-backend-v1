@@ -275,7 +275,8 @@ public class ProgramControllerTest {
 
     @Test
     void getAppliedMentors_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/programs/{id}/mentee/mentors", programId))
+        mockMvc.perform(get("/programs/{id}/mentee/mentors", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isOk());
     }
 
@@ -285,13 +286,15 @@ public class ProgramControllerTest {
                 .when(programService)
                 .getAppliedMentorsOfMentee(anyLong(), anyLong());
 
-        mockMvc.perform(get("/programs/{id}/mentee/mentors", programId))
+        mockMvc.perform(get("/programs/{id}/mentee/mentors", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void getSelectedMentor_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
+        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isOk());
     }
 
@@ -301,7 +304,8 @@ public class ProgramControllerTest {
                 .when(programService)
                 .getSelectedMentor(anyLong(), anyLong());
 
-        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
+        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isNotFound());
     }
 
@@ -311,7 +315,8 @@ public class ProgramControllerTest {
                 .when(programService)
                 .getSelectedMentor(anyLong(), anyLong());
 
-        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId))
+        mockMvc.perform(get("/programs/{id}/mentee/mentor", programId)
+                .cookie(profileIdCookie))
                 .andExpect(status().isNoContent());
     }
 }

@@ -66,17 +66,17 @@ public class MentorController {
     @PutMapping("/{id}/mentee")
     @ResponseStatus(HttpStatus.OK)
     public Mentee updateMenteeData(@PathVariable long id,
+                                   @CookieValue(value = "profileId") long profileId,
                                    @Valid @RequestBody Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
-        long profileId = 1;  // TODO: Get the profileId from headers
         return mentorService.updateMenteeData(profileId, id, mentee);
     }
 
     @GetMapping("/{id}/mentee")
     @ResponseStatus(HttpStatus.OK)
-    public Mentee getLoggedInMentee(@PathVariable long id)
+    public Mentee getLoggedInMentee(@PathVariable long id,
+                                    @CookieValue(value = "profileId") long profileId)
             throws NoContentException {
-        long profileId = 1;  // TODO: Get the profileId from headers
         return mentorService.getLoggedInMentee(id, profileId);
     }
 }
