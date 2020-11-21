@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController("MentorAdminController")
 @RequestMapping("/admin/mentors")
@@ -27,8 +28,8 @@ public class MentorController {
     @PutMapping("/{id}/state")
     @ResponseStatus(HttpStatus.OK)
     public Mentor updateState(@PathVariable long id,
-                              @Valid @RequestBody EnrolmentState enrolmentState)
+                              @Valid @RequestBody Map<String, EnrolmentState> payload)
             throws ResourceNotFoundException {
-        return mentorService.updateState(id, enrolmentState);
+        return mentorService.updateState(id, payload.get("state"));
     }
 }

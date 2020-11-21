@@ -11,6 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -46,33 +49,39 @@ public class MenteeControllerTest {
 
     @Test
     void approveOrRejectMentee_withValidData_thenReturns200() throws Exception {
+        Map<String, Boolean> payload = new HashMap<>();
+        payload.put("isApproved", true);
         mockMvc.perform(put("/mentees/{menteeId}/state", menteeId)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(true)))
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk());
     }
 
     @Test
     void approveOrRejectMentee_withUnavailableData_thenReturn404() throws Exception {
+        Map<String, Boolean> payload = new HashMap<>();
+        payload.put("isApproved", true);
         doThrow(ResourceNotFoundException.class)
                 .when(menteeService)
                 .approveOrRejectMentee(anyLong(), anyBoolean());
 
         mockMvc.perform(put("/mentees/{menteeId}/state", menteeId)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(true)))
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void approveOrRejectMentee_withUnsuitableData_thenReturn400() throws Exception {
+        Map<String, Boolean> payload = new HashMap<>();
+        payload.put("isApproved", true);
         doThrow(BadRequestException.class)
                 .when(menteeService)
                 .approveOrRejectMentee(anyLong(), anyBoolean());
 
         mockMvc.perform(put("/mentees/{menteeId}/state", menteeId)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(true)))
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isBadRequest());
     }
 }
