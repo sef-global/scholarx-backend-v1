@@ -8,12 +8,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +33,8 @@ public class IntrospectionServiceTest {
     private MentorRepository mentorRepository;
     @InjectMocks
     private IntrospectionService introspectionService;
-    final long profileId = 1L;
+    private final Long programId = 1L;
+    private final long profileId = 1L;
 
     @Test
     void getLoggedInUser_withUnavailableData_thenThrowResourceNotFound() {
@@ -111,5 +114,19 @@ public class IntrospectionServiceTest {
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, User has not enrolled in any program as a mentor.");
+    }
+
+    @Test
+    void getAllMentees_withUnavailableData_thenThrowNoContent() {
+        doReturn(new ArrayList<Mentee>())
+                .when(menteeRepository)
+                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> introspectionService
+                        .getMentees(programId, profileId, Collections.emptyList()));
+        assertThat(thrown)
+                .isInstanceOf(NoContentException.class)
+                .hasMessage("No mentees exist for the required program: 1 for the profile: 1");
     }
 }

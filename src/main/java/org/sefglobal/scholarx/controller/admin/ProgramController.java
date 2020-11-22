@@ -52,13 +52,4 @@ public class ProgramController {
             throws ResourceNotFoundException {
         return programService.getAllMentorsByProgramId(id);
     }
-
-    @GetMapping("/{id}/mentor/mentees")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Mentee> getMenteesOfMentor(@PathVariable long id,
-                                           @CookieValue(value = "profileId") long profileId,
-                                           @RequestParam(required = false) List<EnrolmentState> states)
-            throws ResourceNotFoundException {
-        return programService.getAllMenteesOfMentor(id, profileId, states);
-    }
 }

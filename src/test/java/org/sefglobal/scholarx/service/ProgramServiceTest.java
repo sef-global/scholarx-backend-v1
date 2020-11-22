@@ -285,20 +285,6 @@ public class ProgramServiceTest {
     }
 
     @Test
-    void getAllMenteesOfMentor_withUnavailableData_thenThrowResourceNotFound() {
-        doReturn(Optional.empty())
-                .when(mentorRepository)
-                .findByProfileIdAndProgramId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> programService.getAllMenteesOfMentor(programId, profileId, Collections.emptyList()));
-        assertThat(thrown)
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentor by profile id: 1 and " +
-                            "program id: 1 cannot be updated. Mentor doesn't exist.");
-    }
-
-    @Test
     void getAppliedMentorsOfMentee_withUnavailableData_thenThrowNoContent() {
         doReturn(new ArrayList<>())
                 .when(menteeRepository)

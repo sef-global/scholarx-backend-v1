@@ -10,6 +10,7 @@ import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -124,5 +125,36 @@ public class IntrospectionService {
         programsList.addAll(programSet); // TODO: find another way to remove duplicates
 
         return programsList;
+    }
+
+    /**
+     * Retrieves all the {@link Mentee} objects of a {@link Profile}
+     *
+     * @param programId    which is the id of the {@link Program}
+     * @param profileId    which is the id of the {@link Profile}
+     * @param menteeStates which is the list of states that {@link Mentee} objects should be
+     *                     filtered from
+     * @return {@link List} of {@link Mentee} objects
+     *
+     * @throws NoContentException if {@link Mentor} objects doesn't exist
+     */
+    public List<Mentee> getMentees(long programId, long profileId,
+                                   List<EnrolmentState> menteeStates) throws NoContentException {
+        List<Mentee> mentees;
+
+        if (menteeStates == null || menteeStates.isEmpty()) {
+            mentees = menteeRepository.findAllByProgramIdAndProfileId(programId, profileId);
+        } else {
+            mentees = menteeRepository
+                    .findAllByProgramIdAndProfileIdAndStateIn(programId, profileId, menteeStates);
+        }
+
+        if (mentees.isEmpty()) {
+            String msg = "No mentees exist for the required program: " + programId +
+                         " for the profile: " + profileId;
+            log.warn(msg);
+            throw new NoContentException(msg);
+        }
+        return mentees;
     }
 }

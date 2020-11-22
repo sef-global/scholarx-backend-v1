@@ -3,13 +3,17 @@ package org.sefglobal.scholarx.controller;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.IntrospectionService;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,5 +48,15 @@ public class IntrospectionController {
     public List<Program> getMentoringPrograms(@CookieValue(value = "profileId") long profileId)
             throws ResourceNotFoundException, NoContentException {
         return introspectionService.getMentoringPrograms(profileId);
+    }
+
+    @GetMapping("/programs/{id}/mentees")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Mentee> getMentees(@CookieValue long profileId,
+                                   @PathVariable long id,
+                                   @RequestParam(required = false)
+                                           List<EnrolmentState> menteeStates)
+            throws NoContentException {
+        return introspectionService.getMentees(id, profileId, menteeStates);
     }
 }
