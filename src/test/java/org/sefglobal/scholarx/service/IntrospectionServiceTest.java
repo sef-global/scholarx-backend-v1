@@ -8,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
-import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
@@ -117,10 +116,25 @@ public class IntrospectionServiceTest {
     }
 
     @Test
-    void getAllMentees_withUnavailableData_thenThrowNoContent() {
-        doReturn(new ArrayList<Mentee>())
-                .when(menteeRepository)
-                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+    void getMentees_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> introspectionService
+                        .getMentees(programId, profileId, Collections.emptyList()));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentor by profile id: 1 and program id: 1 doesn't exist.");
+    }
+
+    @Test
+    void getMentees_withUnavailableData_thenThrowNoContent() {
+        Mentor mentor = new Mentor();
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> introspectionService

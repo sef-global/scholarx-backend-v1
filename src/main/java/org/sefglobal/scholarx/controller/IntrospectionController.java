@@ -56,7 +56,7 @@ public class IntrospectionController {
                                    @PathVariable long id,
                                    @RequestParam(required = false)
                                            List<EnrolmentState> menteeStates)
-            throws NoContentException {
+            throws ResourceNotFoundException, NoContentException {
         return introspectionService.getMentees(id, profileId, menteeStates);
     }
 }

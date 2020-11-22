@@ -136,17 +136,26 @@ public class IntrospectionService {
      *                     filtered from
      * @return {@link List} of {@link Mentee} objects
      *
-     * @throws NoContentException if {@link Mentor} objects doesn't exist
+     * @throws ResourceNotFoundException if the user doesn't exist
+     * @throws NoContentException        if {@link Mentor} objects doesn't exist
      */
     public List<Mentee> getMentees(long programId, long profileId,
-                                   List<EnrolmentState> menteeStates) throws NoContentException {
+                                   List<EnrolmentState> menteeStates)
+            throws ResourceNotFoundException, NoContentException {
         List<Mentee> mentees;
-
+        Optional<Mentor> optionalMentor = mentorRepository
+                                        .findByProfileIdAndProgramId(profileId, programId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentor by profile id: " + profileId + " and " +
+                         "program id: " + programId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
         if (menteeStates == null || menteeStates.isEmpty()) {
-            mentees = menteeRepository.findAllByProgramIdAndProfileId(programId, profileId);
+            mentees = optionalMentor.get().getMentees();
         } else {
             mentees = menteeRepository
-                    .findAllByProgramIdAndProfileIdAndStateIn(programId, profileId, menteeStates);
+                    .findAllByMentorIdAndStateIn(optionalMentor.get().getId(), menteeStates);
         }
 
         if (mentees.isEmpty()) {
