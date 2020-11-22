@@ -122,6 +122,17 @@ public class IntrospectionControllerTest {
     }
 
     @Test
+    void getMentees_withUnavailableData_thenReturns404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(introspectionService)
+                .getMentees(anyLong(), anyLong(), any());
+
+        mockMvc.perform(get("/me/programs/{id}/mentees", programId)
+                .cookie(profileIdCookie))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void getMentees_withUnavailableData_thenReturns204() throws Exception {
         doThrow(NoContentException.class)
                 .when(introspectionService)

@@ -36,7 +36,4 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
             nativeQuery = true
     )
     void deleteByMentorProgramId(long id);
-
-    List<Mentee> findAllByProgramIdAndProfileIdAndStateIn(long programId, long profileId,
-                                                          List<EnrolmentState> states);
 }
