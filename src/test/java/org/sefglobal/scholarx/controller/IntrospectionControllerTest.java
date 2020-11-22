@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.Cookie;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,7 +24,8 @@ public class IntrospectionControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private IntrospectionService introspectionService;
-    final Cookie profileIdCookie = new Cookie("profileId", "1");
+    private final Long programId = 1L;
+    private final Cookie profileIdCookie = new Cookie("profileId", "1");
 
     @Test
     void getLoggedInUser_withValidData_thenReturns200() throws Exception {
@@ -110,5 +112,23 @@ public class IntrospectionControllerTest {
         mockMvc.perform(get("/me/programs/mentor")
                 .cookie(profileIdCookie))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void getMentees_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(get("/me/programs/{id}/mentees", programId)
+                                .cookie(profileIdCookie))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void getMentees_withUnavailableData_thenReturns204() throws Exception {
+        doThrow(NoContentException.class)
+                .when(introspectionService)
+                .getMentees(anyLong(), anyLong(), any());
+
+        mockMvc.perform(get("/me/programs/{id}/mentees", programId)
+                                .cookie(profileIdCookie))
+               .andExpect(status().isNoContent());
     }
 }
