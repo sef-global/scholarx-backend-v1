@@ -256,24 +256,6 @@ public class ProgramControllerTest {
     }
 
     @Test
-    void getMenteesOfMentor_withValidData_thenReturns200() throws Exception {
-        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId)
-                .cookie(profileIdCookie))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void getMenteesOfMentor_withUnavailableData_thenReturns404() throws Exception {
-        doThrow(ResourceNotFoundException.class)
-                .when(programService)
-                .getAllMenteesOfMentor(anyLong(), anyLong(), any());
-
-        mockMvc.perform(get("/admin/programs/{id}/mentor/mentees", programId)
-                .cookie(profileIdCookie))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void getAppliedMentors_withValidData_thenReturns200() throws Exception {
         mockMvc.perform(get("/programs/{id}/mentee/mentors", programId)
                 .cookie(profileIdCookie))

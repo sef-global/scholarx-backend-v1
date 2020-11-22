@@ -16,9 +16,13 @@ import java.util.Optional;
 public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
     List<Mentee> findAllByMentorIdAndState(long id, EnrolmentState state);
+
     List<Mentee> findAllByMentorIdAndStateIn(long id, List<EnrolmentState> states);
+
     List<Mentee> findAllByProgramIdAndProfileId(long programId, long profileId);
+
     Optional<Mentee> findByProfileIdAndMentorId(long profileId, long mentorId);
+
     List<Mentee> findAllByProfileId(long profileId);
 
     @Modifying
@@ -32,4 +36,7 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
             nativeQuery = true
     )
     void deleteByMentorProgramId(long id);
+
+    List<Mentee> findAllByProgramIdAndProfileIdAndStateIn(long programId, long profileId,
+                                                          List<EnrolmentState> states);
 }

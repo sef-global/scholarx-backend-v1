@@ -278,33 +278,6 @@ public class ProgramService {
     }
 
     /**
-     * Retrieves all the {@link Mentee} objects of a {@link Mentor}
-     *
-     * @param programId which is the program id of the {@link Program}
-     * @param profileId which is the profile id of the {@link Mentor}
-     * @param states    which is the list of states of the {@link Mentee} objects to be filtered
-     * @return {@link List} of {@link Mentee} objects filtered by {@link Mentee} and {@link EnrolmentState}
-     *
-     * @throws ResourceNotFoundException if the requesting {@link Mentor} object doesn't exist
-     */
-    public List<Mentee> getAllMenteesOfMentor(long programId, long profileId, List<EnrolmentState> states)
-            throws ResourceNotFoundException {
-        Optional<Mentor> optionalMentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
-        if (!optionalMentor.isPresent()) {
-            String msg = "Error, Mentor by profile id: " + profileId + " and " +
-                    "program id: " + programId + " cannot be updated. " +
-                    "Mentor doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-        if (states.isEmpty()) {
-            return optionalMentor.get().getMentees();
-        } else {
-            return menteeRepository.findAllByMentorIdAndStateIn(optionalMentor.get().getId(), states);
-        }
-    }
-
-    /**
      * Retrieves the applied {@link Mentor} objects of the {@link Mentee}
      *
      * @param programId which is the id of the {@link Program}
