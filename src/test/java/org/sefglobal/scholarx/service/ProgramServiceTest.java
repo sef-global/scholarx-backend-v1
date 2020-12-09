@@ -20,7 +20,6 @@ import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -291,7 +290,7 @@ public class ProgramServiceTest {
                 .findAllByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.getAppliedMentorsOfMentee(programId, profileId));
+                () -> programService.getAppliedMentorsOfMentee(programId, new ArrayList<>(), profileId));
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, Mentee by program id: 1 and " +

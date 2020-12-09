@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.controller;
 
 import org.junit.jupiter.api.Test;
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
@@ -16,6 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = IntrospectionController.class)
@@ -25,6 +27,7 @@ public class IntrospectionControllerTest {
     @MockBean
     private IntrospectionService introspectionService;
     private final Long programId = 1L;
+    private final Long mentorId = 1L;
     private final Cookie profileIdCookie = new Cookie("profileId", "1");
 
     @Test
@@ -141,5 +144,34 @@ public class IntrospectionControllerTest {
         mockMvc.perform(get("/me/programs/{id}/mentees", programId)
                                 .cookie(profileIdCookie))
                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void confirmMentor_withValidData_thenReturns200() throws Exception {
+        mockMvc.perform(put("/me/mentor/{mentorId}/confirmation", mentorId)
+                .cookie(profileIdCookie))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void confirmMentor_withUnavailableData_thenReturn404() throws Exception {
+        doThrow(ResourceNotFoundException.class)
+                .when(introspectionService)
+                .confirmMentor(anyLong(), anyLong());
+
+        mockMvc.perform(put("/me/mentor/{mentorId}/confirmation", mentorId)
+                .cookie(profileIdCookie))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void confirmMentor_withUnsuitableData_thenReturn400() throws Exception {
+        doThrow(BadRequestException.class)
+                .when(introspectionService)
+                .confirmMentor(anyLong(), anyLong());
+
+        mockMvc.perform(put("/me/mentor/{mentorId}/confirmation", mentorId)
+                .cookie(profileIdCookie))
+                .andExpect(status().isBadRequest());
     }
 }

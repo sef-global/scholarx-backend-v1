@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.controller;
 
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -58,5 +60,13 @@ public class IntrospectionController {
                                            List<EnrolmentState> menteeStates)
             throws ResourceNotFoundException, NoContentException {
         return introspectionService.getMentees(id, profileId, menteeStates);
+    }
+
+    @PutMapping("/mentor/{id}/confirmation")
+    @ResponseStatus(HttpStatus.OK)
+    public Mentee confirmMentor(@PathVariable long id,
+                                @CookieValue(value = "profileId") long profileId)
+            throws ResourceNotFoundException, BadRequestException {
+        return introspectionService.confirmMentor(id, profileId);
     }
 }

@@ -6,6 +6,7 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,9 +79,10 @@ public class ProgramController {
     @GetMapping("/{id}/mentee/mentors")
     @ResponseStatus(HttpStatus.OK)
     public List<Mentor> getAppliedMentors(@PathVariable long id,
+                                          @RequestParam(required = false) List<EnrolmentState> menteeStates,
                                           @CookieValue(value = "profileId") long profileId)
             throws NoContentException {
-        return programService.getAppliedMentorsOfMentee(id, profileId);
+        return programService.getAppliedMentorsOfMentee(id, menteeStates, profileId);
     }
 
     @GetMapping("/{id}/mentee/mentor")

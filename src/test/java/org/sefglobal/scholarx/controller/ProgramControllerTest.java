@@ -266,7 +266,7 @@ public class ProgramControllerTest {
     void getAppliedMentors_withUnavailableData_thenReturns204() throws Exception {
         doThrow(NoContentException.class)
                 .when(programService)
-                .getAppliedMentorsOfMentee(anyLong(), anyLong());
+                .getAppliedMentorsOfMentee(anyLong(), any(), anyLong());
 
         mockMvc.perform(get("/programs/{id}/mentee/mentors", programId)
                 .cookie(profileIdCookie))
