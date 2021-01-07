@@ -2,6 +2,8 @@ package org.sefglobal.scholarx.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.sefglobal.scholarx.util.ProfileType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,12 +12,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "profile")
 @JsonIgnoreProperties({"createdAt", "updatedAt", "enrolledUsers"})
-public class Profile extends BaseScholarxModel {
+public class Profile extends BaseScholarxModel implements OAuth2User {
 
     @Column(length = 36,
             nullable = false)
@@ -106,5 +110,20 @@ public class Profile extends BaseScholarxModel {
 
     public void setEnrolledUsers(List<EnrolledUser> enrolledUsers) {
         this.enrolledUsers = enrolledUsers;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return getFirstName().concat(getLastName());
     }
 }
