@@ -150,19 +150,25 @@ public class ProgramService {
     /**
      * Retrieves all the {@link Mentor} objects filtered from {@link Program} {@code id}
      *
-     * @param id which is the Program id of the filtering {@link Mentor} objects
+     * @param id     which is the Program id of the filtering {@link Mentor} objects
+     * @param states which is the list of states that {@link Mentor} objects should be filtered from
      * @return {@link List} of {@link Mentor} objects
-     * @throws ResourceNotFoundException if the requesting {@link Program} to filter {@link
-     *                                   Mentor} objects doesn't exist
+     *
+     * @throws ResourceNotFoundException if the requesting {@link Program} to filter
+     *                                  {@link Mentor} objects doesn't exist
      */
-    public List<Mentor> getAllMentorsByProgramId(long id)
+    public List<Mentor> getAllMentorsByProgramId(long id, List<EnrolmentState> states)
             throws ResourceNotFoundException {
         if (!programRepository.existsById(id)) {
             String msg = "Error, Program by id: " + id + " doesn't exist";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
-        return mentorRepository.findAllByProgramId(id);
+        if (states == null || states.isEmpty()) {
+            return  mentorRepository.findAllByProgramId(id);
+        } else {
+            return  mentorRepository.findAllByProgramIdAndStateIn(id, states);
+        }
     }
 
     /**

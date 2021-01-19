@@ -45,9 +45,10 @@ public class ProgramController {
 
     @GetMapping("/{id}/mentors")
     @ResponseStatus(HttpStatus.OK)
-    public List<Mentor> getAllMentorsByProgramId(@PathVariable long id)
+    public List<Mentor> getAllMentorsByProgramId(@PathVariable long id,
+                                                 @RequestParam(required = false) List<EnrolmentState> states)
             throws ResourceNotFoundException {
-        return programService.getAllMentorsByProgramId(id);
+        return programService.getAllMentorsByProgramId(id, states);
     }
 
     @PostMapping("/{id}/mentor")

@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.Cookie;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -157,7 +159,7 @@ public class ProgramControllerTest {
     void getAllMentorsByProgramId_withUnavailableData_thenReturns404() throws Exception {
         doThrow(ResourceNotFoundException.class)
                 .when(programService)
-                .getAllMentorsByProgramId(anyLong());
+                .getAllMentorsByProgramId(anyLong(), any());
 
         mockMvc.perform(get("/programs/{id}/mentors", programId))
                .andExpect(status().isNotFound());
