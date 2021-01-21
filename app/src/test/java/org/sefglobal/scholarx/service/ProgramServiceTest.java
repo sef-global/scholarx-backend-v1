@@ -20,6 +20,7 @@ import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,7 +131,7 @@ public class ProgramServiceTest {
                 .existsById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.getAllMentorsByProgramId(programId));
+                () -> programService.getAllMentorsByProgramId(programId, Collections.emptyList()));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Program by id: 1 doesn't exist");
