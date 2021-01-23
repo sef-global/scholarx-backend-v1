@@ -23,6 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()
+                .redirectionEndpoint()
+                .baseUri("/login/oauth2/code/*")
+                .and()
                 .tokenEndpoint()
                 .accessTokenResponseClient(authorizationCodeTokenResponseClient());
     }

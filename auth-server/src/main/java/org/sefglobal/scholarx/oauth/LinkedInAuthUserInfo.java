@@ -1,6 +1,5 @@
 package org.sefglobal.scholarx.oauth;
 
-import java.util.List;
 import java.util.Map;
 
 public class LinkedInAuthUserInfo {

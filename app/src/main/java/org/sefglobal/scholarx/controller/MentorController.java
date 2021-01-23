@@ -5,10 +5,11 @@ import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
+import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.service.MentorService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,10 +50,10 @@ public class MentorController {
     @PostMapping("/{id}/mentee")
     @ResponseStatus(HttpStatus.CREATED)
     public Mentee applyAsMentee(@PathVariable long id,
-                                @CookieValue(value = "profileId") long profileId,
+                                @AuthenticationPrincipal Profile profile,
                                 @Valid @RequestBody Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
-        return mentorService.applyAsMentee(id, profileId, mentee);
+        return mentorService.applyAsMentee(id, profile.getId(), mentee);
     }
 
     @GetMapping("/{id}/mentees")
@@ -66,17 +67,17 @@ public class MentorController {
     @PutMapping("/{id}/mentee")
     @ResponseStatus(HttpStatus.OK)
     public Mentee updateMenteeData(@PathVariable long id,
-                                   @CookieValue(value = "profileId") long profileId,
+                                   @AuthenticationPrincipal Profile profile,
                                    @Valid @RequestBody Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
-        return mentorService.updateMenteeData(profileId, id, mentee);
+        return mentorService.updateMenteeData(profile.getId(), id, mentee);
     }
 
     @GetMapping("/{id}/mentee")
     @ResponseStatus(HttpStatus.OK)
     public Mentee getLoggedInMentee(@PathVariable long id,
-                                    @CookieValue(value = "profileId") long profileId)
+                                    @AuthenticationPrincipal Profile profile)
             throws NoContentException {
-        return mentorService.getLoggedInMentee(id, profileId);
+        return mentorService.getLoggedInMentee(id, profile.getId());
     }
 }
