@@ -2,4 +2,5 @@
 
 set -e
 ssh-keyscan -H $IP >>~/.ssh/known_hosts
-scp target/api#scholarx.war $USER_NAME@$IP:$DEPLOY_PATH
+scp /app/target/api#scholarx.jar $USER_NAME@$IP:$DEPLOY_PATH
+scp /auth-server/target/auth.jar $USER_NAME@$IP:$DEPLOY_PATH
