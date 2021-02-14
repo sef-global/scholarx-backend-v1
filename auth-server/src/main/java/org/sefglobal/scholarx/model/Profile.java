@@ -3,6 +3,7 @@ package org.sefglobal.scholarx.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.Column;
@@ -119,7 +120,9 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(this.type.toString()));
+        return authorities;
     }
 
     @Override
