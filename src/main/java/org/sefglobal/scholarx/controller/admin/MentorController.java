@@ -1,5 +1,7 @@
 package org.sefglobal.scholarx.controller.admin;
 
+import java.util.Map;
+import javax.validation.Valid;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.service.MentorService;
@@ -12,11 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.Map;
-
 @RestController("MentorAdminController")
-@RequestMapping("/admin/mentors")
+@RequestMapping("/api/admin/mentors")
 public class MentorController {
 
     private final MentorService mentorService;

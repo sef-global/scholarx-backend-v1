@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("MenteeAdminController")
-@RequestMapping("/admin/mentees")
+@RequestMapping("/api/admin/mentees")
 public class MenteeController {
 
     private final MenteeService menteeService;
