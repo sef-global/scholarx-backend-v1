@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.sefglobal.scholarx.oauth.AuthAccessTokenResponseConverter;
-import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +21,6 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,12 +33,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .csrf()
       .disable()
       .authorizeRequests()
-      .antMatchers("/admin/**")
+      .antMatchers("/api/admin/**")
       .hasAnyAuthority("ADMIN")
-      .antMatchers("/**")
+      .antMatchers("/api/programs")
       .permitAll()
-      .anyRequest()
+      .antMatchers("/api/**")
       .authenticated()
+      .anyRequest()
+      .permitAll()
       .and()
       .logout()
       .permitAll()

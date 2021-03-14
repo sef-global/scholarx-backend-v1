@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/programs")
+@RequestMapping("/api/programs")
 public class ProgramController {
 
   private final ProgramService programService;
@@ -67,7 +67,7 @@ public class ProgramController {
     return programService.applyAsMentor(id, profile.getId(), mentor);
   }
 
-  @GetMapping("/{id}/mentosr")
+  @GetMapping("/{id}/mentor")
   @ResponseStatus(HttpStatus.OK)
   public Mentor getLoggedInMentor(
     @PathVariable long id,

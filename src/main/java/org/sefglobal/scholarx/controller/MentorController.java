@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/mentors")
+@RequestMapping("/api/mentors")
 public class MentorController {
 
   private final MentorService mentorService;

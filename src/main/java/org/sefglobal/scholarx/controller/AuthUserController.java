@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/me")
+@RequestMapping("/api/me")
 public class AuthUserController {
 
   private final IntrospectionService introspectionService;
