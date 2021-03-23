@@ -26,11 +26,10 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
+/src/main/resources/static/**
 
 ### VS Code ###
 .vscode/
 
 ### Mac ###
 .DS_Store
-
-application.yml
