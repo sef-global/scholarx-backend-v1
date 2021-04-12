@@ -27,6 +27,8 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
     List<Mentee> findAllByProfileId(long profileId);
 
+    List<Mentee> findAllByProgramId(long id);
+
     @Modifying
     @Query(
             value = "DELETE " +

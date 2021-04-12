@@ -30,5 +30,16 @@ spring:
     url: jdbc:mysql://${DB_URL}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: ${DB_USER_NAME}
     password: ${DB_USER_PASSWORD}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jmx:
     unique-names: true
