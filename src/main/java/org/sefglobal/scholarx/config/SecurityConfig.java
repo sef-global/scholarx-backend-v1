@@ -9,11 +9,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.sefglobal.scholarx.oauth.AuthAccessTokenResponseConverter;
+import org.sefglobal.scholarx.oauth.OAuthAuthenticationSuccessHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
@@ -21,7 +24,9 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.client.RestTemplate;
 
 @EnableWebSecurity
@@ -47,6 +52,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .permitAll()
       .and()
       .logout()
+            .logoutSuccessHandler(new LogoutSuccessHandler() {
+              @Override
+              public void onLogoutSuccess(HttpServletRequest request,
+                                          HttpServletResponse httpServletResponse,
+                                          Authentication authentication) throws IOException, ServletException {
+                String url = request.getHeader("Referer");
+                String[] urlArray = url.split("/");
+                String baseURL = urlArray[0] + "//" + urlArray[2];
+                httpServletResponse.sendRedirect(baseURL);
+              }
+            })
       .permitAll()
       .and()
       .exceptionHandling()
@@ -56,6 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .and()
       .oauth2Login()
       .failureHandler(new AuthFailureHandler())
+            .successHandler(successHandler())
+            .permitAll()
       .tokenEndpoint()
       .accessTokenResponseClient(authorizationCodeTokenResponseClient());
   }
@@ -93,5 +111,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       data.put("exception", exception.getMessage());
       response.getOutputStream().println(objectMapper.writeValueAsString(data));
     }
+  }
+
+  @Bean
+  public AuthenticationSuccessHandler successHandler() {
+    return new OAuthAuthenticationSuccessHandler();
   }
 }
