@@ -3,6 +3,7 @@ package org.sefglobal.scholarx.controller.admin;
 import java.util.List;
 import javax.validation.Valid;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
@@ -59,5 +60,12 @@ public class ProgramController {
                                                  @RequestParam(required = false) List<EnrolmentState> states)
             throws ResourceNotFoundException {
         return programService.getAllMentorsByProgramId(id, states);
+    }
+
+    @GetMapping("/{id}/mentees")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Mentee> getAllMenteesByProgramId(@PathVariable long id)
+            throws ResourceNotFoundException {
+        return programService.getAllMenteesByProgramId(id);
     }
 }
