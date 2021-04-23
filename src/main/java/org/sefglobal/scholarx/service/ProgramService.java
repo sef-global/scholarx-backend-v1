@@ -42,15 +42,10 @@ public class ProgramService {
     /**
      * Retrieves all the {@link Program} objects
      *
-     * @param states which is the list of states that {@link Program} objects should be filtered from
      * @return {@link List} of {@link Program} objects
      */
-    public List<Program> getAllPrograms(List<ProgramState> states) {
-        if (states == null || states.isEmpty()) {
-            return  programRepository.findAll();
-        } else {
-            return  programRepository.findAllByStateIn(states);
-        }
+    public List<Program> getAllPrograms() {
+        return programRepository.findAll();
     }
 
     /**

@@ -10,7 +10,6 @@ import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
 import org.sefglobal.scholarx.util.EnrolmentState;
-import org.sefglobal.scholarx.util.ProgramState;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +34,8 @@ public class ProgramController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<Program> getAllPrograms(@RequestParam(required = false) List<ProgramState> states) {
-    return programService.getAllPrograms(states);
+  public List<Program> getAllPrograms() {
+    return programService.getAllPrograms();
   }
 
   @GetMapping("/{id}")
