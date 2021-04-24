@@ -97,21 +97,28 @@ public class IntrospectionService {
 
     /**
      * Retrieves all the {@link Program} objects where the user is a {@link Mentor}
+     * of a requested @{@link EnrolmentState}
      *
      * @param id which is the Profile id of the user
+     * @param mentorState state of the mentor in which the programs are required
      * @return {@link List} of {@link Program} objects
      *
      * @throws ResourceNotFoundException if the user doesn't exist
      * @throws NoContentException        if the user hasn't enrolled in any program as a mentor
      */
-    public List<Program> getMentoringPrograms(long id)
+    public List<Program> getMentoringPrograms(long id, EnrolmentState mentorState)
             throws ResourceNotFoundException, NoContentException {
         if (!profileRepository.existsById(id)) {
             String msg = "Error, Profile with id: " + id + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
-        List<Mentor> mentors = mentorRepository.findAllByProfileId(id);
+        List<Mentor> mentors;
+        if (mentorState == null) {
+            mentors = mentorRepository.findAllByProfileId(id);
+        } else {
+            mentors = mentorRepository.findAllByProfileIdAndState(id, mentorState);
+        }
         if (mentors.isEmpty()) {
             String msg = "Error, User has not enrolled in any program as a mentor.";
             log.error(msg);

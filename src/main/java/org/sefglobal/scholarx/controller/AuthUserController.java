@@ -47,10 +47,11 @@ public class AuthUserController {
 
   @GetMapping("/programs/mentor")
   @ResponseStatus(HttpStatus.OK)
-  public List<Program> getMentoringPrograms(Authentication authentication)
+  public List<Program> getMentoringPrograms(Authentication authentication,
+                                            @RequestParam(required = false) EnrolmentState mentorState)
     throws ResourceNotFoundException, NoContentException {
     Profile profile = (Profile) authentication.getPrincipal();
-    return introspectionService.getMentoringPrograms(profile.getId());
+    return introspectionService.getMentoringPrograms(profile.getId(), mentorState);
   }
 
   @GetMapping("/programs/{id}/mentees")

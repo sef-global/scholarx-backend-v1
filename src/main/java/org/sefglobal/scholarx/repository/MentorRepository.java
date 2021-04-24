@@ -20,6 +20,7 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     List<Mentor> findAllByProgramIdAndState(long id, EnrolmentState state);
     Optional<Mentor> findByProfileIdAndProgramId(long profileId, long programId);
     List<Mentor> findAllByProfileId(long profileId);
+    List<Mentor> findAllByProfileIdAndState(long profileId, EnrolmentState state);
 
     @Modifying
     @Query(
