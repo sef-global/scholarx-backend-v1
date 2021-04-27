@@ -127,44 +127,49 @@ public class ProgramService {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
         List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
 
-        switch (program.get().getState().next()) {
-            case MENTEE_APPLICATION:
-                for (Mentor mentor : mentors) {
-                    Email email = new Email();
-                    email.setEmail(mentor.getProfile().getEmail());
-                    email.setSubject(program.get().getTitle());
-                    email.setMessage("You have been " + mentor.getState().name().toLowerCase());
-                    emailUtil.sendSimpleMessage(email);
+        Thread thread = new Thread(() -> {
+            try {
+                switch (program.get().getState().next()) {
+                    case MENTEE_APPLICATION:
+                        for (Mentor mentor : mentors) {
+                            Email email = new Email();
+                            email.setEmail(mentor.getProfile().getEmail());
+                            email.setSubject(program.get().getTitle());
+                            email.setMessage("You have been " + mentor.getState().name().toLowerCase());
+                            emailUtil.sendSimpleMessage(email);
+                        }
+                        break;
+                    case MENTEE_SELECTION:
+                        for (Mentor mentor : approvedMentors) {
+                            Email email = new Email();
+                            email.setEmail(mentor.getProfile().getEmail());
+                            email.setSubject(program.get().getTitle());
+                            email.setMessage("You can approve or reject your mentees by visiting the dashboard");
+                            emailUtil.sendSimpleMessage(email);
+                        }
+                        break;
+                    case ONGOING:
+                        for (Mentor mentor : approvedMentors) {
+                            Email email = new Email();
+                            email.setEmail(mentor.getProfile().getEmail());
+                            email.setSubject(program.get().getTitle());
+                            email.setMessage("You can check your mentees by visiting the dashboard");
+                            emailUtil.sendSimpleMessage(email);
+                        }
+                        break;
+                    case MENTOR_CONFIRMATION:
+                        for (Mentee mentee : mentees) {
+                            Email email = new Email();
+                            email.setEmail(mentee.getProfile().getEmail());
+                            email.setSubject(program.get().getTitle());
+                            email.setMessage("You can check your mentor by visiting the dashboard");
+                            emailUtil.sendSimpleMessage(email);
+                        }
+                        break;
                 }
-                break;
-            case MENTEE_SELECTION:
-                for (Mentor mentor : approvedMentors) {
-                    Email email = new Email();
-                    email.setEmail(mentor.getProfile().getEmail());
-                    email.setSubject(program.get().getTitle());
-                    email.setMessage("You can approve or reject your mentees by visiting the dashboard");
-                    emailUtil.sendSimpleMessage(email);
-                }
-                break;
-            case ONGOING:
-                for (Mentor mentor : approvedMentors) {
-                    Email email = new Email();
-                    email.setEmail(mentor.getProfile().getEmail());
-                    email.setSubject(program.get().getTitle());
-                    email.setMessage("You can check your mentees by visiting the dashboard");
-                    emailUtil.sendSimpleMessage(email);
-                }
-                break;
-            case MENTOR_CONFIRMATION:
-                for (Mentee mentee : mentees) {
-                    Email email = new Email();
-                    email.setEmail(mentee.getProfile().getEmail());
-                    email.setSubject(program.get().getTitle());
-                    email.setMessage("You can check your mentor by visiting the dashboard");
-                    emailUtil.sendSimpleMessage(email);
-                }
-                break;
-        }
+            }catch (Exception ignored){}
+        });
+        thread.start();
 
         if (!program.isPresent()) {
             String msg = "Error, Program with id: " + id + " cannot be updated. " +
