@@ -35,6 +35,7 @@ git clone https://github.com/<your profile name>/scholarx
 5. Replace the datasource dummy values with your local mysql server instance credentials
 <img width="1007" alt="image" src="https://user-images.githubusercontent.com/45477334/116671874-17ea2280-a9bf-11eb-84b4-a21355a9df73.png">
 6. Run the application 
+
 ```
 mvn spring-boot:run
 ```
