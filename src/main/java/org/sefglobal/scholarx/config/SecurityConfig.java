@@ -8,9 +8,12 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.collect.ImmutableList;
 import org.sefglobal.scholarx.oauth.AuthAccessTokenResponseConverter;
 import org.sefglobal.scholarx.oauth.OAuthAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +31,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,6 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
+      .cors()
+      .and()
       .csrf()
       .disable()
       .authorizeRequests()
@@ -76,6 +86,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
       .tokenEndpoint()
       .accessTokenResponseClient(authorizationCodeTokenResponseClient());
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    final CorsConfiguration configuration = new CorsConfiguration();
+
+    configuration.setAllowedMethods(ImmutableList.of("GET", "POST", "PUT", "DELETE"));
+    configuration.setAllowCredentials(true);
+    configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+    configuration.setAllowedOrigins(ImmutableList.of("http://localhost:3000"));
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
+
+  @Configuration
+  public class WebConfiguration implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+      registry.addMapping("/**").allowedMethods("*");
+    }
   }
 
   private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> authorizationCodeTokenResponseClient() {
