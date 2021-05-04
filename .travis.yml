@@ -1,20 +1,23 @@
 language: java
-install: skip
+install: 
+  - git clone https://github.com/sef-global/scholarx-frontend
+  - cd scholarx-frontend
+  - git checkout deploy
+  - npm install
+  - npm run build
+  - cd ../
 before_script:
-  - bash scripts/setup.sh
+  - cp -r scholarx-frontend/dist/. src/main/resources/static/dist/
+  - cp src/main/resources/static/dist/index.html src/main/resources/static/
+  - sudo rm -R scholarx-frontend
 script:
   - mvn clean install
-before_deploy:
-  - openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv
-    -in .travis/deploy_rsa.enc -out .travis/deploy_rsa -d
-  - eval "$(ssh-agent -s)"
-  - cp .travis/deploy_rsa ~/.ssh/deploy_rsa
-  - chmod 600 ~/.ssh/deploy_rsa
-  - ssh-add ~/.ssh/deploy_rsa
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/deploy.sh
-    on:
-      repo: sef-global/scholarx
-      branch: master
+  provider: heroku
+  api_key: $TRAVIS_API_KEY
+  app: sef-scholarx
+  on:
+    repo: sef-global/scholarx
+    branch: deploy
+  skip_cleanup: true
+  
