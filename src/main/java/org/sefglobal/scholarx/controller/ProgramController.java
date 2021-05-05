@@ -5,12 +5,11 @@ import javax.validation.Valid;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
-import org.sefglobal.scholarx.model.Mentor;
-import org.sefglobal.scholarx.model.Profile;
-import org.sefglobal.scholarx.model.Program;
+import org.sefglobal.scholarx.model.*;
 import org.sefglobal.scholarx.service.ProgramService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.QuestionCategory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,11 +60,11 @@ public class ProgramController {
   public Mentor applyAsMentor(
     @PathVariable long id,
     Authentication authentication,
-    @Valid @RequestBody Mentor mentor
+    @Valid @RequestBody List<MentorResponse> responses
   )
     throws ResourceNotFoundException, BadRequestException {
     Profile profile = (Profile) authentication.getPrincipal();
-    return programService.applyAsMentor(id, profile.getId(), mentor);
+    return programService.applyAsMentor(id, profile.getId(), responses);
   }
 
   @GetMapping("/{id}/mentor")
@@ -77,18 +76,6 @@ public class ProgramController {
     throws ResourceNotFoundException {
     Profile profile = (Profile) authentication.getPrincipal();
     return programService.getLoggedInMentor(id, profile.getId());
-  }
-
-  @PutMapping("/{id}/application")
-  @ResponseStatus(HttpStatus.OK)
-  public Mentor updateMentorData(
-    @PathVariable long id,
-    Authentication authentication,
-    @Valid @RequestBody Mentor mentor
-  )
-    throws ResourceNotFoundException, BadRequestException {
-    Profile profile = (Profile) authentication.getPrincipal();
-    return programService.updateMentorData(profile.getId(), id, mentor);
   }
 
   @GetMapping("/{id}/mentee/mentors")
@@ -116,5 +103,38 @@ public class ProgramController {
     throws ResourceNotFoundException, NoContentException {
     Profile profile = (Profile) authentication.getPrincipal();
     return programService.getSelectedMentor(id, profile.getId());
+  }
+
+  @GetMapping("/{id}/questions/{category}")
+  @ResponseStatus(HttpStatus.OK)
+  public List<Question> getQuestions(@PathVariable long id,
+                                     @PathVariable QuestionCategory category) throws ResourceNotFoundException {
+    return programService.getQuestions(id, category);
+  }
+
+  @GetMapping("/{id}/responses/mentor")
+  @ResponseStatus(HttpStatus.OK)
+  public List<MentorResponse> getMentorResponses(
+          @PathVariable long id,
+          Authentication authentication,
+          @RequestParam(required = false) Long mentorId
+  )
+  throws ResourceNotFoundException {
+    if (mentorId != null) {
+      return programService.getMentorResponses(mentorId);
+    }
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.getMentorResponses(id, profile.getId());
+  }
+
+  @PutMapping("/{id}/responses/mentor")
+  public List<MentorResponse> editMentorResponses(
+          @PathVariable long id,
+          Authentication authentication,
+          @RequestBody List<MentorResponse> responses
+  )
+  throws ResourceNotFoundException{
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.editMentorResponses(id, profile.getId(), responses);
   }
 }
