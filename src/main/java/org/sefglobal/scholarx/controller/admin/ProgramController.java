@@ -6,8 +6,10 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
+import org.sefglobal.scholarx.model.Question;
 import org.sefglobal.scholarx.service.ProgramService;
 import org.sefglobal.scholarx.util.EnrolmentState;
+import org.sefglobal.scholarx.util.QuestionCategory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,5 +69,13 @@ public class ProgramController {
     public List<Mentee> getAllMenteesByProgramId(@PathVariable long id)
             throws ResourceNotFoundException {
         return programService.getAllMenteesByProgramId(id);
+    }
+
+    @PostMapping("/{id}/questions/{category}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Question> addQuestions(@PathVariable long id,
+                                       @PathVariable QuestionCategory category,
+                                       @RequestBody List<Question> questions) throws ResourceNotFoundException {
+        return programService.addQuestions(id, category, questions);
     }
 }
