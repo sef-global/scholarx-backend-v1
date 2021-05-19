@@ -1,11 +1,9 @@
 package org.sefglobal.scholarx.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.sefglobal.scholarx.util.EnrolmentState;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -13,20 +11,31 @@ import java.util.List;
 @JsonIgnoreProperties({"createdAt", "updatedAt", "mentees"})
 public class Mentor extends EnrolledUser {
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10, nullable = false)
+    private EnrolmentState state;
+
     @OneToMany(mappedBy = "mentor")
     private List<MentorResponse> mentorResponses;
 
-    public Mentor() {
-    }
-
     @OneToMany(mappedBy = "mentor")
-    private List<Mentee> mentees = new ArrayList<>();
+    private List<MenteeMentor> mentees;
 
-    public List<Mentee> getMentees() {
+    public Mentor() {}
+
+    public List<MenteeMentor> getMentees() {
         return mentees;
     }
 
-    public void setMentees(List<Mentee> mentees) {
+    public void setMentees(List<MenteeMentor> mentees) {
         this.mentees = mentees;
+    }
+
+    public EnrolmentState getState() {
+        return this.state;
+    }
+
+    public void setState(EnrolmentState state) {
+        this.state = state;
     }
 }

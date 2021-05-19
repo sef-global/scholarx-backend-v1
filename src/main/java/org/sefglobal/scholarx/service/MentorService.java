@@ -4,8 +4,10 @@ import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
+import org.sefglobal.scholarx.model.MenteeMentor;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
+import org.sefglobal.scholarx.repository.MenteeMentorRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +27,16 @@ public class MentorService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final ProfileRepository profileRepository;
+    private final MenteeMentorRepository menteeMentorRepository;
 
     public MentorService(MentorRepository mentorRepository,
                          MenteeRepository menteeRepository,
-                         ProfileRepository profileRepository) {
+                         ProfileRepository profileRepository,
+                         MenteeMentorRepository menteeMentorRepository) {
         this.mentorRepository = mentorRepository;
         this.menteeRepository = menteeRepository;
         this.profileRepository = profileRepository;
+        this.menteeMentorRepository = menteeMentorRepository;
     }
 
     /**
@@ -148,10 +154,19 @@ public class MentorService {
             log.error(msg);
             throw new BadRequestException(msg);
         }
+        List<Mentee> menteeList = new ArrayList<>();
         if (!state.isPresent()){
-            return optionalMentor.get().getMentees();
+            List<MenteeMentor> menteeMentors = optionalMentor.get().getMentees();
+            for (MenteeMentor mm: menteeMentors) {
+                menteeList.add(mm.getMentee());
+            }
+            return menteeList;
         }
-        return menteeRepository.findAllByMentorIdAndState(mentorId,state.get());
+        List<MenteeMentor> menteeMentors = menteeMentorRepository.findAllByMentorIdAndState(mentorId, state.get());
+        for (MenteeMentor mm: menteeMentors) {
+            menteeList.add(mm.getMentee());
+        }
+        return menteeList;
     }
 
     /**

@@ -16,10 +16,6 @@ public abstract class EnrolledUser extends BaseScholarxModel {
   @ManyToOne(optional = false)
   private Profile profile;
 
-  @Enumerated(EnumType.STRING)
-  @Column(length = 10, nullable = false)
-  private EnrolmentState state;
-
   @ManyToOne(optional = false)
   private Program program;
 
@@ -29,14 +25,6 @@ public abstract class EnrolledUser extends BaseScholarxModel {
 
   public void setProfile(Profile profile) {
     this.profile = profile;
-  }
-
-  public EnrolmentState getState() {
-    return state;
-  }
-
-  public void setState(EnrolmentState state) {
-    this.state = state;
   }
 
   public Program getProgram() {

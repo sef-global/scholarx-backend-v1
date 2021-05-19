@@ -22,6 +22,9 @@ public class Question extends BaseScholarxModel{
     @OneToMany(mappedBy = "question")
     private List<MentorResponse> mentorResponses;
 
+    @OneToMany(mappedBy = "question")
+    private List<MenteeResponse> menteeResponses;
+
     public Question() {}
 
     public Question(String question, QuestionCategory category, Program program) {
