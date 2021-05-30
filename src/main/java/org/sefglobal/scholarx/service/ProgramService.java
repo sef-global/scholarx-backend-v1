@@ -29,6 +29,9 @@ public class ProgramService {
     @Autowired
     private EmailUtil emailUtil;
 
+    @Autowired
+    private EmailService emailService;
+
     public ProgramService(ProgramRepository programRepository,
                           ProfileRepository profileRepository,
                           MentorRepository mentorRepository,
@@ -125,57 +128,31 @@ public class ProgramService {
      */
     public Program updateState(long id) throws ResourceNotFoundException {
         Optional<Program> program = programRepository.findById(id);
-        List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
-        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-        List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
 
         Thread thread = new Thread(() -> {
             try {
                 switch (program.get().getState().next()) {
                     case MENTEE_APPLICATION:
-                        for (Mentor mentor : mentors) {
-                            Email email = new Email();
-                            email.setEmail(mentor.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You have been " + mentor.getState().name().toLowerCase());
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        sendMenteeApplicationEmails(id, program);
                         break;
                     case MENTEE_SELECTION:
-                        for (Mentor mentor : approvedMentors) {
-                            Email email = new Email();
-                            email.setEmail(mentor.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You can approve or reject your mentees by visiting the dashboard");
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        sendMenteeSelectionEmails(id, program);
                         break;
                     case ONGOING:
-                        for (Mentor mentor : approvedMentors) {
-                            Email email = new Email();
-                            email.setEmail(mentor.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You can check your mentees by visiting the dashboard");
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        sendOnGoingEmails(id, program);
                         break;
                     case MENTOR_CONFIRMATION:
-                        for (Mentee mentee : mentees) {
-                            Email email = new Email();
-                            email.setEmail(mentee.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You can check your mentor by visiting the dashboard");
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        sendMentorConfirmationEmails(id, program);
                         break;
                 }
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         });
         thread.start();
 
         if (!program.isPresent()) {
             String msg = "Error, Program with id: " + id + " cannot be updated. " +
-                         "Program doesn't exist.";
+                    "Program doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
@@ -183,6 +160,43 @@ public class ProgramService {
         ProgramState nextState = program.get().getState().next();
         program.get().setState(nextState);
         return programRepository.save(program.get());
+    }
+
+    public void sendMenteeApplicationEmails(long id, Optional<Program> program) {
+        List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
+
+        String message;
+        for (Mentor mentor : mentors) {
+            message = "You have been " + mentor.getState().name().toLowerCase();
+            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message);
+        }
+    }
+
+    public void sendMenteeSelectionEmails(long id, Optional<Program> program) {
+        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
+
+        String message = "You can approve or reject your mentees by visiting the dashboard";
+        for (Mentor mentor : approvedMentors) {
+            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message);
+        }
+    }
+
+    public void sendOnGoingEmails(long id, Optional<Program> program) {
+        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
+
+        String message = "You can check your mentees by visiting the dashboard";
+        for (Mentor mentor : approvedMentors) {
+            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message);
+        }
+    }
+
+    public void sendMentorConfirmationEmails(long id, Optional<Program> program) {
+        List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
+
+        String message = "You can check your mentor by visiting the dashboard";
+        for (Mentee mentee : mentees) {
+            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message);
+        }
     }
 
     /**
