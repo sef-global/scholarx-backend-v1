@@ -21,4 +21,3 @@ deploy:
     repo: sef-global/scholarx
     branch: master
   skip_cleanup: true
-  
