@@ -36,6 +36,9 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
   @Column
   private String imageUrl;
 
+  @Column
+  private String linkedinUrl;
+
   @Column(length = 50)
   private String headline;
 
@@ -84,6 +87,14 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
 
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
+  }
+
+  public void setLinkedinUrl(String linkedinUrl) {
+    this.linkedinUrl = linkedinUrl;
+  }
+
+  public String getLinkedinUrl() {
+    return linkedinUrl;
   }
 
   public String getHeadline() {

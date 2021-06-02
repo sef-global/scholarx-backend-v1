@@ -60,6 +60,10 @@ public class ProfileService {
         profile.setUid(oAuth2UserInfo.getUuid());
         profile.setType(ProfileType.DEFAULT);
         profile.setImageUrl(oAuth2UserInfo.getImageUrl());
+//        TODO: set linkedin permissions to get r_basicprofile from the linkedin app
+        profile.setLinkedinUrl("https://www.linkedin.com/search/results/all/?keywords="+
+                oAuth2UserInfo.getFirstName()+"%20"+
+                oAuth2UserInfo.getLastName()+"&origin=TYPEAHEAD_ESCAPE_HATCH");
         Date now = Calendar.getInstance().getTime();
         profile.setCreatedAt(now);
         profile.setUpdatedAt(now);
