@@ -1,6 +1,23 @@
 language: java
-install: skip
+install: 
+  - git clone https://github.com/sef-global/scholarx-frontend
+  - cd scholarx-frontend
+  - git checkout master
+  - npm install
+  - npm run build
+  - cd ../
 before_script:
-  - bash scripts/setup.sh
+  - mkdir -p src/main/resources/static/dist
+  - cp -r scholarx-frontend/dist/. src/main/resources/static/dist/
+  - cp src/main/resources/static/dist/index.html src/main/resources/static/
+  - sudo rm -R scholarx-frontend
 script:
   - mvn clean install
+deploy:
+  provider: heroku
+  api_key: $HEROKU_API_KEY
+  app: sef-scholarx
+  on:
+    repo: sef-global/scholarx
+    branch: master
+  skip_cleanup: true
