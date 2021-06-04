@@ -11,6 +11,7 @@ before_script:
   - cp -r scholarx-frontend/dist/. src/main/resources/static/dist/
   - cp src/main/resources/static/dist/index.html src/main/resources/static/
   - sudo rm -R scholarx-frontend
+  - cp src/main/resources/application.yml.example src/main/resources/application.yml
 script:
   - mvn clean install
 deploy:
