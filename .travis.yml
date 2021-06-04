@@ -3,6 +3,7 @@ install:
   - git clone https://github.com/sef-global/scholarx-frontend
   - cd scholarx-frontend
   - git checkout master
+  - sed -i 's/webpack-dev-server --mode development/webpack-dev-server --mode production/' package.json
   - npm install
   - npm run build
   - cd ../
