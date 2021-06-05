@@ -5,10 +5,7 @@ import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.*;
 import org.sefglobal.scholarx.repository.*;
-import org.sefglobal.scholarx.util.EmailUtil;
-import org.sefglobal.scholarx.util.EnrolmentState;
-import org.sefglobal.scholarx.util.ProgramState;
-import org.sefglobal.scholarx.util.QuestionCategory;
+import org.sefglobal.scholarx.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +24,7 @@ public class ProgramService {
     private final MentorResponseRepository mentorResponseRepository;
 
     @Autowired
-    private EmailUtil emailUtil;
-
-    @Autowired
-    private EmailService emailService;
+    private ProgramUtil programUtil;
 
     public ProgramService(ProgramRepository programRepository,
                           ProfileRepository profileRepository,
@@ -133,16 +127,16 @@ public class ProgramService {
             try {
                 switch (program.get().getState().next()) {
                     case MENTEE_APPLICATION:
-                        sendMenteeApplicationEmails(id, program);
+                        programUtil.sendMenteeApplicationEmails(id, program);
                         break;
                     case MENTEE_SELECTION:
-                        sendMenteeSelectionEmails(id, program);
+                        programUtil.sendMenteeSelectionEmails(id, program);
                         break;
                     case ONGOING:
-                        sendOnGoingEmails(id, program);
+                        programUtil.sendOnGoingEmails(id, program);
                         break;
                     case MENTOR_CONFIRMATION:
-                        sendMentorConfirmationEmails(id, program);
+                        programUtil.sendMentorConfirmationEmails(id, program);
                         break;
                 }
             } catch (Exception ignored) {
@@ -160,43 +154,6 @@ public class ProgramService {
         ProgramState nextState = program.get().getState().next();
         program.get().setState(nextState);
         return programRepository.save(program.get());
-    }
-
-    public void sendMenteeApplicationEmails(long id, Optional<Program> program) {
-        List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
-
-        String message;
-        for (Mentor mentor : mentors) {
-            message = "You have been " + mentor.getState().name().toLowerCase();
-            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message);
-        }
-    }
-
-    public void sendMenteeSelectionEmails(long id, Optional<Program> program) {
-        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-
-        String message = "You can approve or reject your mentees by visiting the dashboard";
-        for (Mentor mentor : approvedMentors) {
-            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message);
-        }
-    }
-
-    public void sendOnGoingEmails(long id, Optional<Program> program) {
-        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-
-        String message = "You can check your mentees by visiting the dashboard";
-        for (Mentor mentor : approvedMentors) {
-            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message);
-        }
-    }
-
-    public void sendMentorConfirmationEmails(long id, Optional<Program> program) {
-        List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
-
-        String message = "You can check your mentor by visiting the dashboard";
-        for (Mentee mentee : mentees) {
-            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message);
-        }
     }
 
     /**
