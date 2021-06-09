@@ -11,13 +11,13 @@ public class EmailService {
     @Autowired
     private EmailUtil emailUtil;
 
-    public Email sendEmail(String email, String subject, String message){
-        Email emailObj = new Email();
-        emailObj.setEmail(email);
-        emailObj.setSubject(subject);
-        emailObj.setMessage(message);
-        emailUtil.sendSimpleMessage(emailObj);
+    public Email sendEmail(String emailAddress, String subject, String message){
+        Email email = new Email();
+        email.setEmail(emailAddress);
+        email.setSubject(subject);
+        email.setMessage(message);
+        emailUtil.sendSimpleMessage(email);
 
-        return emailObj;
+        return email;
     }
 }
