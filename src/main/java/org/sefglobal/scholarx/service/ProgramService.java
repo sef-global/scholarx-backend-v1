@@ -5,10 +5,7 @@ import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.*;
 import org.sefglobal.scholarx.repository.*;
-import org.sefglobal.scholarx.util.EmailUtil;
-import org.sefglobal.scholarx.util.EnrolmentState;
-import org.sefglobal.scholarx.util.ProgramState;
-import org.sefglobal.scholarx.util.QuestionCategory;
+import org.sefglobal.scholarx.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +24,7 @@ public class ProgramService {
     private final MentorResponseRepository mentorResponseRepository;
 
     @Autowired
-    private EmailUtil emailUtil;
+    private ProgramUtil programUtil;
 
     public ProgramService(ProgramRepository programRepository,
                           ProfileRepository profileRepository,
@@ -125,57 +122,31 @@ public class ProgramService {
      */
     public Program updateState(long id) throws ResourceNotFoundException {
         Optional<Program> program = programRepository.findById(id);
-        List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
-        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-        List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
 
         Thread thread = new Thread(() -> {
             try {
                 switch (program.get().getState().next()) {
                     case MENTEE_APPLICATION:
-                        for (Mentor mentor : mentors) {
-                            Email email = new Email();
-                            email.setEmail(mentor.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You have been " + mentor.getState().name().toLowerCase());
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        programUtil.sendMenteeApplicationEmails(id, program);
                         break;
                     case MENTEE_SELECTION:
-                        for (Mentor mentor : approvedMentors) {
-                            Email email = new Email();
-                            email.setEmail(mentor.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You can approve or reject your mentees by visiting the dashboard");
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        programUtil.sendMenteeSelectionEmails(id, program);
                         break;
                     case ONGOING:
-                        for (Mentor mentor : approvedMentors) {
-                            Email email = new Email();
-                            email.setEmail(mentor.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You can check your mentees by visiting the dashboard");
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        programUtil.sendOnGoingEmails(id, program);
                         break;
                     case MENTOR_CONFIRMATION:
-                        for (Mentee mentee : mentees) {
-                            Email email = new Email();
-                            email.setEmail(mentee.getProfile().getEmail());
-                            email.setSubject(program.get().getTitle());
-                            email.setMessage("You can check your mentor by visiting the dashboard");
-                            emailUtil.sendSimpleMessage(email);
-                        }
+                        programUtil.sendMentorConfirmationEmails(id, program);
                         break;
                 }
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         });
         thread.start();
 
         if (!program.isPresent()) {
             String msg = "Error, Program with id: " + id + " cannot be updated. " +
-                         "Program doesn't exist.";
+                    "Program doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }

@@ -33,3 +33,4 @@ build/
 
 ### Mac ###
 .DS_Store
+/src/main/resources/application.yml
