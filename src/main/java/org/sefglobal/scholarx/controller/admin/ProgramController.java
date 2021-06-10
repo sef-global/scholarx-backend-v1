@@ -2,6 +2,8 @@ package org.sefglobal.scholarx.controller.admin;
 
 import java.util.List;
 import javax.validation.Valid;
+
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
@@ -75,7 +77,8 @@ public class ProgramController {
     @ResponseStatus(HttpStatus.OK)
     public List<Question> addQuestions(@PathVariable long id,
                                        @PathVariable QuestionCategory category,
-                                       @RequestBody List<Question> questions) throws ResourceNotFoundException {
+                                       @RequestBody List<Question> questions)
+            throws ResourceNotFoundException, BadRequestException {
         return programService.addQuestions(id, category, questions);
     }
 }

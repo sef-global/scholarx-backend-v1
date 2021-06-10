@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.controller.admin;
 
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Question;
 import org.sefglobal.scholarx.service.QuestionService;
@@ -19,13 +20,14 @@ public class QuestionController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Question> editQuestions(@RequestBody List<Question> questions) throws ResourceNotFoundException {
+    public List<Question> editQuestions(@RequestBody List<Question> questions)
+            throws ResourceNotFoundException, BadRequestException {
         return questionService.editQuestions(questions);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteQuestion(@PathVariable long id) throws ResourceNotFoundException{
+    public void deleteQuestion(@PathVariable long id) throws ResourceNotFoundException, BadRequestException {
         questionService.deleteQuestion(id);
     }
 }

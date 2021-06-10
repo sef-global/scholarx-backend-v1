@@ -453,14 +453,23 @@ public class ProgramService {
      * @param questions which is the list of questions
      * @return {@link Question} Object list
      * @throws ResourceNotFoundException if the {@link Program} doesn't exist
+     * @throws BadRequestException if the {@link Program} is not in valid state
      */
-    public List<Question> addQuestions(long programId, QuestionCategory category, List<Question> questions) throws ResourceNotFoundException {
+    public List<Question> addQuestions(long programId, QuestionCategory category, List<Question> questions)
+            throws ResourceNotFoundException, BadRequestException {
         Optional<Program> program = programRepository.findById(programId);
         if (!program.isPresent()) {
             String msg = "Error, Program by id: " + programId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
+        if (!ProgramState.CREATED.equals(program.get().getState())) {
+            String msg = "Error, Unable to add question. " +
+                         "Program with id: " + programId + " is not in the valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+
         List<Question> processedQuestions = new ArrayList<>();
         for (Question q: questions) {
             q.setProgram(program.get());
