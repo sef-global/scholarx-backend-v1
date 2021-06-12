@@ -36,6 +36,7 @@ public class MenteeService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
+        menteeRepository.deleteById(id);
     }
 
     /**
