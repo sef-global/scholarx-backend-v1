@@ -102,7 +102,7 @@ public class IntrospectionServiceTest {
                 .existsById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> introspectionService.getMentoringPrograms(profileId));
+                () -> introspectionService.getMentoringPrograms(profileId, EnrolmentState.APPROVED));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Profile with id: 1 doesn't exist.");
@@ -113,12 +113,9 @@ public class IntrospectionServiceTest {
         doReturn(true)
                 .when(profileRepository)
                 .existsById(anyLong());
-        doReturn(new ArrayList<Mentor>())
-                .when(mentorRepository)
-                .findAllByProfileId(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> introspectionService.getMentoringPrograms(profileId));
+                () -> introspectionService.getMentoringPrograms(profileId, EnrolmentState.APPROVED));
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, User has not enrolled in any program as a mentor.");
