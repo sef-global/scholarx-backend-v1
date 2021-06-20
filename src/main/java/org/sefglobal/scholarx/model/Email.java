@@ -1,12 +1,14 @@
 package org.sefglobal.scholarx.model;
 
 import lombok.Data;
+import java.util.Map;
 
 @Data
 public class Email {
     private String emailAddress;
     private String subject;
     private String message;
+    private Map<String, Object> props;
 
     public String getEmail() {
         return emailAddress;
@@ -32,4 +34,11 @@ public class Email {
         this.message = message;
     }
 
+    public Map<String, Object> getProps() {
+        return props;
+    }
+
+    public void setProps(Map<String, Object> props) {
+        this.props = props;
+    }
 }
