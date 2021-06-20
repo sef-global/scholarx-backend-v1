@@ -9,6 +9,8 @@ import org.sefglobal.scholarx.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +25,7 @@ public class ProgramUtil {
     @Autowired
     private EmailService emailService;
 
-    public void sendMenteeApplicationEmails(long id, Optional<Program> program) {
+    public void sendMenteeApplicationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
 
         String message;
@@ -33,7 +35,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendMenteeSelectionEmails(long id, Optional<Program> program) {
+    public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
 
         String message = "You can approve or reject your mentees by visiting the dashboard";
@@ -42,7 +44,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendOnGoingEmails(long id, Optional<Program> program) {
+    public void sendOnGoingEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
 
         String message = "You can check your mentees by visiting the dashboard";
@@ -51,7 +53,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendMentorConfirmationEmails(long id, Optional<Program> program) {
+    public void sendMentorConfirmationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
 
         String message = "You can check your mentor by visiting the dashboard";
