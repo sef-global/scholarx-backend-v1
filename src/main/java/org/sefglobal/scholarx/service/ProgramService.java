@@ -343,11 +343,12 @@ public class ProgramService {
      * @param mentorResponses list of {@link MentorResponse}s to be updated
      * @return the updated list of {@link MentorResponse}
      * @throws ResourceNotFoundException if a mentor doesn't exist by the given profileId and programId
+     * @throws BadRequestException is thrown if the {@link Program} is not in the valid {@link ProgramState}
      */
     public List<MentorResponse> editMentorResponses(long programId,
                                                     long profileId,
                                                     List<MentorResponse> mentorResponses)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, BadRequestException {
         Optional<Mentor> mentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
         if (!mentor.isPresent()) {
             String msg = "Error, Mentor by profile id: " + profileId + " and " +
@@ -356,6 +357,14 @@ public class ProgramService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
+
+        if (!ProgramState.MENTOR_APPLICATION.equals(mentor.get().getProgram().getState())) {
+            String msg = "Error, Unable to edit mentor application. " +
+                    "Program with id: " + programId + " is not in the valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+
         List<MentorResponse> updatedMentorResponses = new ArrayList<>();
         for (MentorResponse response: mentorResponses) {
             MentorResponse queriedResponse = mentorResponseRepository.getOne(response.getId());

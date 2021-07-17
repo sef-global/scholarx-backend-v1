@@ -133,7 +133,7 @@ public class ProgramController {
           Authentication authentication,
           @RequestBody List<MentorResponse> responses
   )
-  throws ResourceNotFoundException{
+  throws ResourceNotFoundException, BadRequestException {
     Profile profile = (Profile) authentication.getPrincipal();
     return programService.editMentorResponses(id, profile.getId(), responses);
   }
