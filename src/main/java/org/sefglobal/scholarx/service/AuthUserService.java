@@ -67,11 +67,16 @@ public class AuthUserService extends DefaultOAuth2UserService {
 
     @SuppressWarnings("rawtypes")
     public void populateImageUrl(Map<String, Object> attributes) {
-        Map profilePictureObject = (Map<?, ?>) attributes.get("profilePicture");
-        Map imageMetaData = (Map<?, ?>) profilePictureObject.get("displayImage~");
-        List<?> elements = (List<?>) imageMetaData.get("elements");
-        List<?> identifiers = (List<?>) ((Map<?, ?>) elements.get(0)).get("identifiers");
-        Map image = (Map<?, ?>) identifiers.get(0);
-        attributes.put("imageUrl", image.get("identifier"));
+        if (attributes.get("profilePicture") != null) {
+            Map profilePictureObject = (Map<?, ?>) attributes.get("profilePicture");
+            Map imageMetaData = (Map<?, ?>) profilePictureObject.get("displayImage~");
+            List<?> elements = (List<?>) imageMetaData.get("elements");
+            List<?> identifiers = (List<?>) ((Map<?, ?>) elements.get(0)).get("identifiers");
+            Map image = (Map<?, ?>) identifiers.get(0);
+            attributes.put("imageUrl", image.get("identifier"));
+        } else {
+            // Default profile image (If user has no LinkedIn profile image)
+            attributes.put("imageUrl", "https://res.cloudinary.com/dsxobn1ln/image/upload/v1626966152/profile-pic_hvfryw.jpg");
+        }
     }
 }
