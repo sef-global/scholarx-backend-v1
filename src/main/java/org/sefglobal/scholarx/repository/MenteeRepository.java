@@ -21,6 +21,8 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
     List<Mentee> findAllByProgramIdAndProfileId(long programId, long profileId);
 
+    List<Mentee> findAllByProgramIdAndProfileIdAndState(long programId, long profileId, EnrolmentState state);
+
     List<Mentee> findAllByProgramIdAndProfileIdAndStateIn(long programId, long profileId, List<EnrolmentState> states);
 
     Optional<Mentee> findByProfileIdAndMentorId(long profileId, long mentorId);
@@ -28,6 +30,8 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
     List<Mentee> findAllByProfileId(long profileId);
 
     List<Mentee> findAllByProgramId(long id);
+
+    List<Mentee> findAllByProgramIdAndState(long programId, EnrolmentState state);
 
     @Modifying
     @Query(
@@ -52,4 +56,16 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
             nativeQuery = true
     )
     void removeAllByProgramIdAndProfileIdAndMentorIdNot(long programId, long profileId, long mentorId);
+
+    @Modifying
+    @Query(
+            value = "UPDATE " +
+                    "mentee " +
+                    "SET state = 'REMOVED' " +
+                    "WHERE profile_id = :profileId " +
+                    "AND program_id = :programId ",
+            nativeQuery = true
+    )
+    void removeAllByProgramIdAndProfileId(long programId, long profileId);
+
 }
