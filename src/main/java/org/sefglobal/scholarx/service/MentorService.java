@@ -93,7 +93,7 @@ public class MentorService {
      * @throws ResourceNotFoundException is thrown if the applying {@link Mentor} doesn't exist
      * @throws ResourceNotFoundException is thrown if the applying user's {@link Profile} doesn't exist
      * @throws BadRequestException is thrown if the applying {@link Mentor} is not in applicable state
-     * @throws BadRequestException is thrown if the applying {@link Mentor} is the same user
+     * @throws BadRequestException is thrown if the applying user is already a {@link Mentor}
      */
     public Mentee applyAsMentee(long mentorId, long profileId, Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
@@ -119,9 +119,12 @@ public class MentorService {
             throw new ResourceNotFoundException(msg);
         }
 
-        if (optionalMentor.get().getProfile().getId() == optionalProfile.get().getId()) {
+        Optional<Mentor> alreadyRegisteredMentor = mentorRepository
+                .findByProfileIdAndProgramId(profileId, optionalMentor.get().getProgram().getId());
+        if (alreadyRegisteredMentor.isPresent() &&
+                alreadyRegisteredMentor.get().getState().equals(EnrolmentState.APPROVED)) {
             String msg = "Error, Unable to apply as a mentee. " +
-                         "Mentor and mentee can't be the same person.";
+                         "Profile with id: " + profileId + " is already registered as a mentor.";
             log.error(msg);
             throw new BadRequestException(msg);
         }
