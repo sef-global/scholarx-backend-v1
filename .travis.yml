@@ -10,6 +10,7 @@ before_script:
   - mkdir -p src/main/resources/static
   - cp -r scholarx-frontend/dist/. src/main/resources/static/
   - sudo rm -R scholarx-frontend
+  - cp src/main/resources/application.yml.example src/main/resources/application.yml
 script:
   - mvn clean install
 deploy:
