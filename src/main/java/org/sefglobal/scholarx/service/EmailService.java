@@ -17,7 +17,7 @@ public class EmailService {
         this.emailUtil = emailUtil;
     }
 
-    public Email sendEmail(String emailAddress, String subject, String message) throws IOException, MessagingException {
+    public Email sendEmail(String emailAddress, String subject, String message, boolean showButton) throws IOException, MessagingException {
         Email email = new Email();
         email.setEmail(emailAddress);
         email.setSubject(subject);
@@ -27,6 +27,7 @@ public class EmailService {
         model.put("emailAddress", emailAddress);
         model.put("subject", subject);
         model.put("message", message);
+        model.put("showButton", showButton);
         email.setProps(model);
 
         emailUtil.sendSimpleMessage(email);
