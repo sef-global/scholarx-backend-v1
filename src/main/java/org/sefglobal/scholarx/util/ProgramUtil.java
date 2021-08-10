@@ -1,6 +1,5 @@
 package org.sefglobal.scholarx.util;
 
-import org.apache.commons.lang.StringUtils;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
@@ -9,11 +8,11 @@ import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ProgramUtil {
@@ -64,7 +63,7 @@ public class ProgramUtil {
 
     public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-        List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
+        List<Mentee> mentees = getMenteesWithoutDuplicatesByProgramId(id);
 
         // Notify mentors
         for (Mentor mentor : approvedMentors) {
@@ -104,12 +103,27 @@ public class ProgramUtil {
     }
 
     public void sendMentorConfirmationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
-        List<Mentee> mentees = menteeRepository.findAllByProgramId(id);
+        List<Mentee> mentees = getMenteesWithoutDuplicatesByProgramId(id);
 
         String message = "You can check your mentor by visiting the dashboard";
 
         for (Mentee mentee : mentees) {
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
+    }
+
+    /**
+     * Removes mentee duplicates
+     */
+    private List<Mentee> getMenteesWithoutDuplicatesByProgramId(long id) {
+        List<Mentee> output = new ArrayList<>();
+        List<Long> idList = new ArrayList<>();
+        for (Mentee mentee: menteeRepository.findAllByProgramId(id)) {
+            if (!idList.contains(mentee.getProfile().getId())) {
+                idList.add(mentee.getProfile().getId());
+                output.add(mentee);
+            }
+        }
+        return output;
     }
 }
