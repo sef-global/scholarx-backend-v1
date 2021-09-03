@@ -31,11 +31,12 @@ public class ProfileService {
         } else if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
-        Optional<Profile> profile = profileRepository.findByEmail(oAuth2UserInfo.getEmail());
+        Optional<Profile> profile = profileRepository.findByUid(oAuth2UserInfo.getUuid());
         if (profile.isPresent()) {
             profile.get().setFirstName(oAuth2UserInfo.getFirstName());
             profile.get().setLastName(oAuth2UserInfo.getLastName());
             profile.get().setImageUrl(oAuth2UserInfo.getImageUrl());
+            profile.get().setEmail(oAuth2UserInfo.getEmail());
             return profileRepository.save(profile.get());
         } else {
             return createProfile(oAuth2UserInfo);
