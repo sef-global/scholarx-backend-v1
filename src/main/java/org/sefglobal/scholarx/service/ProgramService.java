@@ -241,6 +241,7 @@ public class ProgramService {
      * @throws ResourceNotFoundException is thrown if the applying user's {@link Profile} doesn't exist
      * @throws BadRequestException is thrown if the applying {@link Program} is
      * not in the applicable {@link ProgramState}
+     * @throws BadRequestException is thrown if the applying user has already applied for the {@link Program}
      */
     public Mentor applyAsMentor(long programId, long profileId, List<MentorResponse> responses)
             throws ResourceNotFoundException, BadRequestException {
@@ -264,6 +265,14 @@ public class ProgramService {
                          "Profile with id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
+        }
+
+        Optional<Mentor> duplicateMentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
+        if (duplicateMentor.isPresent()) {
+            String msg = "Error, Unable to apply as a mentor. " +
+                         "Profile with id: " + profileId + " has already applied as a mentor for the selected program.";
+            log.error(msg);
+            throw new BadRequestException(msg);
         }
 
         Mentor mentor = new Mentor();
