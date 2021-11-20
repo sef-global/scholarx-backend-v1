@@ -11,6 +11,7 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
+import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
@@ -74,6 +75,7 @@ public class MentorServiceTest {
             throws ResourceNotFoundException, BadRequestException {
         final Mentor mentor = new Mentor();
         mentor.setState(EnrolmentState.APPROVED);
+        mentor.setProgram(new Program());
 
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
@@ -81,11 +83,17 @@ public class MentorServiceTest {
         doReturn(Optional.of(profile))
                 .when(profileRepository)
                 .findById(anyLong());
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+        doReturn(Optional.empty())
+                .when(menteeRepository)
+                .findByProfileIdAndMentorId(anyLong(), anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
 
-        Mentee savedMentee = mentorService.applyAsMentee(programId, profileId, mentee);
+        Mentee savedMentee = mentorService.applyAsMentee(mentorId, profileId, mentee);
         assertThat(savedMentee).isNotNull();
     }
 
