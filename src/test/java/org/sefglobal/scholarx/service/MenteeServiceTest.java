@@ -27,9 +27,7 @@ public class MenteeServiceTest {
     @InjectMocks
     private MenteeService menteeService;
     private final Long menteeId = 1L;
-    private final Mentor mentor =
-            new Mentor("Sample application",
-                       "Sample prerequisites");
+    private final Mentor mentor = new Mentor();
 
     @Test
     void deleteMentee_withUnavailableData_thenThrowResourceNotFound() {
