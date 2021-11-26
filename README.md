@@ -4,25 +4,25 @@ Backend of the ScholarX project
 
 ## Setting up the project for development
 
-###Prerequisites
+### Prerequisites
 * Java 
 * Maven
 * MySQL
 * Linkedin Social Login App
 * Gmail Account with an App Password 
 
-###Setup Linkedin Social Login App
+### Setup Linkedin Social Login App
 
 1. Create a new Linkedin App ([help?](https://docs.ultimatemember.com/article/142-social-login-linkedin-app-setup)) 
 2. Click on `Auth` tab and add `http://localhost:8080/login/oauth2/code/linkedin` as an authorised redirect URL
 3. Make Sure you have properly added the `Sign in with Linkedin product` under products tab
 
-###Setup a gmail account with an app password
+### Setup a gmail account with an app password
 1. Create a new gmail account if you don't have one already
 2. Enable Two Factor Authorisation 
 3. Generate a new `App Password` ([help?](https://support.google.com/mail/answer/185833?hl=en-GB))  
 
-###Run Locally
+### Run Locally
 1. Fork and clone the repository
 ```shell
 git clone https://github.com/<your profile name>/scholarx
