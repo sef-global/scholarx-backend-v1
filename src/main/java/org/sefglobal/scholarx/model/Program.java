@@ -36,9 +36,6 @@ public class Program extends BaseScholarxModel {
   private ProgramState state;
 
   @OneToMany(mappedBy = "program")
-  private List<Question> questions;
-
-  @OneToMany(mappedBy = "program")
   private List<EnrolledUser> enrolledUsers = new ArrayList<>();
 
   public Program() {}

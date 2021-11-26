@@ -7,7 +7,6 @@ import org.sefglobal.scholarx.controller.admin.ProgramController;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
-import org.sefglobal.scholarx.model.MentorResponse;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.ProgramService;
@@ -191,7 +190,7 @@ public class ProgramControllerTest {
 		mockMvc.perform(post("/api/programs/{id}/mentor", programId)
 				.with(authentication(getOauthAuthentication()))
 				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(new ArrayList<MentorResponse>())))
+				.content(objectMapper.writeValueAsString(new Mentor())))
 				.andExpect(status().isCreated());
 	}
 

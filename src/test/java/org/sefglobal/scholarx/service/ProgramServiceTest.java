@@ -33,8 +33,6 @@ public class ProgramServiceTest {
     @Mock
     private MentorRepository mentorRepository;
     @Mock
-    private MentorResponseRepository mentorResponseRepository;
-    @Mock
     private MenteeRepository menteeRepository;
     @InjectMocks
     private ProgramService programService;
@@ -46,7 +44,6 @@ public class ProgramServiceTest {
                     "https://scholarx/SCHOLARX-2020/home", ProgramState.CREATED);
     private final Mentor mentor = new Mentor();
     private final Profile profile = new Profile();
-    private final List<MentorResponse> mentorResponses = new ArrayList<>();
 
     @Test
     void updateState_withValidData_thenReturnUpdatedData()
@@ -163,7 +160,7 @@ public class ProgramServiceTest {
                 .when(mentorRepository)
                 .save(any(Mentor.class));
 
-        Mentor savedMentor = programService.applyAsMentor(programId, profileId, mentorResponses);
+        Mentor savedMentor = programService.applyAsMentor(programId, profileId, mentor);
         assertThat(savedMentor).isNotNull();
     }
 
@@ -174,7 +171,7 @@ public class ProgramServiceTest {
                 .findById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.applyAsMentor(programId, profileId, mentorResponses));
+                () -> programService.applyAsMentor(programId, profileId, mentor));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Unable to apply as a mentor. " +
@@ -188,7 +185,7 @@ public class ProgramServiceTest {
                 .findById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.applyAsMentor(programId, profileId, mentorResponses));
+                () -> programService.applyAsMentor(programId, profileId, mentor));
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Unable to apply as a mentor. " +
@@ -211,7 +208,7 @@ public class ProgramServiceTest {
                 .findById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.applyAsMentor(programId, profileId, mentorResponses));
+                () -> programService.applyAsMentor(programId, profileId, mentor));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Unable to apply as a mentor. " +
@@ -230,38 +227,6 @@ public class ProgramServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Mentor by profile id: 1 " +
                             "and program id: 1 doesn't exist.");
-    }
-
-    @Test
-    void editMentorResponses_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException, BadRequestException {
-        MentorResponse mentorResponse = new MentorResponse();
-        mentorResponse.setId(new MentorResponseId());
-        program.setState(ProgramState.MENTOR_APPLICATION);
-        mentor.setProgram(program);
-        doReturn(Optional.of(mentor))
-                .when(mentorRepository)
-                .findByProfileIdAndProgramId(anyLong(), anyLong());
-        doReturn(mentorResponses)
-                .when(mentorResponseRepository)
-                .saveAll(anyList());
-
-        List<MentorResponse> savedMentorResponses = programService.editMentorResponses(profileId, programId, mentorResponses);
-        assertThat(savedMentorResponses).isNotNull();
-    }
-
-    @Test
-    void editMentorResponses_withUnavailableData_thenThrowResourceNotFound() {
-        doReturn(Optional.empty())
-                .when(mentorRepository)
-                .findByProfileIdAndProgramId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> programService.editMentorResponses(profileId, programId, mentorResponses));
-        assertThat(thrown)
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentor by profile id: 1 and program id: 1 cannot be found. " +
-                            "Mentor doesn't exist.");
     }
 
     @Test

@@ -20,8 +20,6 @@ public class ProgramService {
     private final ProfileRepository profileRepository;
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
-    private final QuestionRepository questionRepository;
-    private final MentorResponseRepository mentorResponseRepository;
 
     @Autowired
     private ProgramUtil programUtil;
@@ -29,15 +27,11 @@ public class ProgramService {
     public ProgramService(ProgramRepository programRepository,
                           ProfileRepository profileRepository,
                           MentorRepository mentorRepository,
-                          MenteeRepository menteeRepository,
-                          QuestionRepository questionRepository,
-                          MentorResponseRepository mentorResponseRepository) {
+                          MenteeRepository menteeRepository) {
         this.programRepository = programRepository;
         this.profileRepository = profileRepository;
         this.mentorRepository = mentorRepository;
         this.menteeRepository = menteeRepository;
-        this.questionRepository = questionRepository;
-        this.mentorResponseRepository = mentorResponseRepository;
     }
 
     /**
@@ -230,11 +224,11 @@ public class ProgramService {
     }
 
     /**
-     * Create new {@link Mentor} and Record new {@link MentorResponse} list
+     * Create new {@link Mentor}
      *
      * @param programId which is the program id for the requesting {@link Program}
      * @param profileId which is the profile id of the applying user's {@link Profile}
-     * @param responses which holds the responses to be added
+     * @param mentor which holds the mentor details
      * @return the created {@link Mentor}
      *
      * @throws ResourceNotFoundException is thrown if the applying {@link Program} doesn't exist
@@ -243,7 +237,7 @@ public class ProgramService {
      * not in the applicable {@link ProgramState}
      * @throws BadRequestException is thrown if the applying user has already applied for the {@link Program}
      */
-    public Mentor applyAsMentor(long programId, long profileId, List<MentorResponse> responses)
+    public Mentor applyAsMentor(long programId, long profileId, Mentor mentor)
             throws ResourceNotFoundException, BadRequestException {
         Optional<Program> optionalProgram = programRepository.findById(programId);
         if (!optionalProgram.isPresent()) {
@@ -275,24 +269,11 @@ public class ProgramService {
             throw new BadRequestException(msg);
         }
 
-        Mentor mentor = new Mentor();
-        mentor.setProfile(optionalProfile.get());
-        mentor.setProgram(optionalProgram.get());
-        mentor.setState(EnrolmentState.PENDING);
-        Mentor savedMentor = mentorRepository.save(mentor);
-        List<MentorResponse> processedResponses = new ArrayList<>();
-        for (MentorResponse r: responses) {
-            Question question = questionRepository.getOne(r.getQuestion().getId());
-            MentorResponse updatedResponse = new MentorResponse(question, savedMentor, r.getResponse());
-            processedResponses.add(updatedResponse);
-        }
-        try {
-            mentorResponseRepository.saveAll(processedResponses);
-        } catch (Exception e) {
-            mentorRepository.delete(savedMentor);
-            throw e;
-        }
-        return savedMentor;
+        Mentor savedMentor = new Mentor();
+        savedMentor.setProfile(optionalProfile.get());
+        savedMentor.setProgram(optionalProgram.get());
+        savedMentor.setState(EnrolmentState.PENDING);
+        return mentorRepository.save(savedMentor);
     }
 
     /**
@@ -314,83 +295,6 @@ public class ProgramService {
             throw new ResourceNotFoundException(msg);
         }
         return optionalMentor.get();
-    }
-
-    /**
-     * Retrieves the {@link MentorResponse} List of a {@link Mentor}
-     *
-     * @param programId which is the Id of the {@link Program}
-     * @param profileId which is the profile Id of the {@link Mentor}
-     * @return {@link MentorResponse} list
-     * @throws ResourceNotFoundException if a mentor doesn't exist by the given programId and profileId
-     */
-    public List<MentorResponse> getMentorResponses(long programId, long profileId) throws ResourceNotFoundException {
-        Optional<Mentor> mentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
-        if (!mentor.isPresent()) {
-            String msg = "Error, Mentor by profile id: " + profileId + " and " +
-                    "program id: " + programId + " cannot be found. " +
-                    "Mentor doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-        return mentorResponseRepository.getAllByMentorId(mentor.get().getId());
-    }
-
-    /**
-     * Retrives the {@link MentorResponse} List of a {@link Mentor}
-     *
-     * @param mentorId which is the id of the {@link Mentor}
-     * @return {@link MentorResponse} list
-     * @throws ResourceNotFoundException if a mentor doesn't exist by the given mentorId
-     */
-    public List<MentorResponse> getMentorResponses(long mentorId) throws ResourceNotFoundException {
-        Optional<Mentor> mentor = mentorRepository.findById(mentorId);
-        if (!mentor.isPresent()) {
-            String msg = "Error, Mentor by mentor id: " + mentorId + " cannot be found. " +
-                    "Mentor doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-        return mentorResponseRepository.getAllByMentorId(mentor.get().getId());
-    }
-
-    /**
-     * Update the application question responses of a {@link Mentor}
-     *
-     * @param programId which is the id of the program
-     * @param profileId which is the profile id of the {@link Mentor}
-     * @param mentorResponses list of {@link MentorResponse}s to be updated
-     * @return the updated list of {@link MentorResponse}
-     * @throws ResourceNotFoundException if a mentor doesn't exist by the given profileId and programId
-     * @throws BadRequestException is thrown if the {@link Program} is not in the valid {@link ProgramState}
-     */
-    public List<MentorResponse> editMentorResponses(long programId,
-                                                    long profileId,
-                                                    List<MentorResponse> mentorResponses)
-            throws ResourceNotFoundException, BadRequestException {
-        Optional<Mentor> mentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
-        if (!mentor.isPresent()) {
-            String msg = "Error, Mentor by profile id: " + profileId + " and " +
-                    "program id: " + programId + " cannot be found. " +
-                    "Mentor doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-
-        if (!ProgramState.MENTOR_APPLICATION.equals(mentor.get().getProgram().getState())) {
-            String msg = "Error, Unable to edit mentor application. " +
-                    "Program with id: " + programId + " is not in the valid state.";
-            log.error(msg);
-            throw new BadRequestException(msg);
-        }
-
-        List<MentorResponse> updatedMentorResponses = new ArrayList<>();
-        for (MentorResponse response: mentorResponses) {
-            MentorResponse queriedResponse = mentorResponseRepository.getOne(response.getId());
-            queriedResponse.setResponse(response.getResponse());
-            updatedMentorResponses.add(queriedResponse);
-        }
-        return mentorResponseRepository.saveAll(updatedMentorResponses);
     }
 
     /**
@@ -453,57 +357,5 @@ public class ProgramService {
         String msg = "Error, Mentee is not approved by any mentor yet.";
         log.error(msg);
         throw new NoContentException(msg);
-    }
-
-    /**
-     * Retrieves the {@link Question} list for a given {@link Program} and a {@link QuestionCategory}
-     *
-     * @param programId which is the if of the {@link Program}
-     * @param category which is the identifier of if the required set of questions are mentor ones or mentee ones
-     * @return {@link Question} Object list
-     * @throws ResourceNotFoundException if the {@link Program} doesn't exist
-     */
-    public List<Question> getQuestions(long programId, QuestionCategory category) throws ResourceNotFoundException {
-        Optional<Program> program = programRepository.findById(programId);
-        if (!program.isPresent()) {
-            String msg = "Error, Program by id: " + programId + " doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-        return questionRepository.getAllByCategoryAndProgramId(category, program.get().getId());
-    }
-
-    /**
-     *Adds new {@link Question} objects to the {@link Program} mentor/mentee application forms
-     *
-     * @param programId which is the id of the {@link Program}
-     * @param category which is the identifier of whether the question is a {@link Mentor} one or a {@link Mentee} one
-     * @param questions which is the list of questions
-     * @return {@link Question} Object list
-     * @throws ResourceNotFoundException if the {@link Program} doesn't exist
-     * @throws BadRequestException if the {@link Program} is not in valid state
-     */
-    public List<Question> addQuestions(long programId, QuestionCategory category, List<Question> questions)
-            throws ResourceNotFoundException, BadRequestException {
-        Optional<Program> program = programRepository.findById(programId);
-        if (!program.isPresent()) {
-            String msg = "Error, Program by id: " + programId + " doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-        if (!ProgramState.CREATED.equals(program.get().getState())) {
-            String msg = "Error, Unable to add question. " +
-                         "Program with id: " + programId + " is not in the valid state.";
-            log.error(msg);
-            throw new BadRequestException(msg);
-        }
-
-        List<Question> processedQuestions = new ArrayList<>();
-        for (Question q: questions) {
-            q.setProgram(program.get());
-            q.setCategory(category);
-            processedQuestions.add(q);
-        }
-        return questionRepository.saveAll(processedQuestions);
     }
 }
