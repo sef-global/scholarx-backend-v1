@@ -13,9 +13,6 @@ import java.util.List;
 @JsonIgnoreProperties({"createdAt", "updatedAt", "mentees"})
 public class Mentor extends EnrolledUser {
 
-    @OneToMany(mappedBy = "mentor")
-    private List<MentorResponse> mentorResponses;
-
     public Mentor() {
     }
 
