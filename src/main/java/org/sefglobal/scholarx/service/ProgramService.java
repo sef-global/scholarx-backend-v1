@@ -324,7 +324,7 @@ public class ProgramService {
         }
         List<Mentor> mentorList = new ArrayList<>();
         for (Mentee mentee : menteeList) {
-            mentorList.add(mentee.getMentor());
+            mentorList.add(mentee.getAppliedMentor());
         }
         return mentorList;
     }
@@ -340,18 +340,16 @@ public class ProgramService {
      */
     public Mentor getSelectedMentor(long programId, long profileId)
             throws ResourceNotFoundException, NoContentException {
-        List<Mentee> menteeList = menteeRepository
-                .findAllByProgramIdAndProfileId(programId, profileId);
-        if (menteeList.isEmpty()) {
+        Optional<Mentee> optionalMentee = menteeRepository
+                .findByProgramIdAndProfileId(programId, profileId);
+        if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by program id: " + programId + " and " +
                          "profile id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
-        for (Mentee mentee : menteeList) {
-            if (EnrolmentState.APPROVED.equals(mentee.getState())) {
-                return mentee.getMentor();
-            }
+        if (EnrolmentState.APPROVED.equals(optionalMentee.get().getState())) {
+            return optionalMentee.get().getAssignedMentor();
         }
 
         String msg = "Error, Mentee is not approved by any mentor yet.";
