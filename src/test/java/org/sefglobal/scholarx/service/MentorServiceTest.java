@@ -40,8 +40,7 @@ public class MentorServiceTest {
     private final Long profileId = 1L;
     private final Mentor mentor = new Mentor();
     private final Profile profile = new Profile();
-    private final Mentee mentee =
-            new Mentee("http://submission.url/");
+    private final Mentee mentee = new Mentee();
 
     @Test
     void getMentorById_withUnavailableData_thenThrowResourceNotFound() {
@@ -88,7 +87,7 @@ public class MentorServiceTest {
                 .findByProfileIdAndProgramId(anyLong(), anyLong());
         doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
@@ -179,10 +178,10 @@ public class MentorServiceTest {
     void updateMenteeData_withValidData_thenReturnUpdatedData()
             throws ResourceNotFoundException, BadRequestException {
         mentee.setState(EnrolmentState.PENDING);
-        mentee.setMentor(mentor);
+        mentee.setAppliedMentor(mentor);
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
@@ -195,7 +194,7 @@ public class MentorServiceTest {
     void updateMenteeData_withUnavailableData_thenThrowResourceNotFound() {
         doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
@@ -210,7 +209,7 @@ public class MentorServiceTest {
         mentee.setState(EnrolmentState.APPROVED);
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
@@ -224,7 +223,7 @@ public class MentorServiceTest {
     void getLoggedInMentee_withUnavailableData_thenThrowNoContent() {
         doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> mentorService.getLoggedInMentee(mentorId, profileId));

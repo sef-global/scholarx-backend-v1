@@ -34,8 +34,11 @@ public class Mentor extends EnrolledUser {
     @Column
     private int slots;
 
-    @OneToMany(mappedBy = "mentor")
-    private List<Mentee> mentees = new ArrayList<>();
+    @OneToMany(mappedBy = "assignedMentor")
+    private List<Mentee> assignedMentees = new ArrayList<>();
+
+    @OneToMany(mappedBy = "appliedMentor")
+    private List<Mentee> appliedMentees = new ArrayList<>();
 
     public MentorCategory getCategory() {
         return category;
@@ -85,11 +88,19 @@ public class Mentor extends EnrolledUser {
         this.slots = slots;
     }
 
-    public List<Mentee> getMentees() {
-        return mentees;
+    public List<Mentee> getAssignedMentees() {
+        return assignedMentees;
     }
 
-    public void setMentees(List<Mentee> mentees) {
-        this.mentees = mentees;
+    public void setAssignedMentees(List<Mentee> assignedMentees) {
+        this.assignedMentees = assignedMentees;
+    }
+
+    public List<Mentee> getAppliedMentees() {
+        return appliedMentees;
+    }
+
+    public void setAppliedMentees(List<Mentee> appliedMentees) {
+        this.appliedMentees = appliedMentees;
     }
 }

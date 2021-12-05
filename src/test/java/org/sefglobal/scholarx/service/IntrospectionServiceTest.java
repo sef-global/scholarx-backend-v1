@@ -41,8 +41,7 @@ public class IntrospectionServiceTest {
     private final long profileId = 1L;
     private final long mentorId = 1L;
     private final Mentor mentor = new Mentor();
-    private final Mentee mentee =
-            new Mentee("http://submission.url/");
+    private final Mentee mentee = new Mentee();
 
     @Test
     void getLoggedInUser_withUnavailableData_thenThrowResourceNotFound() {
@@ -162,7 +161,7 @@ public class IntrospectionServiceTest {
                 .findById(anyLong());
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
 
         Mentee savedMentee = introspectionService.confirmMentor(mentorId, profileId);
         assertThat(savedMentee).isNotNull();
@@ -189,7 +188,7 @@ public class IntrospectionServiceTest {
                 .findById(anyLong());
         doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> introspectionService.confirmMentor(mentorId, profileId));
@@ -206,7 +205,7 @@ public class IntrospectionServiceTest {
                 .findById(anyLong());
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
+                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> introspectionService.confirmMentor(mentorId, profileId));

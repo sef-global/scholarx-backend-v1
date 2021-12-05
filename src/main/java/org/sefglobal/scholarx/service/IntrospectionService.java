@@ -142,7 +142,7 @@ public class IntrospectionService {
      * @param profileId    which is the id of the {@link Profile}
      * @param menteeStates which is the list of states that {@link Mentee} objects should be
      *                     filtered from
-     * @return {@link List} of {@link Mentee} objects
+     * @return {@link List} of {@link Mentee} objects of a {@link Mentor}
      *
      * @throws ResourceNotFoundException if the user doesn't exist
      * @throws NoContentException        if {@link Mentor} objects doesn't exist
@@ -160,10 +160,10 @@ public class IntrospectionService {
             throw new ResourceNotFoundException(msg);
         }
         if (menteeStates == null || menteeStates.isEmpty()) {
-            mentees = optionalMentor.get().getMentees();
+            mentees = optionalMentor.get().getAssignedMentees();
         } else {
             mentees = menteeRepository
-                    .findAllByMentorIdAndStateIn(optionalMentor.get().getId(), menteeStates);
+                    .findAllByAssignedMentorIdAndStateIn(optionalMentor.get().getId(), menteeStates);
         }
 
         if (mentees.isEmpty()) {
@@ -194,7 +194,7 @@ public class IntrospectionService {
             throw new ResourceNotFoundException(msg);
         }
 
-        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndMentorId(profileId, mentorId);
+        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
         if (!optionalMentee.isPresent()) {
             String msg = "Error, User with id: " + profileId + " haven't applied for " +
                          "mentor by id: " + mentorId + ".";

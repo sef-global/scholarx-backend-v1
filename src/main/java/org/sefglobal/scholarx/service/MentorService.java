@@ -130,7 +130,7 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
 
-        Optional<Mentee> duplicateMentee = menteeRepository.findByProfileIdAndMentorId(profileId, mentorId);
+        Optional<Mentee> duplicateMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
         if (duplicateMentee.isPresent()) {
             String msg = "Error, Unable to apply as a mentee. " +
                          "Profile with id: " + profileId + " has already applied for the selected mentor.";
@@ -140,13 +140,18 @@ public class MentorService {
 
         mentee.setProfile(optionalProfile.get());
         mentee.setProgram(optionalMentor.get().getProgram());
-        mentee.setMentor(optionalMentor.get());
+        mentee.setAppliedMentor(optionalMentor.get());
+        mentee.setCourse(mentee.getCourse());
+        mentee.setUniversity(mentee.getUniversity());
+        mentee.setYear(mentee.getYear());
+        mentee.setIntent(mentee.getIntent());
+        mentee.setReasonForChoice(mentee.getReasonForChoice());
         mentee.setState(EnrolmentState.PENDING);
         return menteeRepository.save(mentee);
     }
 
     /**
-     * Retrieves all the {@link Mentee} objects of a {@link Mentor}
+     * Retrieves all the Assigned {@link Mentee} objects of a {@link Mentor}
      *
      * @param mentorId which is the Mentor id of the {@link Mentor}
      * @param state    which is the state of the {@link Mentee} objects to be filtered
@@ -169,9 +174,9 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
         if (!state.isPresent()){
-            return optionalMentor.get().getMentees();
+            return optionalMentor.get().getAssignedMentees();
         }
-        return menteeRepository.findAllByMentorIdAndState(mentorId,state.get());
+        return menteeRepository.findAllByAssignedMentorIdAndState(mentorId,state.get());
     }
 
     /**
@@ -187,7 +192,7 @@ public class MentorService {
      */
     public Mentee updateMenteeData(long profileId, long mentorId, Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
-        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndMentorId(profileId, mentorId);
+        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by profile id: " + profileId + " and " +
                          "mentor id: " + mentorId + " cannot be updated. " +
@@ -197,15 +202,17 @@ public class MentorService {
         }
 
         Mentee existingMentee = optionalMentee.get();
-        if (!mentee.getSubmissionUrl().isEmpty()) {
-            if (EnrolmentState.PENDING.equals(existingMentee.getState())) {
-                existingMentee.setSubmissionUrl(mentee.getSubmissionUrl());
-            } else {
-                String msg = "Error, Application cannot be updated. " +
-                             "Mentee is not in a valid state.";
-                log.error(msg);
-                throw new BadRequestException(msg);
-            }
+        if (EnrolmentState.PENDING.equals(existingMentee.getState())) {
+            existingMentee.setCourse(mentee.getCourse());
+            existingMentee.setIntent(mentee.getIntent());
+            existingMentee.setUniversity(mentee.getUniversity());
+            existingMentee.setYear(mentee.getYear());
+            existingMentee.setReasonForChoice(mentee.getReasonForChoice());
+        } else {
+            String msg = "Error, Application cannot be updated. " +
+                         "Mentee is not in a valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
         }
         return menteeRepository.save(existingMentee);
     }
@@ -221,7 +228,7 @@ public class MentorService {
      */
     public Mentee getLoggedInMentee(long mentorId, long profileId)
             throws NoContentException {
-        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndMentorId(profileId, mentorId);
+        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
         if (!optionalMentee.isPresent()) {
             String msg = "Error, User by profile id: " + profileId + " hasn't applied for " +
                          "mentor with id: " + mentorId + ".";
