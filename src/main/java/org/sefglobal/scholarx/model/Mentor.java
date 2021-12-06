@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "mentor")
-@JsonIgnoreProperties({"createdAt", "updatedAt", "mentees"})
+@JsonIgnoreProperties({"createdAt", "updatedAt", "assignedMentees", "appliedMentees"})
 public class Mentor extends EnrolledUser {
 
     public Mentor() {
