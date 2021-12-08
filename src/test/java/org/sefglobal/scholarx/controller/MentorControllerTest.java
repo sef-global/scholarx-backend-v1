@@ -39,9 +39,7 @@ public class MentorControllerTest {
 	@MockBean
 	private MentorService mentorService;
 	private final Long mentorId = 1L;
-	private final Mentee mentee =
-			new Mentee("http://scholarx/SCHOLARX-2020/submission");
-	private final Profile profile = new Profile();
+	private final Mentee mentee = new Mentee();
 
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();

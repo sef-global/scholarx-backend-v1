@@ -245,9 +245,9 @@ public class ProgramServiceTest {
 
     @Test
     void getSelectedMentorOfMentee_withUnavailableData_thenThrowResourceNotFound() {
-        doReturn(new ArrayList<>())
+        doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> programService.getSelectedMentor(programId, profileId));
@@ -259,11 +259,10 @@ public class ProgramServiceTest {
 
     @Test
     void getSelectedMentorOfMentee_withUnavailableData_thenThrowNoContent() {
-        List<Mentee> mentees = new ArrayList<>();
-        mentees.add(new Mentee("SubmissionURL"));
-        doReturn(mentees)
+        Mentee mentee = new Mentee();
+        doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> programService.getSelectedMentor(programId, profileId));
