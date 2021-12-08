@@ -2,6 +2,7 @@ package org.sefglobal.scholarx.service;
 
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.exception.UnauthorizedException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
@@ -43,15 +44,17 @@ public class MenteeService {
      * Update a {@link EnrolmentState} of a {@link Mentee} to Approved or Rejected
      *
      * @param menteeId   which is the {@link Mentee} to be updated
+     * @param profileId  which is the profile identifier of the requesting user
      * @param isApproved which states whether the {@link Mentee} to be approved or rejected
      * @return the updated {@link Mentee}
      *
      * @throws ResourceNotFoundException is thrown if the {@link Mentee} doesn't exist
+     * @throws UnauthorizedException     is thrown if the requesting user is not the assigned mentor
      * @throws BadRequestException       is thrown if the {@link Mentee} is removed
      * @throws BadRequestException       is thrown if the {@link Boolean} is null
      */
-    public Mentee approveOrRejectMentee(long menteeId, Boolean isApproved)
-            throws ResourceNotFoundException, BadRequestException {
+    public Mentee approveOrRejectMentee(long menteeId, long profileId, Boolean isApproved)
+            throws ResourceNotFoundException, BadRequestException, UnauthorizedException {
         if (null == isApproved){
             String msg = "Error, Value cannot be null.";
             log.error(msg);
@@ -63,6 +66,14 @@ public class MenteeService {
                          "Mentee with id: " + menteeId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
+        }
+        long assignedMentorProfileId = optionalMentee.get().getAssignedMentor().getProfile().getId();
+        if (assignedMentorProfileId != profileId) {
+            String msg = "Error, Mentee cannot be approved/rejected. " +
+                         "Mentee with id: " + menteeId + " is not a mentee " +
+                         "of mentor with profile id: " + profileId + ".";
+            log.error(msg);
+            throw new UnauthorizedException(msg);
         }
         if (EnrolmentState.REMOVED.equals(optionalMentee.get().getState())) {
             String msg = "Error, Mentee cannot be approved/rejected. " +

@@ -7,8 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.exception.UnauthorizedException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
+import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
 
@@ -27,6 +29,7 @@ public class MenteeServiceTest {
     @InjectMocks
     private MenteeService menteeService;
     private final Long menteeId = 1L;
+    private final Long profileId = 1L;
     private final Mentor mentor = new Mentor();
 
     @Test
@@ -45,9 +48,14 @@ public class MenteeServiceTest {
 
     @Test
     void approveOrRejectMentee_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException, BadRequestException {
+            throws ResourceNotFoundException, BadRequestException, UnauthorizedException {
         final Mentee mentee = new Mentee();
         mentee.setState(EnrolmentState.PENDING);
+        Profile profile = new Profile();
+        profile.setId(profileId);
+        mentor.setProfile(profile);
+        mentee.setAssignedMentor(mentor);
+
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
                 .findById(anyLong());
@@ -55,7 +63,7 @@ public class MenteeServiceTest {
                 .when(menteeRepository)
                 .save(any(Mentee.class));
 
-        Mentee savedMentee = menteeService.approveOrRejectMentee(menteeId, true);
+        Mentee savedMentee = menteeService.approveOrRejectMentee(menteeId, profileId, true);
         assertThat(savedMentee).isNotNull();
         assertThat(savedMentee.getState()).isEqualTo(EnrolmentState.APPROVED);
     }
@@ -67,7 +75,7 @@ public class MenteeServiceTest {
                 .findById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> menteeService.approveOrRejectMentee(menteeId, true));
+                () -> menteeService.approveOrRejectMentee(menteeId, profileId, true));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Mentee cannot be approved/rejected. " +
@@ -75,15 +83,40 @@ public class MenteeServiceTest {
     }
 
     @Test
-    void approveOrRejectMentee_withUnsuitableData_thenThrowBadRequest() {
+    void approveOrRejectMentee_withUnsuitableData_thenThrowUnauthorized() {
         final Mentee mentee = new Mentee();
-        mentee.setState(EnrolmentState.REMOVED);
+        mentee.setState(EnrolmentState.PENDING);
+        mentor.setProfile(new Profile());
+        mentee.setAssignedMentor(mentor);
+
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
                 .findById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> menteeService.approveOrRejectMentee(menteeId, true));
+                () -> menteeService.approveOrRejectMentee(menteeId, profileId, true));
+        assertThat(thrown)
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessage("Error, Mentee cannot be approved/rejected. " +
+                            "Mentee with id: 1 is not a mentee of " +
+                            "mentor with profile id: 1.");
+    }
+
+    @Test
+    void approveOrRejectMentee_withUnsuitableData_thenThrowBadRequest() {
+        final Mentee mentee = new Mentee();
+        mentee.setState(EnrolmentState.REMOVED);
+        Profile profile = new Profile();
+        profile.setId(profileId);
+        mentor.setProfile(profile);
+        mentee.setAssignedMentor(mentor);
+
+        doReturn(Optional.of(mentee))
+                .when(menteeRepository)
+                .findById(anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> menteeService.approveOrRejectMentee(menteeId, profileId, true));
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Mentee cannot be approved/rejected. " +
