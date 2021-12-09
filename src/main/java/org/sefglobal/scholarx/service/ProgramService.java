@@ -272,6 +272,12 @@ public class ProgramService {
         Mentor savedMentor = new Mentor();
         savedMentor.setProfile(optionalProfile.get());
         savedMentor.setProgram(optionalProgram.get());
+        savedMentor.setCategory(mentor.getCategory());
+        savedMentor.setBio(mentor.getBio());
+        savedMentor.setExpertise(mentor.getExpertise());
+        savedMentor.setInstitution(mentor.getInstitution());
+        savedMentor.setPosition(mentor.getPosition());
+        savedMentor.setSlots(mentor.getSlots());
         savedMentor.setState(EnrolmentState.PENDING);
         return mentorRepository.save(savedMentor);
     }
