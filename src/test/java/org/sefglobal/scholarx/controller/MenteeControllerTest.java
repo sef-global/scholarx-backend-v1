@@ -4,10 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.exception.UnauthorizedException;
+import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.service.MenteeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,6 +21,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +35,14 @@ public class MenteeControllerTest {
 	@MockBean
 	private MenteeService menteeService;
 	private final Long menteeId = 1L;
+
+	public static Authentication getOauthAuthentication() {
+		Profile profile = new Profile();
+		profile.setId(1);
+		profile.setFirstName("John");
+		profile.setLastName("Doe");
+		return new OAuth2AuthenticationToken(profile, null, "linkedin");
+	}
 
 	@Test
 	@WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -50,43 +63,62 @@ public class MenteeControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "admin", authorities = {"ADMIN"})
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void approveOrRejectMentee_withValidData_thenReturns200() throws Exception {
 		Map<String, Boolean> payload = new HashMap<>();
 		payload.put("isApproved", true);
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
 				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+				.content(objectMapper.writeValueAsString(payload))
+				.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	@WithMockUser(username = "admin", authorities = {"ADMIN"})
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void approveOrRejectMentee_withUnavailableData_thenReturn404() throws Exception {
 		Map<String, Boolean> payload = new HashMap<>();
 		payload.put("isApproved", true);
 		doThrow(ResourceNotFoundException.class)
 				.when(menteeService)
-				.approveOrRejectMentee(anyLong(), anyBoolean());
+				.approveOrRejectMentee(anyLong(), anyLong(), anyBoolean());
 
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
 				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+				.content(objectMapper.writeValueAsString(payload))
+				.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
-	@WithMockUser(username = "admin", authorities = {"ADMIN"})
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void approveOrRejectMentee_withUnsuitableData_thenReturn403() throws Exception {
+		Map<String, Boolean> payload = new HashMap<>();
+		payload.put("isApproved", true);
+		doThrow(UnauthorizedException.class)
+				.when(menteeService)
+				.approveOrRejectMentee(anyLong(), anyLong(), anyBoolean());
+
+		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(payload))
+				.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void approveOrRejectMentee_withUnsuitableData_thenReturn400() throws Exception {
 		Map<String, Boolean> payload = new HashMap<>();
 		payload.put("isApproved", true);
 		doThrow(BadRequestException.class)
 				.when(menteeService)
-				.approveOrRejectMentee(anyLong(), anyBoolean());
+				.approveOrRejectMentee(anyLong(), anyLong(), anyBoolean());
 
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
 				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+				.content(objectMapper.writeValueAsString(payload))
+				.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isBadRequest());
 	}
 }

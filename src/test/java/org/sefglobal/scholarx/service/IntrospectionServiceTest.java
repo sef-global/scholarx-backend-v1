@@ -57,7 +57,7 @@ public class IntrospectionServiceTest {
     }
 
     @Test
-    void getLoggedInUser_withUnsuitableData_thenThrowResourceNotFound() {
+    void getLoggedInUser_withUnsuitableData_thenThrowUnauthorized() {
         Throwable thrown = catchThrowable(
                 () -> introspectionService.getLoggedInUser(-1));
         assertThat(thrown)
