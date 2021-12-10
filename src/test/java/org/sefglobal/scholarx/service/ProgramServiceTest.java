@@ -230,7 +230,7 @@ public class ProgramServiceTest {
     }
 
     @Test
-    void getAppliedMentorsOfMentee_withUnavailableData_thenThrowNoContent() {
+    void getAppliedMentorOfMentee_withUnavailableData_thenThrowNoContent() {
         doReturn(Optional.empty())
                 .when(menteeRepository)
                 .findByProgramIdAndProfileId(anyLong(), anyLong());
