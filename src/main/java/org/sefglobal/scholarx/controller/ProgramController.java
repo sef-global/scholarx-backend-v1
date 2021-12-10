@@ -78,16 +78,14 @@ public class ProgramController {
 
   @GetMapping("/{id}/mentee/mentors")
   @ResponseStatus(HttpStatus.OK)
-  public List<Mentor> getAppliedMentors(
+  public Mentor getAppliedMentor(
     @PathVariable long id,
-    @RequestParam(required = false) List<EnrolmentState> menteeStates,
     Authentication authentication
   )
     throws NoContentException {
     Profile profile = (Profile) authentication.getPrincipal();
-    return programService.getAppliedMentorsOfMentee(
+    return programService.getAppliedMentorOfMentee(
       id,
-      menteeStates,
       profile.getId()
     );
   }

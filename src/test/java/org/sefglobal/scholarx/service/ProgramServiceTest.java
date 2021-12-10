@@ -230,13 +230,13 @@ public class ProgramServiceTest {
     }
 
     @Test
-    void getAppliedMentorsOfMentee_withUnavailableData_thenThrowNoContent() {
-        doReturn(new ArrayList<>())
+    void getAppliedMentorOfMentee_withUnavailableData_thenThrowNoContent() {
+        doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.getAppliedMentorsOfMentee(programId, new ArrayList<>(), profileId));
+                () -> programService.getAppliedMentorOfMentee(programId, profileId));
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, Mentee by program id: 1 and " +

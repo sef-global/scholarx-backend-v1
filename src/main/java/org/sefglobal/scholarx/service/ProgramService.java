@@ -308,31 +308,22 @@ public class ProgramService {
      *
      * @param programId    which is the id of the {@link Program}
      * @param profileId    which is the profile id of the {@link Mentee}
-     * @param menteeStates which is the list of states that {@link Mentee} objects should be
-     *                     filtered from
-     * @return {@link List} of {@link Mentor} objects
+     * @return {@link Mentor} object
      *
      * @throws NoContentException if the user hasn't applied for {@link Mentor} objects
      */
-    public List<Mentor> getAppliedMentorsOfMentee(long programId, List<EnrolmentState> menteeStates, long profileId)
+    public Mentor getAppliedMentorOfMentee(long programId, long profileId)
             throws NoContentException {
-        List<Mentee> menteeList;
-        if (menteeStates == null || menteeStates.isEmpty()) {
-            menteeList = menteeRepository.findAllByProgramIdAndProfileId(programId, profileId);
-        } else {
-            menteeList = menteeRepository.findAllByProgramIdAndProfileIdAndStateIn(programId, profileId, menteeStates);
-        }
-        if (menteeList.isEmpty()) {
+        Optional<Mentee> mentee = menteeRepository.findByProgramIdAndProfileId(programId, profileId);
+        
+        if (!mentee.isPresent()) {
             String msg = "Error, Mentee by program id: " + programId + " and " +
                          "profile id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new NoContentException(msg);
         }
-        List<Mentor> mentorList = new ArrayList<>();
-        for (Mentee mentee : menteeList) {
-            mentorList.add(mentee.getAppliedMentor());
-        }
-        return mentorList;
+        
+        return mentee.get().getAppliedMentor();
     }
 
     /**
