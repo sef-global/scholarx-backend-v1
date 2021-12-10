@@ -138,7 +138,7 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
 
-        Optional<Mentee> alreadyApplied = menteeRepository.findByProgramIdAndProfileId(profileId, profileId;
+        Optional<Mentee> alreadyApplied = menteeRepository.findByProgramIdAndProfileId(profileId, profileId);
         if (alreadyApplied.isPresent()) {
             String msg = "Error, Unable to apply as a mentee. " +
                          "Profile with id: " + profileId + " has already applied for this program.";
