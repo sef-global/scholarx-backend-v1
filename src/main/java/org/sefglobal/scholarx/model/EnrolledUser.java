@@ -17,7 +17,7 @@ public abstract class EnrolledUser extends BaseScholarxModel {
   private Profile profile;
 
   @Enumerated(EnumType.STRING)
-  @Column(length = 10, nullable = false)
+  @Column(length = 20, nullable = false)
   private EnrolmentState state;
 
   @ManyToOne(optional = false)

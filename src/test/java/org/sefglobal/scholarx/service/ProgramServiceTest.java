@@ -236,7 +236,7 @@ public class ProgramServiceTest {
                 .findAllByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> programService.getAppliedMentorsOfMentee(programId, new ArrayList<>(), profileId));
+                () -> programService.getAppliedMentorOfMentee(programId, profileId));
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, Mentee by program id: 1 and " +
