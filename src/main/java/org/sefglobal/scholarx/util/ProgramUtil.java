@@ -102,16 +102,6 @@ public class ProgramUtil {
         }
     }
 
-    public void sendMentorConfirmationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
-        List<Mentee> mentees = getMenteesWithoutDuplicatesByProgramId(id);
-
-        String message = "You can check your mentor by visiting the dashboard";
-
-        for (Mentee mentee : mentees) {
-            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
-        }
-    }
-
     /**
      * Removes mentee duplicates
      */
