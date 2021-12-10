@@ -130,10 +130,10 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
 
-        Optional<Mentee> duplicateMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
-        if (duplicateMentee.isPresent()) {
+        Optional<Mentee> alreadyAppliedMentee = menteeRepository.findByProgramIdAndProfileId(optionalMentor.get().getProgram().getId(), profileId);
+        if (alreadyAppliedMentee.isPresent()) {
             String msg = "Error, Unable to apply as a mentee. " +
-                         "Profile with id: " + profileId + " has already applied for the selected mentor.";
+                         "Profile with id: " + profileId + " has already applied for this program.";
             log.error(msg);
             throw new BadRequestException(msg);
         }

@@ -87,7 +87,7 @@ public class MentorServiceTest {
                 .findByProfileIdAndProgramId(anyLong(), anyLong());
         doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
