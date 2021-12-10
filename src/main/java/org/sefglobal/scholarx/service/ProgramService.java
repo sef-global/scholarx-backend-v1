@@ -146,9 +146,6 @@ public class ProgramService {
                     case ONGOING:
                         programUtil.sendOnGoingEmails(id, program);
                         break;
-                    case MENTOR_CONFIRMATION:
-                        programUtil.sendMentorConfirmationEmails(id, program);
-                        break;
                 }
             } catch (Exception exception) {
                 log.error("Email service error: ", exception);
