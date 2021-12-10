@@ -231,9 +231,9 @@ public class ProgramServiceTest {
 
     @Test
     void getAppliedMentorsOfMentee_withUnavailableData_thenThrowNoContent() {
-        doReturn(new ArrayList<>())
+        doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findAllByProgramIdAndProfileId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> programService.getAppliedMentorOfMentee(programId, profileId));
