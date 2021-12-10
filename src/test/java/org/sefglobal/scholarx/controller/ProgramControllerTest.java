@@ -227,7 +227,7 @@ public class ProgramControllerTest {
 	void getAppliedMentors_withUnavailableData_thenReturns204() throws Exception {
 		doThrow(NoContentException.class)
 				.when(programService)
-				.getAppliedMentorsOfMentee(anyLong(), any(), anyLong());
+				.getAppliedMentorOfMentee(anyLong(), anyLong());
 
 		mockMvc.perform(get("/api/programs/{id}/mentee/mentors", programId)
 				.with(authentication(getOauthAuthentication())))

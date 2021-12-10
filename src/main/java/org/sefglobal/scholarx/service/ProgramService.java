@@ -308,15 +308,12 @@ public class ProgramService {
      *
      * @param programId    which is the id of the {@link Program}
      * @param profileId    which is the profile id of the {@link Mentee}
-     * @param menteeStates which is the list of states that {@link Mentee} objects should be
-     *                     filtered from
      * @return {@link Mentor} object
      *
      * @throws NoContentException if the user hasn't applied for {@link Mentor} objects
      */
     public Mentor getAppliedMentorOfMentee(long programId, long profileId)
             throws NoContentException {
-        List<Mentee> menteeList;
         Optional<Mentee> mentee = menteeRepository.findByProgramIdAndProfileId(programId, profileId);
         
         if (!mentee.isPresent()) {
@@ -326,7 +323,7 @@ public class ProgramService {
             throw new NoContentException(msg);
         }
         
-        return mentee.getAppliedMentor();
+        return mentee.get().getAppliedMentor();
     }
 
     /**
