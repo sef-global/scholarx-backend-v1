@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.sefglobal.scholarx.controller.admin.ProgramController;
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
@@ -192,6 +193,44 @@ public class ProgramControllerTest {
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(new Mentor())))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateMentorApplication_withValidData_thenReturns200() throws Exception {
+		mockMvc.perform(put("/api/programs/{id}/mentor", programId)
+				.with(authentication(getOauthAuthentication()))
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(new Mentor())))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateMentorApplication_withUnavailableData_thenReturn404() throws Exception {
+		doThrow(ResourceNotFoundException.class)
+				.when(programService)
+				.updateMentorApplication(anyLong(), anyLong(), any(Mentor.class));
+
+		mockMvc.perform(put("/api/programs/{id}/mentor", programId)
+				.with(authentication(getOauthAuthentication()))
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(new Mentor())))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateMentorApplication_withInvalidData_thenReturn400() throws Exception {
+		doThrow(BadRequestException.class)
+				.when(programService)
+				.updateMentorApplication(anyLong(), anyLong(), any(Mentor.class));
+
+		mockMvc.perform(put("/api/programs/{id}/mentor", programId)
+				.with(authentication(getOauthAuthentication()))
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(new Mentor())))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test

@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,6 +64,18 @@ public class ProgramController {
     throws ResourceNotFoundException, BadRequestException {
     Profile profile = (Profile) authentication.getPrincipal();
     return programService.applyAsMentor(id, profile.getId(), mentor);
+  }
+
+  @PutMapping("/{id}/mentor")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentor updateMentorApplication(
+    @PathVariable long id,
+    Authentication authentication,
+    @Valid @RequestBody Mentor mentor
+  )
+    throws ResourceNotFoundException, BadRequestException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.updateMentorApplication(id, profile.getId(), mentor);
   }
 
   @GetMapping("/{id}/mentor")
