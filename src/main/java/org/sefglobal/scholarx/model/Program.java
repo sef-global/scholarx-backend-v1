@@ -32,7 +32,7 @@ public class Program extends BaseScholarxModel {
 
   @JsonIgnore
   @Enumerated(EnumType.STRING)
-  @Column(length = 20, nullable = false)
+  @Column(length = 25, nullable = false)
   private ProgramState state;
 
   @OneToMany(mappedBy = "program")
