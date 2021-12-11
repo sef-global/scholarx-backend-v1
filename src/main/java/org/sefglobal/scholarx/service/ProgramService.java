@@ -280,6 +280,43 @@ public class ProgramService {
     }
 
     /**
+     * Update a {@link Mentor}
+     *
+     * @param programId which is the program id for the mentor's {@link Program}
+     * @param profileId which is the profile id of the mentor's {@link Profile}
+     * @param mentor    which holds the mentor details
+     * @return the updated {@link Mentor}
+     *
+     * @throws ResourceNotFoundException is thrown if the mentor doesn't exist
+     * @throws BadRequestException is thrown if the {@link Program} is not in the applicable {@link ProgramState}
+     */
+    public Mentor updateMentorApplication(long programId, long profileId, Mentor mentor)
+            throws ResourceNotFoundException, BadRequestException {
+        Optional<Mentor> optionalMentor = mentorRepository.findByProfileIdAndProgramId(profileId, programId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Unable to update mentor application. " +
+                         "Mentor with profile id: " + profileId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+
+        if (!ProgramState.MENTOR_APPLICATION.equals(optionalMentor.get().getProgram().getState())) {
+            String msg = "Error, Unable to update mentor application. " +
+                         "Program with id: " + programId + " is not in the valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+
+        optionalMentor.get().setCategory(mentor.getCategory());
+        optionalMentor.get().setBio(mentor.getBio());
+        optionalMentor.get().setExpertise(mentor.getExpertise());
+        optionalMentor.get().setInstitution(mentor.getInstitution());
+        optionalMentor.get().setPosition(mentor.getPosition());
+        optionalMentor.get().setSlots(mentor.getSlots());
+        return mentorRepository.save(optionalMentor.get());
+    }
+
+    /**
      * Retrieves the {@link Mentor} of a user if the user is a mentor
      *
      * @param programId which is the id of the {@link Program}

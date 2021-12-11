@@ -216,6 +216,62 @@ public class ProgramServiceTest {
     }
 
     @Test
+    void updateMentorApplication_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException, BadRequestException {
+        final Program program =
+                new Program("SCHOLARX-2020", "SCHOLARX program of 2020",
+                        "https://scholarx/images/SCHOLARX-2020",
+                        "https://scholarx/SCHOLARX-2020/home",
+                        ProgramState.MENTOR_APPLICATION);
+        mentor.setProgram(program);
+
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+        doReturn(mentor)
+                .when(mentorRepository)
+                .save(any(Mentor.class));
+
+        Mentor savedMentor = programService.updateMentorApplication(programId, profileId, mentor);
+        assertThat(savedMentor).isNotNull();
+    }
+
+    @Test
+    void updateMentorApplication_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateMentorApplication(programId, profileId, mentor));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Unable to update mentor application. " +
+                            "Mentor with profile id: 1 doesn't exist.");
+    }
+
+    @Test
+    void updateMentorApplication_withUnsuitableData_thenThrowBadRequest() {
+        final Program program =
+                new Program("SCHOLARX-2020", "SCHOLARX program of 2020",
+                        "https://scholarx/images/SCHOLARX-2020",
+                        "https://scholarx/SCHOLARX-2020/home",
+                        ProgramState.MENTOR_SELECTION);
+        mentor.setProgram(program);
+
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateMentorApplication(programId, profileId, mentor));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error, Unable to update mentor application. " +
+                            "Program with id: 1 is not in the valid state.");
+    }
+
+    @Test
     void getLoggedInMentor_withUnavailableData_thenThrowResourceNotFound() {
         doReturn(Optional.empty())
                 .when(mentorRepository)
