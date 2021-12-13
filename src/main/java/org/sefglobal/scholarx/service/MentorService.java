@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.service;
 
+import com.google.common.collect.ImmutableList;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
@@ -24,6 +25,7 @@ public class MentorService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final ProfileRepository profileRepository;
+    private final List<EnrolmentState> eligibleEnrolmentStatesForMentors = ImmutableList.of(EnrolmentState.APPROVED, EnrolmentState.REJECTED);
 
     public MentorService(MentorRepository mentorRepository,
                          MenteeRepository menteeRepository,
@@ -66,11 +68,18 @@ public class MentorService {
      * @param id             which is the {@link Mentor} to be updated
      * @param enrolmentState which is the {@link EnrolmentState} of the program to be updated
      * @return the updated {@link Mentor}
-     *
      * @throws ResourceNotFoundException is thrown if the requesting {@link Mentor} doesn't exist
+     * @throws BadRequestException is thrown if the requesting {@link EnrolmentState} is not eligible for a mentor
      */
     public Mentor updateState(long id, EnrolmentState enrolmentState)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, BadRequestException {
+        if (!eligibleEnrolmentStatesForMentors.contains(enrolmentState)) {
+            String msg = "Error, Mentor with id: " + id + " cannot be updated. " +
+                    enrolmentState + " is not an applicable state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+
         Optional<Mentor> optionalMentor = mentorRepository.findById(id);
         if (!optionalMentor.isPresent()) {
             String msg = "Error, Mentor with id: " + id + " cannot be updated. " +
