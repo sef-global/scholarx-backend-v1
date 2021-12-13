@@ -74,7 +74,10 @@ public class MentorService {
     public Mentor updateState(long id, EnrolmentState enrolmentState)
             throws ResourceNotFoundException, BadRequestException {
         if (!eligibleEnrolmentStatesForMentors.contains(enrolmentState)) {
-            throw new BadRequestException("Eligible states for mentors are " + eligibleEnrolmentStatesForMentors + " but received " + enrolmentState);
+            String msg = "Error, Mentor with id: " + id + " cannot be updated. " +
+                    enrolmentState + " is not an applicable state.";
+            log.error(msg);
+            throw new BadRequestException();
         }
 
         Optional<Mentor> optionalMentor = mentorRepository.findById(id);
