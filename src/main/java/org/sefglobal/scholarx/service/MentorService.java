@@ -77,7 +77,7 @@ public class MentorService {
             String msg = "Error, Mentor with id: " + id + " cannot be updated. " +
                     enrolmentState + " is not an applicable state.";
             log.error(msg);
-            throw new BadRequestException();
+            throw new BadRequestException(msg);
         }
 
         Optional<Mentor> optionalMentor = mentorRepository.findById(id);

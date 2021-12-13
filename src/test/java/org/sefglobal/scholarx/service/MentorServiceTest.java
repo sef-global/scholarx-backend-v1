@@ -72,7 +72,12 @@ public class MentorServiceTest {
 
     @Test
     void updateState_withInvalidData_thenThrowsBadRequestException() {
-        assertThrows(BadRequestException.class, () -> mentorService.updateState(mentorId, EnrolmentState.ASSIGNED));
+        Throwable thrown = catchThrowable(
+                () -> mentorService.updateState(mentorId, EnrolmentState.ASSIGNED));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error, Mentor with id: 1 cannot be updated. " +
+                        "ASSIGNED is not an applicable state.");
     }
 
     @Test
