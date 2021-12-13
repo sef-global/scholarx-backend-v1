@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -57,7 +58,7 @@ public class MentorServiceTest {
 
     @Test
     void updateState_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, BadRequestException {
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
                 .findById(anyLong());
@@ -67,6 +68,11 @@ public class MentorServiceTest {
 
         Mentor savedMentor = mentorService.updateState(mentorId, EnrolmentState.APPROVED);
         assertThat(savedMentor).isNotNull();
+    }
+
+    @Test
+    void updateState_withInvalidData_thenThrowsBadRequestException() {
+        assertThrows(BadRequestException.class, () -> mentorService.updateState(mentorId, EnrolmentState.ASSIGNED));
     }
 
     @Test

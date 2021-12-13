@@ -2,6 +2,8 @@ package org.sefglobal.scholarx.controller.admin;
 
 import java.util.Map;
 import javax.validation.Valid;
+
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.service.MentorService;
@@ -28,7 +30,7 @@ public class MentorController {
     @ResponseStatus(HttpStatus.OK)
     public Mentor updateState(@PathVariable long id,
                               @Valid @RequestBody Map<String, EnrolmentState> payload)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, BadRequestException {
         return mentorService.updateState(id, payload.get("state"));
     }
 }
