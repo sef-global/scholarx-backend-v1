@@ -25,7 +25,7 @@ public class MentorService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final ProfileRepository profileRepository;
-    private final List<EnrolmentState> eligibleEnrolmentStatesForMentors = ImmutableList.of(EnrolmentState.APPROVED, EnrolmentState.REJECTED);
+    private final List<EnrolmentState> validMentorStates = ImmutableList.of(EnrolmentState.APPROVED, EnrolmentState.REJECTED, EnrolmentState.REMOVED);
 
     public MentorService(MentorRepository mentorRepository,
                          MenteeRepository menteeRepository,
@@ -73,7 +73,7 @@ public class MentorService {
      */
     public Mentor updateState(long id, EnrolmentState enrolmentState)
             throws ResourceNotFoundException, BadRequestException {
-        if (!eligibleEnrolmentStatesForMentors.contains(enrolmentState)) {
+        if (!validMentorStates.contains(enrolmentState)) {
             String msg = "Error, Mentor with id: " + id + " cannot be updated. " +
                     enrolmentState + " is not an applicable state.";
             log.error(msg);
