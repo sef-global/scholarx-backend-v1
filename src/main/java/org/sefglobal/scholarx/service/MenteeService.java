@@ -144,4 +144,30 @@ public class MenteeService {
         
         return menteeRepository.save(optionalMentee.get());
     }
+
+    public Mentee changeState(long menteeId, EnrolmentState enrolmentState)
+            throws ResourceNotFoundException, BadRequestException {
+        Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
+        if (!optionalMentee.isPresent()) {
+            String msg = "Error, Mentee cannot be updated. " +
+                    "Mentee with id "+ menteeId +" doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        ProgramState state = optionalMentee.get().getProgram().getState();
+        if (!ProgramState.ADMIN_MENTEE_FILTRATION.equals(state) && !ProgramState.WILDCARD.equals(state)){
+            String msg = "Error, Mentee cannot be updated. " +
+                    "The program is not in a valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+        if (EnrolmentState.REJECTED.equals(enrolmentState) || EnrolmentState.APPROVED.equals(enrolmentState)){
+            String msg = "Error, Mentee cannot be updated. " +
+                    "EnrolmentState: "+ enrolmentState +" is not an applicable state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+        optionalMentee.get().setState(enrolmentState);
+        return menteeRepository.save(optionalMentee.get());
+    }
 }
