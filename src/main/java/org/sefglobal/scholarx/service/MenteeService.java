@@ -4,8 +4,12 @@ import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
 import org.sefglobal.scholarx.model.Mentee;
+import org.sefglobal.scholarx.model.Mentor;
+import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
+import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
+import org.sefglobal.scholarx.util.ProgramState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,9 +21,11 @@ public class MenteeService {
 
     private final static Logger log = LoggerFactory.getLogger(MenteeService.class);
     private final MenteeRepository menteeRepository;
-
-    public MenteeService(MenteeRepository menteeRepository) {
+    private final MentorRepository mentorRepository;
+    
+    public MenteeService(MenteeRepository menteeRepository, MentorRepository mentorRepository) {
         this.menteeRepository = menteeRepository;
+        this.mentorRepository = mentorRepository;
     }
 
     /**
@@ -83,6 +89,59 @@ public class MenteeService {
         }
 
         optionalMentee.get().setState(isApproved?EnrolmentState.APPROVED:EnrolmentState.REJECTED);
+        return menteeRepository.save(optionalMentee.get());
+    }
+    
+    /**
+     * Update a assigned {@link Mentor} of a {@link Mentee}
+     *
+     * @param menteeId which is the {@link Mentee} to be updated
+     * @param mentorId which is the id of assigned {@link Mentor}
+     * @return the updated {@link Mentee}
+     
+     * @throws ResourceNotFoundException is thrown if the {@link Mentee} doesn't exist
+     * @throws ResourceNotFoundException is thrown if the {@link Mentor} doesn't exist
+     * @throws BadRequestException       is thrown if the {@link Mentor} id is not given
+     * @throws BadRequestException       is thrown if the {@link Program} is not in a valid state
+     */
+    public Mentee updateAssignedMentor(long menteeId, Long mentorId)
+            throws ResourceNotFoundException, BadRequestException {
+        if (null == mentorId) {
+            String msg = "Error, Value cannot be null.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+        
+        Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
+        if (!optionalMentee.isPresent()) {
+            String msg = "Error, Mentee cannot be updated. " +
+                    "Mentee with id: " + menteeId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        
+        Optional<Mentor> optionalMentor = mentorRepository.findById(mentorId);
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentee cannot be updated. " +
+                    "Mentor with id: " + mentorId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        
+        ProgramState programState = optionalMentee.get().getProgram().getState();
+        if (programState.equals(ProgramState.ADMIN_MENTEE_FILTRATION)) {
+            optionalMentee.get().setAssignedMentor(optionalMentor.get());
+            optionalMentee.get().setState(EnrolmentState.ASSIGNED);
+        } else if (programState.equals(ProgramState.WILDCARD)) {
+            optionalMentee.get().setAssignedMentor(optionalMentor.get());
+            optionalMentee.get().setState(EnrolmentState.APPROVED);
+        } else {
+            String msg = "Error, Mentee cannot be updated. " +
+                    "Program is not in a valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
+        
         return menteeRepository.save(optionalMentee.get());
     }
 }
