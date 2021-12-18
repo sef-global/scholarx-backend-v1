@@ -35,7 +35,8 @@ public class MenteeControllerTest {
 	@MockBean
 	private MenteeService menteeService;
 	private final Long menteeId = 1L;
-
+	private final Long mentorId = 1L;
+	
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();
 		profile.setId(1);
@@ -119,6 +120,47 @@ public class MenteeControllerTest {
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(payload))
 				.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"ADMIN"})
+	void updateAssignedMentor_withValidData_thenReturns200() throws Exception {
+		Map<String, Long> payload = new HashMap<>();
+		payload.put("mentorId", mentorId);
+		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(payload)))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"ADMIN"})
+	void updateAssignedMentor_withUnavailableData_thenReturns404() throws Exception {
+		Map<String, Long> payload = new HashMap<>();
+		payload.put("mentorId", mentorId);
+		doThrow(ResourceNotFoundException.class)
+				.when(menteeService)
+				.updateAssignedMentor(anyLong(), anyLong());
+		
+		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(payload)))
+				.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"ADMIN"})
+	void updateAssignedMentor_withUnsuitableData_thenReturns400() throws Exception {
+		Map<String, Long> payload = new HashMap<>();
+		payload.put("mentorId", mentorId);
+		doThrow(BadRequestException.class)
+				.when(menteeService)
+				.updateAssignedMentor(anyLong(), anyLong());
+		
+		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isBadRequest());
 	}
 }
