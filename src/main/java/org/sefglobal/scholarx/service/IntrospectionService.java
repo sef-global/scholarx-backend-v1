@@ -174,43 +174,4 @@ public class IntrospectionService {
         }
         return mentees;
     }
-
-    /**
-     * Confirm a {@link Mentor} for a specific {@link Mentee}
-     *
-     * @param mentorId  which is the id of the confirmed {@link Mentor}
-     * @param profileId which is the id of the {@link Profile}
-     * @return the updated {@link Mentee}
-     *
-     * @throws ResourceNotFoundException is thrown if the {@link Mentor} doesn't exist
-     * @throws BadRequestException       is thrown if the {@link Mentee} is not approved
-     */
-    public Mentee confirmMentor(long mentorId, long profileId)
-            throws ResourceNotFoundException, BadRequestException {
-        Optional<Mentor> optionalMentor = mentorRepository.findById(mentorId);
-        if (!optionalMentor.isPresent()) {
-            String msg = "Error, Mentor by id: " + mentorId + " doesn't exist.";
-            log.error(msg);
-            throw new ResourceNotFoundException(msg);
-        }
-
-        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
-        if (!optionalMentee.isPresent()) {
-            String msg = "Error, User with id: " + profileId + " haven't applied for " +
-                         "mentor by id: " + mentorId + ".";
-            log.error(msg);
-            throw new BadRequestException(msg);
-        }
-
-        if (!optionalMentee.get().getState().equals(EnrolmentState.APPROVED)) {
-            String msg = "Error, User with id: " + profileId + " is not approved " +
-                         "by the mentor by id: " + mentorId + ".";
-            log.error(msg);
-            throw new BadRequestException(msg);
-        }
-
-        long programId = optionalMentor.get().getProgram().getId();
-        menteeRepository.removeAllByProgramIdAndProfileIdAndMentorIdNot(programId, profileId, mentorId);
-        return optionalMentee.get();
-    }
 }
