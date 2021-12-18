@@ -134,36 +134,4 @@ public class AuthUserControllerTest {
 				.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void confirmMentor_withValidData_thenReturns200() throws Exception {
-		mockMvc.perform(put("/api/me/mentor/{mentorId}/confirmation", mentorId)
-				.with(authentication(getOauthAuthentication())))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void confirmMentor_withUnavailableData_thenReturn404() throws Exception {
-		doThrow(ResourceNotFoundException.class)
-				.when(introspectionService)
-				.confirmMentor(anyLong(), anyLong());
-
-		mockMvc.perform(put("/api/me/mentor/{mentorId}/confirmation", mentorId)
-				.with(authentication(getOauthAuthentication())))
-				.andExpect(status().isNotFound());
-	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void confirmMentor_withUnsuitableData_thenReturn400() throws Exception {
-		doThrow(BadRequestException.class)
-				.when(introspectionService)
-				.confirmMentor(anyLong(), anyLong());
-
-		mockMvc.perform(put("/api/me/mentor/{mentorId}/confirmation", mentorId)
-				.with(authentication(getOauthAuthentication())))
-				.andExpect(status().isBadRequest());
-	}
 }

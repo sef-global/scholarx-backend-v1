@@ -124,15 +124,6 @@ public class ProgramService {
         }
 
         final ProgramState nextState = program.get().getState().next();
-        if (ProgramState.ONGOING.equals(nextState)) {
-            List<Mentee> approvedMenteeList = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-            for (Mentee mentee : approvedMenteeList) {
-                long profileId = mentee.getProfile().getId();
-                if (menteeRepository.findAllByProgramIdAndProfileIdAndState(id, profileId, EnrolmentState.APPROVED).size() != 1) {
-                    menteeRepository.removeAllByProgramIdAndProfileId(id, profileId);
-                }
-            }
-        }
 
         Thread thread = new Thread(() -> {
             try {
