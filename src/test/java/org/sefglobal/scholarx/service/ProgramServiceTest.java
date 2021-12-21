@@ -326,4 +326,33 @@ public class ProgramServiceTest {
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, Mentee is not approved by any mentor yet.");
     }
+
+    @Test
+    void getAllMenteesByProgramId_withUnavailableProgramId_thenThrowResourceNotFoundException() {
+        Long programId = 9L;
+        doReturn(false)
+                .when(programRepository)
+                .existsById(programId);
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getAllMenteesByProgramId(programId));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Program by id: 9 doesn't exist");
+    }
+
+    @Test
+    void getAllMenteesByProgramId_withAvailableData_thenReturnDataFromRepository() throws ResourceNotFoundException {
+        Long programId = 9L;
+        doReturn(true)
+                .when(programRepository)
+                .existsById(programId);
+        List<Mentee> storedData = new ArrayList<>();
+        doReturn(storedData)
+                .when(menteeRepository)
+                .findAllByProgramId(programId);
+
+        List<Mentee> returnedData = programService.getAllMenteesByProgramId(programId);
+        assertThat(returnedData).isEqualTo(storedData);
+    }
 }

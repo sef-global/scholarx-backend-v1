@@ -304,4 +304,16 @@ public class ProgramControllerTest {
 				.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void getAllMenteesByProgramId_withUnavailableData_thenReturns404() throws Exception {
+		doThrow(ResourceNotFoundException.class)
+				.when(programService)
+				.getAllMenteesByProgramId(anyLong());
+
+		mockMvc.perform(get("/api/programs/{id}/mentees", programId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isNotFound());
+	}
 }
