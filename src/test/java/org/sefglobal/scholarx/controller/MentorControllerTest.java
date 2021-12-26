@@ -184,26 +184,4 @@ public class MentorControllerTest {
 		mockMvc.perform(get("/api/mentors/{mentorId}/mentees", mentorId))
 				.andExpect(status().isBadRequest());
 	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void getLoggedInMentee_withValidData_thenReturns200() throws Exception {
-		mockMvc.perform(get("/api/mentors/{mentorId}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication())))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void getLoggedInMentee_withUnavailableData_thenReturns204() throws Exception {
-
-		doThrow(NoContentException.class)
-				.when(mentorService)
-				.getLoggedInMentee(anyLong(), anyLong());
-
-		mockMvc.perform(get("/api/mentors/{mentorId}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication())))
-				.andExpect(status().isNoContent());
-
-	}
 }

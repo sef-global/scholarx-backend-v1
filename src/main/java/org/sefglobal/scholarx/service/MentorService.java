@@ -187,25 +187,4 @@ public class MentorService {
         }
         return menteeRepository.findAllByAssignedMentorIdAndState(mentorId,state.get());
     }
-
-    /**
-     * Retrieves the {@link Mentee} of a user if the user is a mentee
-     *
-     * @param mentorId  which is the id of the {@link Mentor}
-     * @param profileId which is the id of the {@link Profile}
-     * @return {@link Mentee}
-     *
-     * @throws NoContentException if the user hasn't applied for {@link Mentor}
-     */
-    public Mentee getLoggedInMentee(long mentorId, long profileId)
-            throws NoContentException {
-        Optional<Mentee> optionalMentee = menteeRepository.findByProfileIdAndAppliedMentorId(profileId, mentorId);
-        if (!optionalMentee.isPresent()) {
-            String msg = "Error, User by profile id: " + profileId + " hasn't applied for " +
-                         "mentor with id: " + mentorId + ".";
-            log.error(msg);
-            throw new NoContentException(msg);
-        }
-        return optionalMentee.get();
-    }
 }

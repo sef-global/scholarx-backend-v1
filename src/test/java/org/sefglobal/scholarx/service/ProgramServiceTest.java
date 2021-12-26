@@ -21,7 +21,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doReturn;
 
@@ -331,7 +330,6 @@ public class ProgramServiceTest {
 
     @Test
     void getAllMenteesByProgramId_withUnavailableProgramId_thenThrowResourceNotFoundException() {
-        Long programId = 9L;
         doReturn(false)
                 .when(programRepository)
                 .existsById(programId);
@@ -340,12 +338,11 @@ public class ProgramServiceTest {
                 () -> programService.getAllMenteesByProgramId(programId));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Program by id: 9 doesn't exist");
+                .hasMessage("Error, Program by id: 1 doesn't exist");
     }
 
     @Test
     void getAllMenteesByProgramId_withAvailableData_thenReturnDataFromRepository() throws ResourceNotFoundException {
-        Long programId = 9L;
         doReturn(true)
                 .when(programRepository)
                 .existsById(programId);
@@ -401,5 +398,19 @@ public class ProgramServiceTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Application cannot be updated. " +
                         "Mentee is not in a valid state.");
+    }
+
+    @Test
+    void getLoggedInMentee_withUnavailableData_thenThrowNoContent() {
+        doReturn(Optional.empty())
+                .when(menteeRepository)
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.getLoggedInMentee(programId, profileId));
+        assertThat(thrown)
+                .isInstanceOf(NoContentException.class)
+                .hasMessage("Error, User by profile id: 1 " +
+                        "hasn't applied for program with id: 1.");
     }
 }

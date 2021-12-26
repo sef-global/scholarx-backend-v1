@@ -416,4 +416,24 @@ public class ProgramService {
         }
         return menteeRepository.save(existingMentee);
     }
+
+    /**
+     * Retrieves the {@link Mentee} of a user if the user is a mentee
+     *
+     * @param programId which is the id of the {@link Program}
+     * @param profileId which is the id of the {@link Profile}
+     * @return {@link Mentee}
+     * @throws NoContentException if the user hasn't applied for {@link Program}
+     */
+    public Mentee getLoggedInMentee(long programId, long profileId)
+            throws NoContentException {
+        Optional<Mentee> optionalMentee = menteeRepository.findByProgramIdAndProfileId(programId, profileId);
+        if (!optionalMentee.isPresent()) {
+            String msg = "Error, User by profile id: " + profileId + " hasn't applied for " +
+                    "program with id: " + programId + ".";
+            log.error(msg);
+            throw new NoContentException(msg);
+        }
+        return optionalMentee.get();
+    }
 }

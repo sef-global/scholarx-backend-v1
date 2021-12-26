@@ -184,18 +184,4 @@ public class MentorServiceTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Mentor by id: 1 is not an approved mentor.");
     }
-
-    @Test
-    void getLoggedInMentee_withUnavailableData_thenThrowNoContent() {
-        doReturn(Optional.empty())
-                .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> mentorService.getLoggedInMentee(mentorId, profileId));
-        assertThat(thrown)
-                .isInstanceOf(NoContentException.class)
-                .hasMessage("Error, User by profile id: 1 " +
-                            "hasn't applied for mentor with id: 1.");
-    }
 }
