@@ -197,34 +197,6 @@ public class MentorControllerTest {
 
 	@Test
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void updateMenteeData_withUnavailableData_thenReturn404() throws Exception {
-		doThrow(ResourceNotFoundException.class)
-				.when(mentorService)
-				.updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
-
-		mockMvc.perform(put("/api/mentors/{mentorId}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
-				.andExpect(status().isNotFound());
-	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void updateMenteeData_withUnsuitableData_thenReturn400() throws Exception {
-		doThrow(BadRequestException.class)
-				.when(mentorService)
-				.updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
-
-		mockMvc.perform(put("/api/mentors/{mentorId}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
-				.andExpect(status().isBadRequest());
-	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getLoggedInMentee_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/mentors/{mentorId}/mentee", mentorId)
 				.with(authentication(getOauthAuthentication())))

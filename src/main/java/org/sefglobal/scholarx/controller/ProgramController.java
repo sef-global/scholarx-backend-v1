@@ -113,4 +113,16 @@ public class ProgramController {
     Profile profile = (Profile) authentication.getPrincipal();
     return programService.getSelectedMentor(id, profile.getId());
   }
+
+  @PutMapping("/{id}/mentee")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentee updateMenteeData(
+          @PathVariable long id,
+          Authentication authentication,
+          @Valid @RequestBody Mentee mentee
+  )
+          throws ResourceNotFoundException, BadRequestException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.updateMenteeData(profile.getId(), id, mentee);
+  }
 }

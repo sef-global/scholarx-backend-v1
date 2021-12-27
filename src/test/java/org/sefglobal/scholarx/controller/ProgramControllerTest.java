@@ -7,6 +7,7 @@ import org.sefglobal.scholarx.controller.admin.ProgramController;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
@@ -45,6 +46,7 @@ public class ProgramControllerTest {
 			"http://scholarx/images/SCHOLARX-2020",
 			"http://scholarx/SCHOLARX-2020/home",
 			ProgramState.CREATED);
+	private final Mentee mentee = new Mentee();
 
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();
@@ -315,5 +317,33 @@ public class ProgramControllerTest {
 		mockMvc.perform(get("/api/programs/{id}/mentees", programId)
 						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateMenteeData_withUnavailableData_thenReturn404() throws Exception {
+		doThrow(ResourceNotFoundException.class)
+				.when(programService)
+				.updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
+
+		mockMvc.perform(put("/api/programs/{mentorId}/mentee", programId)
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateMenteeData_withUnsuitableData_thenReturn400() throws Exception {
+		doThrow(BadRequestException.class)
+				.when(programService)
+				.updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
+
+		mockMvc.perform(put("/api/programs/{mentorId}/mentee", programId)
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
+				.andExpect(status().isBadRequest());
 	}
 }
