@@ -10,6 +10,7 @@ import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.*;
 import org.sefglobal.scholarx.repository.*;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class ProgramServiceTest {
                     "https://scholarx/SCHOLARX-2020/home", ProgramState.CREATED);
     private final Mentor mentor = new Mentor();
     private final Profile profile = new Profile();
+    private final Mentee mentee = new Mentee();
 
     @Test
     void updateState_withValidData_thenReturnUpdatedData()
@@ -354,5 +356,50 @@ public class ProgramServiceTest {
 
         List<Mentee> returnedData = programService.getAllMenteesByProgramId(programId);
         assertThat(returnedData).isEqualTo(storedData);
+    }
+
+    @Test
+    void updateMenteeData_withValidData_thenReturnUpdatedData()
+            throws ResourceNotFoundException, BadRequestException {
+        mentee.setState(EnrolmentState.PENDING);
+        mentee.setAppliedMentor(mentor);
+        doReturn(Optional.of(mentee))
+                .when(menteeRepository)
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
+        doReturn(mentee)
+                .when(menteeRepository)
+                .save(any(Mentee.class));
+
+        Mentee savedMentee = programService.updateMenteeData(profileId, programId, mentee);
+        assertThat(savedMentee).isNotNull();
+    }
+
+    @Test
+    void updateMenteeData_withUnavailableData_thenThrowResourceNotFound() {
+        doReturn(Optional.empty())
+                .when(menteeRepository)
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateMenteeData(profileId, programId, mentee));
+        assertThat(thrown)
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Error, Mentee by profile id: 1 and program id: 1 cannot be updated. " +
+                        "Mentee doesn't exist.");
+    }
+
+    @Test
+    void updateMenteeData_withUnsuitableData_thenThrowBadRequest() {
+        mentee.setState(EnrolmentState.APPROVED);
+        doReturn(Optional.of(mentee))
+                .when(menteeRepository)
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
+
+        Throwable thrown = catchThrowable(
+                () -> programService.updateMenteeData(profileId, programId, mentee));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error, Application cannot be updated. " +
+                        "Mentee is not in a valid state.");
     }
 }

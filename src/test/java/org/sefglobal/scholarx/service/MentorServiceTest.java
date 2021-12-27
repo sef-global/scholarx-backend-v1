@@ -186,51 +186,6 @@ public class MentorServiceTest {
     }
 
     @Test
-    void updateMenteeData_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException, BadRequestException {
-        mentee.setState(EnrolmentState.PENDING);
-        mentee.setAppliedMentor(mentor);
-        doReturn(Optional.of(mentee))
-                .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
-        doReturn(mentee)
-                .when(menteeRepository)
-                .save(any(Mentee.class));
-
-        Mentee savedMentee = mentorService.updateMenteeData(profileId, mentorId, mentee);
-        assertThat(savedMentee).isNotNull();
-    }
-
-    @Test
-    void updateMenteeData_withUnavailableData_thenThrowResourceNotFound() {
-        doReturn(Optional.empty())
-                .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
-        assertThat(thrown)
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentee by profile id: 1 and mentor id: 1 cannot be updated. " +
-                            "Mentee doesn't exist.");
-    }
-
-    @Test
-    void updateMenteeData_withUnsuitableData_thenThrowBadRequest() {
-        mentee.setState(EnrolmentState.APPROVED);
-        doReturn(Optional.of(mentee))
-                .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
-        assertThat(thrown)
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error, Application cannot be updated. " +
-                            "Mentee is not in a valid state.");
-    }
-
-    @Test
     void getLoggedInMentee_withUnavailableData_thenThrowNoContent() {
         doReturn(Optional.empty())
                 .when(menteeRepository)
