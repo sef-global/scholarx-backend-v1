@@ -2,7 +2,6 @@ package org.sefglobal.scholarx.controller;
 
 import java.util.List;
 import javax.validation.Valid;
-
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
@@ -26,104 +25,104 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/programs")
 public class ProgramController {
 
-    private final ProgramService programService;
+  private final ProgramService programService;
 
-    public ProgramController(ProgramService programService) {
-        this.programService = programService;
-    }
+  public ProgramController(ProgramService programService) {
+    this.programService = programService;
+  }
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Program> getAllPrograms(@RequestParam(required = false) List<ProgramState> states) {
-        return programService.getAllPrograms(states);
-    }
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public List<Program> getAllPrograms(@RequestParam(required = false) List<ProgramState> states) {
+    return programService.getAllPrograms(states);
+  }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Program getProgramById(@PathVariable long id)
-            throws ResourceNotFoundException {
-        return programService.getProgramById(id);
-    }
+  @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Program getProgramById(@PathVariable long id)
+    throws ResourceNotFoundException {
+    return programService.getProgramById(id);
+  }
 
-    @GetMapping("/{id}/mentors")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Mentor> getAllMentorsByProgramId(
-            @PathVariable long id,
-            @RequestParam(required = false) List<EnrolmentState> states
-    )
-            throws ResourceNotFoundException {
-        return programService.getAllMentorsByProgramId(id, states);
-    }
+  @GetMapping("/{id}/mentors")
+  @ResponseStatus(HttpStatus.OK)
+  public List<Mentor> getAllMentorsByProgramId(
+    @PathVariable long id,
+    @RequestParam(required = false) List<EnrolmentState> states
+  )
+    throws ResourceNotFoundException {
+    return programService.getAllMentorsByProgramId(id, states);
+  }
 
-    @PostMapping("/{id}/mentor")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mentor applyAsMentor(
-            @PathVariable long id,
-            Authentication authentication,
-            @Valid @RequestBody Mentor mentor
-    )
-            throws ResourceNotFoundException, BadRequestException {
-        Profile profile = (Profile) authentication.getPrincipal();
-        return programService.applyAsMentor(id, profile.getId(), mentor);
-    }
+  @PostMapping("/{id}/mentor")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Mentor applyAsMentor(
+    @PathVariable long id,
+    Authentication authentication,
+    @Valid @RequestBody Mentor mentor
+  )
+    throws ResourceNotFoundException, BadRequestException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.applyAsMentor(id, profile.getId(), mentor);
+  }
 
-    @PutMapping("/{id}/mentor")
-    @ResponseStatus(HttpStatus.OK)
-    public Mentor updateMentorApplication(
-            @PathVariable long id,
-            Authentication authentication,
-            @Valid @RequestBody Mentor mentor
-    )
-            throws ResourceNotFoundException, BadRequestException {
-        Profile profile = (Profile) authentication.getPrincipal();
-        return programService.updateMentorApplication(id, profile.getId(), mentor);
-    }
+  @PutMapping("/{id}/mentor")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentor updateMentorApplication(
+    @PathVariable long id,
+    Authentication authentication,
+    @Valid @RequestBody Mentor mentor
+  )
+    throws ResourceNotFoundException, BadRequestException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.updateMentorApplication(id, profile.getId(), mentor);
+  }
 
-    @GetMapping("/{id}/mentor")
-    @ResponseStatus(HttpStatus.OK)
-    public Mentor getLoggedInMentor(
-            @PathVariable long id,
-            Authentication authentication
-    )
-            throws ResourceNotFoundException {
-        Profile profile = (Profile) authentication.getPrincipal();
-        return programService.getLoggedInMentor(id, profile.getId());
-    }
+  @GetMapping("/{id}/mentor")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentor getLoggedInMentor(
+    @PathVariable long id,
+    Authentication authentication
+  )
+    throws ResourceNotFoundException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.getLoggedInMentor(id, profile.getId());
+  }
 
-    @GetMapping("/{id}/mentee/mentors")
-    @ResponseStatus(HttpStatus.OK)
-    public Mentor getAppliedMentor(
-            @PathVariable long id,
-            Authentication authentication
-    )
-            throws NoContentException {
-        Profile profile = (Profile) authentication.getPrincipal();
-        return programService.getAppliedMentorOfMentee(
-                id,
-                profile.getId()
-        );
-    }
+  @GetMapping("/{id}/mentee/mentors")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentor getAppliedMentor(
+    @PathVariable long id,
+    Authentication authentication
+  )
+    throws NoContentException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.getAppliedMentorOfMentee(
+      id,
+      profile.getId()
+    );
+  }
 
-    @GetMapping("/{id}/mentee/mentor")
-    @ResponseStatus(HttpStatus.OK)
-    public Mentor getSelectedMentor(
-            @PathVariable long id,
-            Authentication authentication
-    )
-            throws ResourceNotFoundException, NoContentException {
-        Profile profile = (Profile) authentication.getPrincipal();
-        return programService.getSelectedMentor(id, profile.getId());
-    }
+  @GetMapping("/{id}/mentee/mentor")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentor getSelectedMentor(
+    @PathVariable long id,
+    Authentication authentication
+  )
+    throws ResourceNotFoundException, NoContentException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.getSelectedMentor(id, profile.getId());
+  }
 
-    @PutMapping("/{id}/mentee")
-    @ResponseStatus(HttpStatus.OK)
-    public Mentee updateMenteeData(
-            @PathVariable long id,
-            Authentication authentication,
-            @Valid @RequestBody Mentee mentee
-    )
-            throws ResourceNotFoundException, BadRequestException {
-        Profile profile = (Profile) authentication.getPrincipal();
-        return programService.updateMenteeData(profile.getId(), id, mentee);
-    }
+  @PutMapping("/{id}/mentee")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentee updateMenteeData(
+    @PathVariable long id,
+    Authentication authentication,
+    @Valid @RequestBody Mentee mentee
+  )
+    throws ResourceNotFoundException, BadRequestException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.updateMenteeData(profile.getId(), id, mentee);
+  }
 }
