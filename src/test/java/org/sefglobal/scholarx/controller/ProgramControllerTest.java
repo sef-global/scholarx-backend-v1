@@ -346,4 +346,14 @@ public class ProgramControllerTest {
 						.content(objectMapper.writeValueAsString(mentee)))
 				.andExpect(status().isBadRequest());
 	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateMenteeData_withValidData_thenReturns200() throws Exception {
+		mockMvc.perform(put("/api/programs/{programId}/mentee", programId)
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
+				.andExpect(status().isOk());
+	}
 }

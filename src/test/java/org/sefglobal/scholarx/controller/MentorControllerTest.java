@@ -187,16 +187,6 @@ public class MentorControllerTest {
 
 	@Test
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
-	void updateMenteeData_withValidData_thenReturns200() throws Exception {
-		mockMvc.perform(put("/api/mentors/{mentorId}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getLoggedInMentee_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/mentors/{mentorId}/mentee", mentorId)
 				.with(authentication(getOauthAuthentication())))
