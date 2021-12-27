@@ -392,10 +392,10 @@ public class ProgramService {
      */
     public Mentee updateMenteeData(long profileId, long programId, Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
-        Optional<Mentee> optionalMentee = menteeRepository.findByProgramIdAndProfileId(profileId, programId);
+        Optional<Mentee> optionalMentee = menteeRepository.findByProgramIdAndProfileId(programId, profileId);
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by profile id: " + profileId + " and " +
-                    "mentor id: " + programId + " cannot be updated. " +
+                    "program id: " + programId + " cannot be updated. " +
                     "Mentee doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
@@ -403,7 +403,7 @@ public class ProgramService {
 
         Mentee existingMentee = optionalMentee.get();
         if (EnrolmentState.PENDING.equals(existingMentee.getState())) {
-            existingMentee.setCourse(mentee.getCourse());
+            existingMentee.setAppliedMentor(mentee.getAppliedMentor());
             existingMentee.setIntent(mentee.getIntent());
             existingMentee.setUniversity(mentee.getUniversity());
             existingMentee.setYear(mentee.getYear());

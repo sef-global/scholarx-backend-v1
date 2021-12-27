@@ -326,7 +326,7 @@ public class ProgramControllerTest {
 				.when(programService)
 				.updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
 
-		mockMvc.perform(put("/api/programs/{mentorId}/mentee", programId)
+		mockMvc.perform(put("/api/programs/{programId}/mentee", programId)
 						.with(authentication(getOauthAuthentication()))
 						.contentType("application/json")
 						.content(objectMapper.writeValueAsString(mentee)))
@@ -340,7 +340,7 @@ public class ProgramControllerTest {
 				.when(programService)
 				.updateMenteeData(anyLong(), anyLong(), any(Mentee.class));
 
-		mockMvc.perform(put("/api/programs/{mentorId}/mentee", programId)
+		mockMvc.perform(put("/api/programs/{programId}/mentee", programId)
 						.with(authentication(getOauthAuthentication()))
 						.contentType("application/json")
 						.content(objectMapper.writeValueAsString(mentee)))

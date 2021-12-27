@@ -365,7 +365,7 @@ public class ProgramServiceTest {
         mentee.setAppliedMentor(mentor);
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
@@ -378,13 +378,13 @@ public class ProgramServiceTest {
     void updateMenteeData_withUnavailableData_thenThrowResourceNotFound() {
         doReturn(Optional.empty())
                 .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> programService.updateMenteeData(profileId, programId, mentee));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentee by profile id: 1 and mentor id: 1 cannot be updated. " +
+                .hasMessage("Error, Mentee by profile id: 1 and program id: 1 cannot be updated. " +
                         "Mentee doesn't exist.");
     }
 
@@ -393,7 +393,7 @@ public class ProgramServiceTest {
         mentee.setState(EnrolmentState.APPROVED);
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
-                .findByProfileIdAndAppliedMentorId(anyLong(), anyLong());
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> programService.updateMenteeData(profileId, programId, mentee));
