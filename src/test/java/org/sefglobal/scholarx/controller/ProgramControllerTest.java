@@ -21,8 +21,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -355,5 +353,27 @@ public class ProgramControllerTest {
 						.contentType("application/json")
 						.content(objectMapper.writeValueAsString(mentee)))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void getLoggedInMentee_withValidData_thenReturns200() throws Exception {
+		mockMvc.perform(get("/api/programs/{programId}/mentee", programId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void getLoggedInMentee_withUnavailableData_thenReturns204() throws Exception {
+
+		doThrow(NoContentException.class)
+				.when(programService)
+				.getLoggedInMentee(anyLong(), anyLong());
+
+		mockMvc.perform(get("/api/programs/{programId}/mentee", programId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isNoContent());
+
 	}
 }

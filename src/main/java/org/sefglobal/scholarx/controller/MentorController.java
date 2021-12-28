@@ -67,15 +67,4 @@ public class MentorController {
     throws ResourceNotFoundException, BadRequestException {
     return mentorService.getAllMenteesOfMentor(id, state);
   }
-
-  @GetMapping("/{id}/mentee")
-  @ResponseStatus(HttpStatus.OK)
-  public Mentee getLoggedInMentee(
-    @PathVariable long id,
-    Authentication authentication
-  )
-    throws NoContentException {
-    Profile profile = (Profile) authentication.getPrincipal();
-    return mentorService.getLoggedInMentee(id, profile.getId());
-  }
 }

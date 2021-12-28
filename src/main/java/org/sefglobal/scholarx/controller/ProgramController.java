@@ -125,4 +125,15 @@ public class ProgramController {
     Profile profile = (Profile) authentication.getPrincipal();
     return programService.updateMenteeData(profile.getId(), id, mentee);
   }
+
+  @GetMapping("/{id}/mentee")
+  @ResponseStatus(HttpStatus.OK)
+  public Mentee getLoggedInMentee(
+          @PathVariable long id,
+          Authentication authentication
+  )
+          throws NoContentException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return programService.getLoggedInMentee(id, profile.getId());
+  }
 }
