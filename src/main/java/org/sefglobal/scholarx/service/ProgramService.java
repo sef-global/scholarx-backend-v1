@@ -383,11 +383,13 @@ public class ProgramService {
      * Update the application of a {@link Mentee}
      *
      * @param profileId which is the Profile id of the {@link Mentee} to be updated
-     * @param programId  which is the Program id of the {@link Mentee} to be updated
+     * @param programId which is the Program id of the {@link Mentee} to be updated
      * @param mentee    with the application of the mentee to be updated
      * @return the updated {@link Mentee}
      *
      * @throws ResourceNotFoundException is thrown if the {@link Mentee} doesn't exist
+     * @throws ResourceNotFoundException is thrown if the {@link Mentor} doesn't exist
+     * @throws BadRequestException       if the {@link Mentor} is not in the valid state
      * @throws BadRequestException       if the {@link Mentee} is not in the valid state
      */
     public Mentee updateMenteeData(long profileId, long programId, Mentee mentee)
@@ -400,10 +402,24 @@ public class ProgramService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
+        Optional<Mentor> optionalMentor = mentorRepository.findById(mentee.getAppliedMentor().getId());
+        if (!optionalMentor.isPresent()) {
+            String msg = "Error, Mentee by profile id: " + profileId + " and " +
+                    "program id: " + programId + " cannot be updated. " +
+                    "Applied Mentor doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        if (!EnrolmentState.APPROVED.equals(optionalMentor.get().getState())) {
+            String msg = "Error, Unable to apply as a mentee. " +
+                    "Mentor is not in the applicable state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
 
         Mentee existingMentee = optionalMentee.get();
         if (EnrolmentState.PENDING.equals(existingMentee.getState())) {
-            existingMentee.setAppliedMentor(mentee.getAppliedMentor());
+            existingMentee.setAppliedMentor(optionalMentor.get());
             existingMentee.setIntent(mentee.getIntent());
             existingMentee.setUniversity(mentee.getUniversity());
             existingMentee.setYear(mentee.getYear());

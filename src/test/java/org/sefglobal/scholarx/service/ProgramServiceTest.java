@@ -358,11 +358,15 @@ public class ProgramServiceTest {
     @Test
     void updateMenteeData_withValidData_thenReturnUpdatedData()
             throws ResourceNotFoundException, BadRequestException {
+        mentor.setState(EnrolmentState.APPROVED);
         mentee.setState(EnrolmentState.PENDING);
         mentee.setAppliedMentor(mentor);
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
                 .findByProgramIdAndProfileId(anyLong(), anyLong());
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findById(anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
@@ -388,9 +392,14 @@ public class ProgramServiceTest {
     @Test
     void updateMenteeData_withUnsuitableData_thenThrowBadRequest() {
         mentee.setState(EnrolmentState.APPROVED);
+        mentor.setState(EnrolmentState.APPROVED);
+        mentee.setAppliedMentor(mentor);
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
                 .findByProgramIdAndProfileId(anyLong(), anyLong());
+        doReturn(Optional.of(mentor))
+                .when(mentorRepository)
+                .findById(anyLong());
 
         Throwable thrown = catchThrowable(
                 () -> programService.updateMenteeData(profileId, programId, mentee));
