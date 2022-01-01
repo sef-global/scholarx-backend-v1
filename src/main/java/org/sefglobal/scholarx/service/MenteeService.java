@@ -144,21 +144,18 @@ public class MenteeService {
         }
         ProgramState programState = optionalMentee.get().getProgram().getState();
         if (programState.equals(ProgramState.ADMIN_MENTEE_FILTRATION)) {
-            optionalMentee.get().setAssignedMentor(optionalMentor.get());
             optionalMentee.get().setState(EnrolmentState.ASSIGNED);
-            menteeCountCurrentMentor++;
-            menteeCountPreviousMentor--;
-        } else if (programState.equals(ProgramState.WILDCARD)) {
-            optionalMentee.get().setAssignedMentor(optionalMentor.get());
+        } else if (programState.equals(ProgramState.WILDCARD)) {;
             optionalMentee.get().setState(EnrolmentState.APPROVED);
-            menteeCountCurrentMentor++;
-            menteeCountPreviousMentor--;
         } else {
             String msg = "Error, Mentee cannot be updated. " +
                     "Program is not in a valid state.";
             log.error(msg);
             throw new BadRequestException(msg);
         }
+
+        menteeCountCurrentMentor++;
+        menteeCountPreviousMentor--;
 
         if (previouslyAssignedMentor != null) {
             previouslyAssignedMentor.setNoOfAssignedMentees(menteeCountPreviousMentor);
