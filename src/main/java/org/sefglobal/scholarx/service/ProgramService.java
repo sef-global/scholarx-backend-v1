@@ -125,6 +125,14 @@ public class ProgramService {
 
         final ProgramState nextState = program.get().getState().next();
 
+        if (nextState.equals(ProgramState.MENTEE_SELECTION)) {
+            List<Mentor> mentorList = mentorRepository.findAllByProgramId(id);
+            for (Mentor mentor: mentorList) {
+                mentor.setNoOfAssignedMentees(0);
+            }
+            mentorRepository.saveAll(mentorList);
+        }
+
         Thread thread = new Thread(() -> {
             try {
                 switch (nextState) {
