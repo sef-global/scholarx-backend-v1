@@ -88,6 +88,14 @@ public class MenteeService {
             throw new BadRequestException(msg);
         }
 
+        Mentor mentor = optionalMentee.get().getAssignedMentor();
+        if (isApproved) {
+            mentor.setNoOfAssignedMentees(mentor.getNoOfAssignedMentees() + 1);
+        } else if (optionalMentee.get().getState().equals(EnrolmentState.APPROVED)) {
+            mentor.setNoOfAssignedMentees(mentor.getNoOfAssignedMentees() - 1);
+        }
+        optionalMentee.get().setAssignedMentor(mentor);
+
         optionalMentee.get().setState(isApproved?EnrolmentState.APPROVED:EnrolmentState.REJECTED);
         return menteeRepository.save(optionalMentee.get());
     }
@@ -127,13 +135,17 @@ public class MenteeService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }
-        
+
+        Mentor previouslyAssignedMentor = optionalMentee.get().getAssignedMentor();
+        int menteeCountCurrentMentor = optionalMentor.get().getNoOfAssignedMentees();
+        int menteeCountPreviousMentor = 0;
+        if (previouslyAssignedMentor != null) {
+            menteeCountPreviousMentor = previouslyAssignedMentor.getNoOfAssignedMentees();
+        }
         ProgramState programState = optionalMentee.get().getProgram().getState();
         if (programState.equals(ProgramState.ADMIN_MENTEE_FILTRATION)) {
-            optionalMentee.get().setAssignedMentor(optionalMentor.get());
             optionalMentee.get().setState(EnrolmentState.ASSIGNED);
-        } else if (programState.equals(ProgramState.WILDCARD)) {
-            optionalMentee.get().setAssignedMentor(optionalMentor.get());
+        } else if (programState.equals(ProgramState.WILDCARD)) {;
             optionalMentee.get().setState(EnrolmentState.APPROVED);
         } else {
             String msg = "Error, Mentee cannot be updated. " +
@@ -141,7 +153,17 @@ public class MenteeService {
             log.error(msg);
             throw new BadRequestException(msg);
         }
-        
+
+        menteeCountCurrentMentor++;
+        menteeCountPreviousMentor--;
+
+        if (previouslyAssignedMentor != null) {
+            previouslyAssignedMentor.setNoOfAssignedMentees(menteeCountPreviousMentor);
+            mentorRepository.save(previouslyAssignedMentor);
+        }
+
+        optionalMentor.get().setNoOfAssignedMentees(menteeCountCurrentMentor);
+        optionalMentee.get().setAssignedMentor(optionalMentor.get());
         return menteeRepository.save(optionalMentee.get());
     }
 

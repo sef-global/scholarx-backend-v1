@@ -34,6 +34,9 @@ public class Mentor extends EnrolledUser {
     @Column
     private int slots;
 
+    @Column
+    private int noOfAssignedMentees;
+
     @OneToMany(mappedBy = "assignedMentor")
     private List<Mentee> assignedMentees = new ArrayList<>();
 
@@ -102,5 +105,13 @@ public class Mentor extends EnrolledUser {
 
     public void setAppliedMentees(List<Mentee> appliedMentees) {
         this.appliedMentees = appliedMentees;
+    }
+
+    public int getNoOfAssignedMentees() {
+        return noOfAssignedMentees;
+    }
+
+    public void setNoOfAssignedMentees(int noOfAssignedMentees) {
+        this.noOfAssignedMentees = noOfAssignedMentees;
     }
 }
