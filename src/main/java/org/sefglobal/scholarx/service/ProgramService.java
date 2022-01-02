@@ -169,6 +169,9 @@ public class ProgramService {
                     case MENTEE_APPLICATION:
                         programUtil.sendMenteeApplicationEmails(id, program);
                         break;
+                    case ADMIN_MENTEE_FILTRATION:
+                        programUtil.sendMenteeFiltrationEmails(id, program);
+                        break;
                     case MENTEE_SELECTION:
                         programUtil.sendMenteeSelectionEmails(id, program);
                         break;
