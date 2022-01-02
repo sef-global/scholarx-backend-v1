@@ -31,6 +31,8 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
     List<Mentee> findAllByProgramIdAndState(long programId, EnrolmentState state);
 
+    List<Mentee> findAllByProgramIdAndStateIn(long programId, List<EnrolmentState> states);
+
     @Modifying
     @Query(
             value = "DELETE " +

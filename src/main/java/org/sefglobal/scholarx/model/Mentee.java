@@ -36,6 +36,9 @@ public class Mentee extends EnrolledUser {
     @ManyToOne
     private Mentor assignedMentor;
 
+    @ManyToOne
+    private Mentor rejectedBy;
+
     public Mentor getAppliedMentor() {
         return appliedMentor;
     }
@@ -90,5 +93,14 @@ public class Mentee extends EnrolledUser {
 
     public void setReasonForChoice(String reasonForChoice) {
         this.reasonForChoice = reasonForChoice;
+    }
+
+
+    public Mentor getRejectedBy() {
+        return rejectedBy;
+    }
+
+    public void setRejectedBy(Mentor rejectedBy) {
+        this.rejectedBy = rejectedBy;
     }
 }

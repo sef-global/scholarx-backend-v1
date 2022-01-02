@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "mentor")
-@JsonIgnoreProperties({"createdAt", "updatedAt", "assignedMentees", "appliedMentees"})
+@JsonIgnoreProperties({"createdAt", "updatedAt", "assignedMentees", "appliedMentees", "rejectedMentees"})
 public class Mentor extends EnrolledUser {
 
     public Mentor() {
@@ -42,6 +42,9 @@ public class Mentor extends EnrolledUser {
 
     @OneToMany(mappedBy = "appliedMentor")
     private List<Mentee> appliedMentees = new ArrayList<>();
+
+    @OneToMany(mappedBy = "rejectedBy")
+    private List<Mentee> rejectedMentees = new ArrayList<>();
 
     public MentorCategory getCategory() {
         return category;
