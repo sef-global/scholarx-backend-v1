@@ -142,7 +142,8 @@ public class ProgramService {
                 break;
 
             case WILDCARD:
-                List<Mentee> mentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.ASSIGNED);
+                List<Mentee> mentees = menteeRepository.findAllByProgramIdAndStateIn(
+                        id, ImmutableList.of(EnrolmentState.ASSIGNED, EnrolmentState.REJECTED));
                 for (Mentee mentee : mentees) {
                     mentee.setState(EnrolmentState.REJECTED);
                     mentee.setRejectedBy(mentee.getAssignedMentor());
