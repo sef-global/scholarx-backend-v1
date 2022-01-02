@@ -18,25 +18,9 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
-      - name: Build the frontend
-        run: |
-          git clone https://github.com/sef-global/scholarx-frontend.git
-          cd scholarx-frontend
-          git checkout scholarx-feb-edition
-          npm install
-          npm run build
-      - name: Configure backend build
-        run: |
-          cp src/main/resources/application.yml.example src/main/resources/application.yml
-          mkdir -p src/main/resources/static
-          cp -r scholarx-frontend/dist/. src/main/resources/static/
-          sudo rm -R scholarx-frontend
-      - name: Build and Run Tests with Maven
-        run: mvn clean install
       - name: Deploy to heroku
-      - uses: akhileshns/heroku-deploy@v3.12.12
+        uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          branch: sx-feb-demo
