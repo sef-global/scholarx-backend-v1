@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.service;
 
+import com.google.common.collect.ImmutableList;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
@@ -125,12 +126,41 @@ public class ProgramService {
 
         final ProgramState nextState = program.get().getState().next();
 
-        if (nextState.equals(ProgramState.MENTEE_SELECTION)) {
-            List<Mentor> mentorList = mentorRepository.findAllByProgramId(id);
-            for (Mentor mentor: mentorList) {
-                mentor.setNoOfAssignedMentees(0);
-            }
-            mentorRepository.saveAll(mentorList);
+        switch (nextState) {
+            case MENTEE_APPLICATION:
+                List<Mentor> mentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.PENDING);
+                for (Mentor mentor : mentors) {
+                    mentor.setState(EnrolmentState.REJECTED);
+                }
+                break;
+
+            case MENTEE_SELECTION:
+                List<Mentor> mentorList = mentorRepository.findAllByProgramId(id);
+                for (Mentor mentor: mentorList) {
+                    mentor.setNoOfAssignedMentees(0);
+                }
+                break;
+
+            case WILDCARD:
+                List<Mentee> mentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.ASSIGNED);
+                for (Mentee mentee : mentees) {
+                    mentee.setState(EnrolmentState.REJECTED);
+                    mentee.setRejectedBy(mentee.getAssignedMentor());
+                    mentee.setAssignedMentor(null);
+                }
+                break;
+
+            case ONGOING:
+                List<Mentee> approvedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.ASSIGNED);
+                for (Mentee mentee : approvedMentees) {
+                    mentee.setState(EnrolmentState.APPROVED);
+                }
+                List<Mentee> ignoredMentees = menteeRepository.
+                        findAllByProgramIdAndStateIn(id, ImmutableList.of(EnrolmentState.POOL, EnrolmentState.PENDING, EnrolmentState.REJECTED));
+                for (Mentee mentee : ignoredMentees) {
+                    mentee.setState(EnrolmentState.FAILED_FROM_WILDCARD);
+                }
+                break;
         }
 
         Thread thread = new Thread(() -> {

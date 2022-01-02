@@ -91,6 +91,9 @@ public class MenteeService {
         Mentor mentor = optionalMentee.get().getAssignedMentor();
         if (isApproved) {
             mentor.setNoOfAssignedMentees(mentor.getNoOfAssignedMentees() + 1);
+        } else if (optionalMentee.get().getState().equals(EnrolmentState.ASSIGNED)) {
+            optionalMentee.get().setRejectedBy(mentor);
+            optionalMentee.get().setAssignedMentor(null);
         } else if (optionalMentee.get().getState().equals(EnrolmentState.APPROVED)) {
             mentor.setNoOfAssignedMentees(mentor.getNoOfAssignedMentees() - 1);
         }
@@ -143,10 +146,8 @@ public class MenteeService {
             menteeCountPreviousMentor = previouslyAssignedMentor.getNoOfAssignedMentees();
         }
         ProgramState programState = optionalMentee.get().getProgram().getState();
-        if (programState.equals(ProgramState.ADMIN_MENTEE_FILTRATION)) {
+        if (programState.equals(ProgramState.ADMIN_MENTEE_FILTRATION) || programState.equals(ProgramState.WILDCARD)) {
             optionalMentee.get().setState(EnrolmentState.ASSIGNED);
-        } else if (programState.equals(ProgramState.WILDCARD)) {;
-            optionalMentee.get().setState(EnrolmentState.APPROVED);
         } else {
             String msg = "Error, Mentee cannot be updated. " +
                     "Program is not in a valid state.";
@@ -183,12 +184,14 @@ public class MenteeService {
             log.error(msg);
             throw new BadRequestException(msg);
         }
-        if (EnrolmentState.REJECTED.equals(enrolmentState) || EnrolmentState.APPROVED.equals(enrolmentState)){
+        if (EnrolmentState.REJECTED.equals(enrolmentState) || EnrolmentState.APPROVED.equals(enrolmentState)
+                || EnrolmentState.ASSIGNED.equals(enrolmentState)){
             String msg = "Error, Mentee cannot be updated. " +
                     "EnrolmentState: "+ enrolmentState +" is not an applicable state.";
             log.error(msg);
             throw new BadRequestException(msg);
         }
+        optionalMentee.get().setAssignedMentor(null);
         optionalMentee.get().setState(enrolmentState);
         return menteeRepository.save(optionalMentee.get());
     }
