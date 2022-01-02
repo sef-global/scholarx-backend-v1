@@ -93,10 +93,8 @@ public class MenteeService {
             mentor.setNoOfAssignedMentees(mentor.getNoOfAssignedMentees() + 1);
         } else if (optionalMentee.get().getState().equals(EnrolmentState.ASSIGNED)) {
             optionalMentee.get().setRejectedBy(mentor);
-            optionalMentee.get().setAssignedMentor(null);
         } else if (optionalMentee.get().getState().equals(EnrolmentState.APPROVED)) {
             optionalMentee.get().setRejectedBy(mentor);
-            optionalMentee.get().setAssignedMentor(null);
             mentor.setNoOfAssignedMentees(mentor.getNoOfAssignedMentees() - 1);
         }
 
