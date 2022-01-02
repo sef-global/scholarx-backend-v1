@@ -2,6 +2,7 @@ package org.sefglobal.scholarx.util;
 
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
+import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
@@ -61,20 +62,8 @@ public class ProgramUtil {
         }
     }
 
-    public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
-        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
+    public void sendMenteeFiltrationEmails(long id, Optional<Program> program) throws MessagingException, IOException {
         List<Mentee> mentees = getMenteesWithoutDuplicatesByProgramId(id);
-
-        // Notify mentors
-        for (Mentor mentor : approvedMentors) {
-
-            String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
-                    "You have student applications waiting to be reviewed. You can approve or reject your mentees " +
-                    "by visiting the <b>ScholarX dashboard.</b>";
-
-            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
-        }
-
         // Notify mentees
         for (Mentee mentee : mentees) {
             String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
@@ -88,17 +77,57 @@ public class ProgramUtil {
         }
     }
 
+    public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
+        List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
+
+        // Notify mentors
+        for (Mentor mentor : approvedMentors) {
+
+            String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
+                    "You have student applications waiting to be reviewed. You can approve or reject your mentees " +
+                    "by visiting the <b>ScholarX dashboard.</b>";
+
+            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+        }
+    }
+
     public void sendOnGoingEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
+        List<Mentee> approvedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
+        List<Mentee> discardedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.FAILED_FROM_WILDCARD);
 
         for (Mentor mentor : approvedMentors) {
 
             String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
-                    "<b>Congratulations!</b><br />Students have accepted you as their mentor. " +
+                    "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make the first contact with them as we have instructed them to wait for your email.";
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+        }
+
+        for (Mentee mentee: approvedMentees) {
+            Profile assignedMentor = mentee.getAssignedMentor().getProfile();
+            String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
+                    "<b>Congratulations!</b><br /> You have been accepted as a mentee to be mentored under" +
+                    assignedMentor.getFirstName() + " " + assignedMentor.getLastName() + ". <br />" +
+                    "You can check your mentor and their details by visiting the <b>ScholarX dashboard.</b> " +
+                    "Please make sure not to contact your mentor until they do as we have instructed them to " +
+                    "make the first contact";
+
+            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+        }
+
+        for (Mentee mentee: discardedMentees) {
+            String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
+                    "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
+                    "However, We regret to inform you that your application couldn't make the cut this time." +
+                    "We encourage you to try again next year and follow us on our social media channels for " +
+                    "future programs. If you have any clarifications, please reach out to us via " +
+                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
+                    "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
+
+            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
     }
 
