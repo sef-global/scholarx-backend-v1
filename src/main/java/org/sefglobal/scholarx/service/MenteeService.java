@@ -158,11 +158,11 @@ public class MenteeService {
         menteeCountPreviousMentor--;
 
         if (previouslyAssignedMentor != null) {
-            previouslyAssignedMentor.setNoOfAssignedMentees(menteeCountPreviousMentor);
+            previouslyAssignedMentor.setNoOfAssignedMentees(Math.max(menteeCountPreviousMentor, 0));
             mentorRepository.save(previouslyAssignedMentor);
         }
 
-        optionalMentor.get().setNoOfAssignedMentees(menteeCountCurrentMentor);
+        optionalMentor.get().setNoOfAssignedMentees(Math.max(menteeCountCurrentMentor, 0));
         optionalMentee.get().setAssignedMentor(optionalMentor.get());
         return menteeRepository.save(optionalMentee.get());
     }
