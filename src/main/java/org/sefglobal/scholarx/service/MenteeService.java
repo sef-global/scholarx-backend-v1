@@ -138,12 +138,6 @@ public class MenteeService {
             throw new ResourceNotFoundException(msg);
         }
 
-        Mentor previouslyAssignedMentor = optionalMentee.get().getAssignedMentor();
-        int menteeCountCurrentMentor = optionalMentor.get().getNoOfAssignedMentees();
-        int menteeCountPreviousMentor = 0;
-        if (previouslyAssignedMentor != null) {
-            menteeCountPreviousMentor = previouslyAssignedMentor.getNoOfAssignedMentees();
-        }
         ProgramState programState = optionalMentee.get().getProgram().getState();
         if (programState.equals(ProgramState.ADMIN_MENTEE_FILTRATION) || programState.equals(ProgramState.WILDCARD)) {
             optionalMentee.get().setState(EnrolmentState.ASSIGNED);
@@ -154,15 +148,12 @@ public class MenteeService {
             throw new BadRequestException(msg);
         }
 
-        menteeCountCurrentMentor++;
-        menteeCountPreviousMentor--;
-
+        Mentor previouslyAssignedMentor = optionalMentee.get().getAssignedMentor();
         if (previouslyAssignedMentor != null) {
-            previouslyAssignedMentor.setNoOfAssignedMentees(Math.max(menteeCountPreviousMentor, 0));
-            mentorRepository.save(previouslyAssignedMentor);
+            previouslyAssignedMentor.setNoOfAssignedMentees(previouslyAssignedMentor.getNoOfAssignedMentees() - 1);
         }
 
-        optionalMentor.get().setNoOfAssignedMentees(Math.max(menteeCountCurrentMentor, 0));
+        optionalMentor.get().setNoOfAssignedMentees(optionalMentor.get().getNoOfAssignedMentees() + 1);
         optionalMentee.get().setAssignedMentor(optionalMentor.get());
         return menteeRepository.save(optionalMentee.get());
     }
