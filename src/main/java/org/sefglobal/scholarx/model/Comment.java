@@ -2,19 +2,12 @@ package org.sefglobal.scholarx.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 
 @Entity
 @Table(name = "comment")
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
+public class Comment extends BaseScholarxModel {
     @ManyToOne
     private Mentee mentee;
 
@@ -22,15 +15,7 @@ public class Comment {
     private String comment;
 
     @ManyToOne
-    private Profile profile;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    private Profile commented_by;
 
     public String getComment() {
         return comment;
@@ -40,12 +25,12 @@ public class Comment {
         this.comment = comment;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public Profile getCommented_by() {
+        return commented_by;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setCommented_by(Profile commented_by) {
+        this.commented_by = commented_by;
     }
 
     public Mentee getMentee() {

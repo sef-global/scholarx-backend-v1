@@ -5,10 +5,13 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
 import org.sefglobal.scholarx.model.Comment;
 import org.sefglobal.scholarx.model.Mentee;
+import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.repository.CommentRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
+import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
+import org.sefglobal.scholarx.util.ProfileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,11 +25,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ProfileRepository profileRepository;
     private final MenteeRepository menteeRepository;
+    private final MentorRepository mentorRepository;
 
     public CommentService(ProfileRepository profileRepository,MenteeRepository menteeRepository,
+                          MentorRepository mentorRepository,
                                 CommentRepository commentRepository){
         this.commentRepository = commentRepository;
         this.profileRepository = profileRepository;
+        this.mentorRepository = mentorRepository;
         this.menteeRepository = menteeRepository;
     }
 
@@ -47,10 +53,11 @@ public class CommentService {
         return commentRepository.findAllByMenteeId(menteeId);
     }
 
-    public Comment addMenteeComment(long menteeId, long profileId, String menteeComment)
+    public Comment addMenteeComment(long menteeId, long profileId, Comment menteeComment)
             throws ResourceNotFoundException, UnauthorizedException {
         Optional<Profile> optionalProfile = profileRepository.findById(profileId);
         Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
+        List<Mentor> optionalMentor = mentorRepository.findAllByProfileId(profileId);
 
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by id: " + menteeId + " doesn't exist.";
@@ -62,40 +69,49 @@ public class CommentService {
             String msg = "Error, User by id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
-        } else if (optionalMentee.get().getProfile().getId() == profileId) {
-            String msg = "Error, User by id: " + menteeId + " is not allowed access.";
+        } else if (!(optionalProfile.get().getType().equals(ProfileType.ADMIN) ||
+                optionalMentor.contains(optionalMentee.get().getAssignedMentor()))) {
+            String msg = "Error, User by id: " + profileId + " is not allowed access.";
             log.error(msg);
             throw new UnauthorizedException(msg);
         }
 
         Comment comment = new Comment();
-        comment.setProfile(optionalProfile.get());
-        comment.setComment(menteeComment);
+        comment.setCommented_by(optionalProfile.get());
+        comment.setComment(menteeComment.getComment());
         comment.setMentee(optionalMentee.get());
         return commentRepository.save(comment);
     }
 
-    public Comment updateComment(long id, long profileId, String menteeComment)
-            throws ResourceNotFoundException {
+    public Comment updateComment(long id, long profileId, Comment menteeComment)
+            throws ResourceNotFoundException, UnauthorizedException {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (!optionalComment.isPresent()) {
             String msg = "Error, Comment with id: " + id + " cannot be deleted. " +
                     "Comment doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
+        } else if (menteeComment.getCommented_by().getId() != profileId) {
+            String msg = "Error, User by id: " + profileId + " is not allowed access.";
+            log.error(msg);
+            throw new UnauthorizedException(msg);
         }
-        optionalComment.get().setComment(menteeComment);
+        optionalComment.get().setComment(menteeComment.getComment());
         return commentRepository.save(optionalComment.get());
     }
 
-    public void deleteComment(long id)
-            throws ResourceNotFoundException {
+    public void deleteComment(long id, long profileId)
+            throws ResourceNotFoundException, UnauthorizedException {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (!optionalComment.isPresent()) {
             String msg = "Error, Comment with id: " + id + " cannot be deleted. " +
                     "Comment doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
+        } else if (optionalComment.get().getCommented_by().getId() != profileId) {
+            String msg = "Error, User by id: " + profileId + " is not allowed access.";
+            log.error(msg);
+            throw new UnauthorizedException(msg);
         }
         commentRepository.deleteById(id);
     }

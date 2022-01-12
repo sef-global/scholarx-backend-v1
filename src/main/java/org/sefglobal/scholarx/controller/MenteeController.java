@@ -27,15 +27,15 @@ public class MenteeController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/{id}/comment")
+    @PostMapping("/{id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public Comment addComment(
             Authentication authentication,
-            @Valid @RequestBody Map<String, String> payload,
+            @Valid @RequestBody Comment comment,
             @PathVariable long id)
             throws ResourceNotFoundException, UnauthorizedException {
         Profile profile = (Profile) authentication.getPrincipal();
-        return commentService.addMenteeComment(id,profile.getId(), payload.get("comment"));
+        return commentService.addMenteeComment(id,profile.getId(), comment);
     }
 
     @GetMapping("/{id}/comments")
@@ -53,21 +53,18 @@ public class MenteeController {
     @ResponseStatus(HttpStatus.OK)
     public Comment updateComment(@PathVariable long id,
                                         Authentication authentication,
-                                        @Valid @RequestBody Map<String, String> payload)
+                                        @Valid @RequestBody Comment comment)
             throws ResourceNotFoundException, BadRequestException, UnauthorizedException {
         Profile profile = (Profile) authentication.getPrincipal();
-        if (!payload.containsKey("comment")) {
-            String msg = "Error, Value cannot be null.";
-            throw new BadRequestException(msg);
-        }
-        return commentService.updateComment(id, profile.getId(), payload.get("comment"));
+        return commentService.updateComment(id, profile.getId(), comment);
     }
 
     @DeleteMapping("/comment/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMentee(@PathVariable long id)
-            throws ResourceNotFoundException {
-        commentService.deleteComment(id);
+    public void deleteMenteeComment(@PathVariable long id,Authentication authentication)
+            throws ResourceNotFoundException, UnauthorizedException {
+        Profile profile = (Profile) authentication.getPrincipal();
+        commentService.deleteComment(id, profile.getId());
     }
 
     @PutMapping("/{id}/state")
