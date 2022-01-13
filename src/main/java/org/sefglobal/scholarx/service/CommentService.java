@@ -39,13 +39,16 @@ public class CommentService {
     public List<Comment> getAllMenteeComments(long menteeId, long profileId)
             throws ResourceNotFoundException, BadRequestException, UnauthorizedException {
         Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
+        Optional<Profile> optionalProfile = profileRepository.findById(profileId);
+        List<Mentor> optionalMentor = mentorRepository.findAllByProfileId(profileId);
 
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by id: " + menteeId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
-        } else if (optionalMentee.get().getProfile().getId() == profileId) {
-            String msg = "Error, User by id: " + menteeId + " is not allowed access.";
+        } else if (!(optionalProfile.get().getType().equals(ProfileType.ADMIN) ||
+                optionalMentor.contains(optionalMentee.get().getAssignedMentor()))) {
+            String msg = "Error, User by id: " + profileId + " is not allowed access.";
             log.error(msg);
             throw new UnauthorizedException(msg);
         }
@@ -91,7 +94,7 @@ public class CommentService {
                     "Comment doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
-        } else if (menteeComment.getCommented_by().getId() != profileId) {
+        } else if (optionalComment.get().getCommented_by().getId() != profileId) {
             String msg = "Error, User by id: " + profileId + " is not allowed access.";
             log.error(msg);
             throw new UnauthorizedException(msg);
