@@ -1,15 +1,12 @@
 package org.sefglobal.scholarx.service;
 
-import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
 import org.sefglobal.scholarx.model.Comment;
 import org.sefglobal.scholarx.model.Mentee;
-import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.repository.CommentRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
-import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.ProfileType;
 import org.slf4j.Logger;
@@ -25,29 +22,25 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ProfileRepository profileRepository;
     private final MenteeRepository menteeRepository;
-    private final MentorRepository mentorRepository;
 
     public CommentService(ProfileRepository profileRepository,MenteeRepository menteeRepository,
-                          MentorRepository mentorRepository,
                                 CommentRepository commentRepository){
         this.commentRepository = commentRepository;
         this.profileRepository = profileRepository;
-        this.mentorRepository = mentorRepository;
         this.menteeRepository = menteeRepository;
     }
 
     public List<Comment> getAllMenteeComments(long menteeId, long profileId)
-            throws ResourceNotFoundException, BadRequestException, UnauthorizedException {
+            throws ResourceNotFoundException, UnauthorizedException {
         Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
         Optional<Profile> optionalProfile = profileRepository.findById(profileId);
-        List<Mentor> optionalMentor = mentorRepository.findAllByProfileId(profileId);
 
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by id: " + menteeId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         } else if (!(optionalProfile.get().getType().equals(ProfileType.ADMIN) ||
-                optionalMentor.contains(optionalMentee.get().getAssignedMentor()))) {
+                optionalMentee.get().getAssignedMentor().getProfile().getId() == profileId)) {
             String msg = "Error, User by id: " + profileId + " is not allowed access.";
             log.error(msg);
             throw new UnauthorizedException(msg);
@@ -60,7 +53,6 @@ public class CommentService {
             throws ResourceNotFoundException, UnauthorizedException {
         Optional<Profile> optionalProfile = profileRepository.findById(profileId);
         Optional<Mentee> optionalMentee = menteeRepository.findById(menteeId);
-        List<Mentor> optionalMentor = mentorRepository.findAllByProfileId(profileId);
 
         if (!optionalMentee.isPresent()) {
             String msg = "Error, Mentee by id: " + menteeId + " doesn't exist.";
@@ -73,7 +65,7 @@ public class CommentService {
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         } else if (!(optionalProfile.get().getType().equals(ProfileType.ADMIN) ||
-                optionalMentor.contains(optionalMentee.get().getAssignedMentor()))) {
+                optionalMentee.get().getAssignedMentor().getProfile().getId() == profileId)) {
             String msg = "Error, User by id: " + profileId + " is not allowed access.";
             log.error(msg);
             throw new UnauthorizedException(msg);
@@ -90,7 +82,7 @@ public class CommentService {
             throws ResourceNotFoundException, UnauthorizedException {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (!optionalComment.isPresent()) {
-            String msg = "Error, Comment with id: " + id + " cannot be deleted. " +
+            String msg = "Error, Comment with id: " + id + " cannot be updated. " +
                     "Comment doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
