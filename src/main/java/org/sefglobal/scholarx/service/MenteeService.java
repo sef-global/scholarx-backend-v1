@@ -181,7 +181,15 @@ public class MenteeService {
             log.error(msg);
             throw new BadRequestException(msg);
         }
-        optionalMentee.get().setAssignedMentor(null);
+
+
+        if(optionalMentee.get().getState().equals(EnrolmentState.ASSIGNED)){
+            Mentor assignedMentor = optionalMentee.get().getAssignedMentor();
+            assignedMentor.setNoOfAssignedMentees(assignedMentor.getNoOfAssignedMentees() - 1);
+            optionalMentee.get().setAssignedMentor(null);
+            mentorRepository.save(assignedMentor);
+        }
+    
         optionalMentee.get().setState(enrolmentState);
         return menteeRepository.save(optionalMentee.get());
     }
