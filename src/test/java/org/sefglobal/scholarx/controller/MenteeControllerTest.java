@@ -7,6 +7,7 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.service.MenteeService;
+import org.sefglobal.scholarx.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,9 +35,11 @@ public class MenteeControllerTest {
 	private ObjectMapper objectMapper;
 	@MockBean
 	private MenteeService menteeService;
+	@MockBean
+	private CommentService commentService;
 	private final Long menteeId = 1L;
 	private final Long mentorId = 1L;
-	
+
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();
 		profile.setId(1);
@@ -122,7 +125,7 @@ public class MenteeControllerTest {
 				.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void updateAssignedMentor_withValidData_thenReturns200() throws Exception {
@@ -133,7 +136,7 @@ public class MenteeControllerTest {
 				.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void updateAssignedMentor_withUnavailableData_thenReturns404() throws Exception {
@@ -142,13 +145,13 @@ public class MenteeControllerTest {
 		doThrow(ResourceNotFoundException.class)
 				.when(menteeService)
 				.updateAssignedMentor(anyLong(), anyLong());
-		
+
 		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void updateAssignedMentor_withUnsuitableData_thenReturns400() throws Exception {
@@ -157,7 +160,7 @@ public class MenteeControllerTest {
 		doThrow(BadRequestException.class)
 				.when(menteeService)
 				.updateAssignedMentor(anyLong(), anyLong());
-		
+
 		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(payload)))
