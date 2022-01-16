@@ -109,7 +109,7 @@ public class ProgramUtil {
         for (Mentee mentee: approvedMentees) {
             Profile assignedMentor = mentee.getAssignedMentor().getProfile();
             String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
-                    "<b>Congratulations!</b><br /> You have been accepted as a mentee to be mentored under" +
+                    "<b>Congratulations!</b><br /> You have been accepted as a mentee to be mentored under " +
                     assignedMentor.getFirstName() + " " + assignedMentor.getLastName() + ". <br />" +
                     "You can check your mentor and their details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make sure not to contact your mentor until they do as we have instructed them to " +
