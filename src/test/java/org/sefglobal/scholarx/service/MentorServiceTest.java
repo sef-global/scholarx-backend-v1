@@ -16,6 +16,7 @@ import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
+import org.sefglobal.scholarx.util.ProgramState;
 
 import java.util.Optional;
 
@@ -85,7 +86,10 @@ public class MentorServiceTest {
             throws ResourceNotFoundException, BadRequestException {
         final Mentor mentor = new Mentor();
         mentor.setState(EnrolmentState.APPROVED);
-        mentor.setProgram(new Program());
+
+        Program program = new Program();
+        program.setState(ProgramState.MENTEE_APPLICATION);
+        mentor.setProgram(program);
 
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
@@ -142,6 +146,10 @@ public class MentorServiceTest {
     void applyAsMentee_withUnavailableProfile_thenThrowResourceNotFound() {
         final Mentor mentor = new Mentor();
         mentor.setState(EnrolmentState.APPROVED);
+
+        Program program = new Program();
+        program.setState(ProgramState.MENTEE_APPLICATION);
+        mentor.setProgram(program);
 
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)

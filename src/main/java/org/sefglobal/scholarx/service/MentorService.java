@@ -11,6 +11,7 @@ import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
+import org.sefglobal.scholarx.util.ProgramState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -104,6 +105,7 @@ public class MentorService {
      * @throws BadRequestException is thrown if the applying {@link Mentor} is not in applicable state
      * @throws BadRequestException is thrown if the applying user is already a {@link Mentor}
      * @throws BadRequestException is thrown if the applying user has already applied for the {@link Mentor}
+     * @throws BadRequestException is thrown if the applying program {@link Program} is not in applicable state {@link ProgramState}
      */
     public Mentee applyAsMentee(long mentorId, long profileId, Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
@@ -121,6 +123,12 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
 
+        if (!ProgramState.MENTEE_APPLICATION.equals(optionalMentor.get().getProgram().getState())) {
+            String msg = "Error, Unable to apply as a mentee. " +
+                         "Program with id: " + optionalMentor.get().getProgram().getId() + " is not in the applicable state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
+        }
         Optional<Profile> optionalProfile = profileRepository.findById(profileId);
         if (!optionalProfile.isPresent()) {
             String msg = "Error, Unable to apply as a mentee. " +
