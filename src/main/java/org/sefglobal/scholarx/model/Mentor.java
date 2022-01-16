@@ -28,7 +28,7 @@ public class Mentor extends EnrolledUser {
     @Column
     private String position;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String bio;
 
     @Column

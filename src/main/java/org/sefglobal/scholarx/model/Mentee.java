@@ -24,10 +24,10 @@ public class Mentee extends EnrolledUser {
     @Column
     private String year;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String intent;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String reasonForChoice;
 
     @ManyToOne(optional = false)
