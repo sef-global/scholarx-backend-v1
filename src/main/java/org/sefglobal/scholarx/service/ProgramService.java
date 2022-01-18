@@ -433,6 +433,7 @@ public class ProgramService {
      * @throws ResourceNotFoundException is thrown if the {@link Mentor} doesn't exist
      * @throws BadRequestException       if the {@link Mentor} is not in the valid state
      * @throws BadRequestException       if the {@link Mentee} is not in the valid state
+     * @throws BadRequestException is thrown if the applying program {@link Program} is not in applicable state {@link ProgramState}
      */
     public Mentee updateMenteeData(long profileId, long programId, Mentee mentee)
             throws ResourceNotFoundException, BadRequestException {
@@ -443,6 +444,12 @@ public class ProgramService {
                     "Mentee doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
+        }
+        if (!ProgramState.MENTEE_APPLICATION.equals(optionalMentee.get().getProgram().getState())) {
+            String msg = "Error, Unable to update mentee application. " +
+                         "Program with id: " + programId + " is not in the valid state.";
+            log.error(msg);
+            throw new BadRequestException(msg);
         }
         Optional<Mentor> optionalMentor = mentorRepository.findById(mentee.getAppliedMentor().getId());
         if (!optionalMentor.isPresent()) {

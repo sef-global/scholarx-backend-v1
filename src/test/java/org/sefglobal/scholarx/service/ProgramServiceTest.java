@@ -46,6 +46,7 @@ public class ProgramServiceTest {
     private final Profile profile = new Profile();
     private final Mentee mentee = new Mentee();
 
+
     @Test
     void updateState_withValidData_thenReturnUpdatedData()
             throws ResourceNotFoundException {
@@ -361,6 +362,12 @@ public class ProgramServiceTest {
         mentor.setState(EnrolmentState.APPROVED);
         mentee.setState(EnrolmentState.PENDING);
         mentee.setAppliedMentor(mentor);
+
+        Program program = new Program();
+        program.setId(programId);
+        program.setState(ProgramState.MENTEE_APPLICATION);
+        mentee.setProgram(program);
+
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
                 .findByProgramIdAndProfileId(anyLong(), anyLong());
@@ -394,6 +401,12 @@ public class ProgramServiceTest {
         mentee.setState(EnrolmentState.APPROVED);
         mentor.setState(EnrolmentState.APPROVED);
         mentee.setAppliedMentor(mentor);
+        
+        Program program = new Program();
+        program.setId(programId);
+        program.setState(ProgramState.MENTEE_APPLICATION);
+        mentee.setProgram(program);
+
         doReturn(Optional.of(mentee))
                 .when(menteeRepository)
                 .findByProgramIdAndProfileId(anyLong(), anyLong());
