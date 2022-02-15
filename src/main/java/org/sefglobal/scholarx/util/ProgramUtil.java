@@ -6,6 +6,7 @@ import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
+import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,9 @@ public class ProgramUtil {
 
     @Autowired
     MenteeRepository menteeRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
 
     @Autowired
     private EmailService emailService;
@@ -129,6 +133,18 @@ public class ProgramUtil {
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
+    }
+
+    public void sendConfirmationEmails(long profileId, Optional<Program> program) throws MessagingException, IOException {
+        Optional<Profile> profile = profileRepository.findById(profileId);
+        String message = "Dear " + profile.get().getFirstName() + ",<br /><br />" +
+                "Thank you very much for applying to the " + program.get().getTitle() + " program. Your application has been received. " +
+                "You can view/edit your application by visiting the <b>ScholarX dashboard.</b> " +
+                "Reach out to us via " +
+                "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
+                "for any clarifications.";
+
+        emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
     }
 
     /**
