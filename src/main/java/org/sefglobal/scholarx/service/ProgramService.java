@@ -309,7 +309,18 @@ public class ProgramService {
         savedMentor.setPosition(mentor.getPosition());
         savedMentor.setSlots(mentor.getSlots());
         savedMentor.setState(EnrolmentState.PENDING);
-        return mentorRepository.save(savedMentor);
+        Mentor savedMentorEntity = mentorRepository.save(savedMentor);
+
+        Thread thread = new Thread(() -> {
+            try {
+                programUtil.sendConfirmationEmails(profileId, optionalProgram);
+            } catch (Exception exception) {
+                log.error("Email service error: ", exception);
+            }
+        });
+        thread.start();
+
+        return savedMentorEntity;
     }
 
     /**
