@@ -7,13 +7,16 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
+import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.ProgramUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +30,9 @@ public class MentorService {
     private final MenteeRepository menteeRepository;
     private final ProfileRepository profileRepository;
     private final List<EnrolmentState> validMentorStates = ImmutableList.of(EnrolmentState.APPROVED, EnrolmentState.REJECTED, EnrolmentState.REMOVED);
+
+    @Autowired
+    private ProgramUtil programUtil;
 
     public MentorService(MentorRepository mentorRepository,
                          MenteeRepository menteeRepository,
@@ -123,9 +129,10 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
 
+        Program program = optionalMentor.get().getProgram();
         if (!ProgramState.MENTEE_APPLICATION.equals(optionalMentor.get().getProgram().getState())) {
             String msg = "Error, Unable to apply as a mentee. " +
-                         "Program with id: " + optionalMentor.get().getProgram().getId() + " is not in the applicable state.";
+                         "Program with id: " + program.getId() + " is not in the applicable state.";
             log.error(msg);
             throw new BadRequestException(msg);
         }
@@ -138,7 +145,7 @@ public class MentorService {
         }
 
         Optional<Mentor> alreadyRegisteredMentor = mentorRepository
-                .findByProfileIdAndProgramId(profileId, optionalMentor.get().getProgram().getId());
+                .findByProfileIdAndProgramId(profileId, program.getId());
         if (alreadyRegisteredMentor.isPresent() &&
                 alreadyRegisteredMentor.get().getState().equals(EnrolmentState.APPROVED)) {
             String msg = "Error, Unable to apply as a mentee. " +
@@ -147,7 +154,7 @@ public class MentorService {
             throw new BadRequestException(msg);
         }
 
-        Optional<Mentee> alreadyAppliedMentee = menteeRepository.findByProgramIdAndProfileId(optionalMentor.get().getProgram().getId(), profileId);
+        Optional<Mentee> alreadyAppliedMentee = menteeRepository.findByProgramIdAndProfileId(program.getId(), profileId);
         if (alreadyAppliedMentee.isPresent()) {
             String msg = "Error, Unable to apply as a mentee. " +
                          "Profile with id: " + profileId + " has already applied for this program.";
@@ -156,7 +163,7 @@ public class MentorService {
         }
 
         mentee.setProfile(optionalProfile.get());
-        mentee.setProgram(optionalMentor.get().getProgram());
+        mentee.setProgram(program);
         mentee.setAppliedMentor(optionalMentor.get());
         mentee.setCourse(mentee.getCourse());
         mentee.setUniversity(mentee.getUniversity());
@@ -164,7 +171,18 @@ public class MentorService {
         mentee.setIntent(mentee.getIntent());
         mentee.setReasonForChoice(mentee.getReasonForChoice());
         mentee.setState(EnrolmentState.PENDING);
-        return menteeRepository.save(mentee);
+        Mentee savedMenteeEntity = menteeRepository.save(mentee);
+
+        Thread thread = new Thread(() -> {
+            try {
+                programUtil.sendConfirmationEmails(profileId, Optional.of(program));
+            } catch (Exception exception) {
+                log.error("Email service error: ", exception);
+            }
+        });
+        thread.start();
+
+        return savedMenteeEntity;
     }
 
     /**
