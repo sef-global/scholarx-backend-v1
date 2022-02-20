@@ -1,4 +1,4 @@
-name: Deploy frontend
+name: Frontend Deployment
 on:
   workflow_dispatch
 jobs:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout frontend
         uses: actions/checkout@v2
         with:
-          repository: Piumal1999/scholarx-frontend
+          repository: sefglobal/scholarx-frontend
           ref: scholarx-feb-edition
           path: frontend
       - name: Use Node.js ${{ matrix.node-version }}
