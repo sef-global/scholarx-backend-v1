@@ -1,0 +1,36 @@
+name: Deploy frontend
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout backend
+        uses: actions/checkout@v2
+        with:
+          ref: sx-feb-demo
+          path: backend
+      - name: Checkout frontend
+        uses: actions/checkout@v2
+        with:
+          repository: Piumal1999/scholarx-frontend
+          ref: scholarx-feb-edition
+          path: frontend
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies and Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+      - name: Copy static files
+        run: |
+          cp frontend/dist/bundle.js backend/src/main/resources/static/
+          cp frontend/dist/index.html backend/src/main/resources/static/
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.12.1
+        with:
+          path: backend
