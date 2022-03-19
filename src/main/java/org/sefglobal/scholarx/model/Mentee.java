@@ -30,6 +30,9 @@ public class Mentee extends EnrolledUser {
     @Column(columnDefinition = "TEXT")
     private String reasonForChoice;
 
+    @Column(columnDefinition = "TEXT")
+    private String resumeUrl;
+
     @ManyToOne(optional = false)
     private Mentor appliedMentor;
 
@@ -102,5 +105,13 @@ public class Mentee extends EnrolledUser {
 
     public void setRejectedBy(Mentor rejectedBy) {
         this.rejectedBy = rejectedBy;
+    }
+
+    public String getResumeUrl() {
+        return resumeUrl;
+    }
+
+    public void setResumeUrl(String resumeUrl) {
+        this.resumeUrl = resumeUrl;
     }
 }

@@ -170,6 +170,7 @@ public class MentorService {
         mentee.setYear(mentee.getYear());
         mentee.setIntent(mentee.getIntent());
         mentee.setReasonForChoice(mentee.getReasonForChoice());
+        mentee.setResumeUrl(mentee.getResumeUrl());
         mentee.setState(EnrolmentState.PENDING);
         Mentee savedMenteeEntity = menteeRepository.save(mentee);
 
