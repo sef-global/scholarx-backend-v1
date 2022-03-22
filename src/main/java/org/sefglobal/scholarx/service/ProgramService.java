@@ -485,6 +485,7 @@ public class ProgramService {
             existingMentee.setYear(mentee.getYear());
             existingMentee.setReasonForChoice(mentee.getReasonForChoice());
             existingMentee.setResumeUrl(mentee.getResumeUrl());
+            existingMentee.setAchievements(mentee.getAchievements());
         } else {
             String msg = "Error, Application cannot be updated. " +
                     "Mentee is not in a valid state.";
