@@ -33,6 +33,9 @@ public class Mentee extends EnrolledUser {
     @Column(columnDefinition = "TEXT")
     private String resumeUrl;
 
+    @Column(columnDefinition = "TEXT")
+    private String achievements;
+
     @ManyToOne(optional = false)
     private Mentor appliedMentor;
 
@@ -113,5 +116,13 @@ public class Mentee extends EnrolledUser {
 
     public void setResumeUrl(String resumeUrl) {
         this.resumeUrl = resumeUrl;
+    }
+
+    public String getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(String achievements) {
+        this.achievements = achievements;
     }
 }
