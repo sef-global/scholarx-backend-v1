@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -24,6 +26,9 @@ public class ProgramService {
 
     @Autowired
     private ProgramUtil programUtil;
+
+    @Autowired
+    private EmailService emailService;
 
     public ProgramService(ProgramRepository programRepository,
                           ProfileRepository profileRepository,
@@ -513,5 +518,71 @@ public class ProgramService {
             throw new NoContentException(msg);
         }
         return optionalMentee.get();
+    }
+
+    /**
+     * Sends bulk emails to the recipients in {@link BulkEmailDto}
+     *
+     * @param programId    which is the id of the {@link Program}
+     * @param bulkEmailDto which contains the recipients and the message
+     * @throws ResourceNotFoundException if the program doesn't exist
+     */
+    public void sendBulkEmails(long programId, BulkEmailDto bulkEmailDto)
+            throws ResourceNotFoundException {
+        Optional<Program> optionalProgram = programRepository.findById(programId);
+        if (!optionalProgram.isPresent()) {
+            String msg = "Error, Program with id: " + programId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        Set<String> emails = new HashSet<>();
+        switch (bulkEmailDto.getMailGroup()) {
+            case ALL:
+                optionalProgram.get().getEnrolledUsers()
+                        .forEach(user -> emails.add(user.getProfile().getEmail()));
+                break;
+
+            case ALL_MENTORS:
+                mentorRepository.findAllByProgramId(programId)
+                        .forEach(mentor -> emails.add(mentor.getProfile().getEmail()));
+                break;
+
+            case ALL_MENTEES:
+                menteeRepository.findAllByProgramId(programId)
+                        .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
+                break;
+
+            case SELECTED_MENTORS:
+                mentorRepository.findAllByProgramIdAndState(programId, EnrolmentState.APPROVED)
+                        .forEach(mentor -> emails.add(mentor.getProfile().getEmail()));
+                break;
+
+            case SELECTED_MENTEES:
+                menteeRepository.findAllByProgramIdAndState(programId, EnrolmentState.APPROVED)
+                        .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
+                break;
+
+            case REJECTED_MENTORS:
+                mentorRepository.findAllByProgramIdAndState(programId, EnrolmentState.REJECTED)
+                        .forEach(mentor -> emails.add(mentor.getProfile().getEmail()));
+                break;
+
+            case REJECTED_MENTEES:
+                menteeRepository.findAllByProgramIdAndState(programId, EnrolmentState.REJECTED)
+                        .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
+                break;
+        }
+
+        emails.addAll(bulkEmailDto.getAdditionalEmails());
+        Thread thread = new Thread(() -> {
+            for (String email : emails) {
+                try {
+                    emailService.sendEmail(email, bulkEmailDto.getSubject(), bulkEmailDto.getMessage(), true);
+                } catch (MessagingException | IOException exception) {
+                    log.error("Email service error: ", exception);
+                }
+            }
+        });
+        thread.start();
     }
 }
