@@ -514,4 +514,28 @@ public class ProgramService {
         }
         return optionalMentee.get();
     }
+
+    /**
+     * Retrieves all the emails from {@link EnrolledUser}
+     *
+     * @param programId which is the id of the {@link Program}
+     * @return {@link List<String>}
+     * @throws ResourceNotFoundException if the {@link Program} doesn't exist
+     */
+    public List<String> getEmails(long programId)
+    throws ResourceNotFoundException {
+        Optional<Program> program = programRepository.findById(programId);
+        if (!program.isPresent()) {
+            String msg = "Error, Program by id: " + programId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        List<EnrolledUser> enrolledUsers = program.get().getEnrolledUsers();
+        List<String> emails = new ArrayList<String>();
+
+        for(EnrolledUser user: enrolledUsers) {
+            emails.add(user.getProfile().getEmail());
+        }
+        return emails;
+    }
 }

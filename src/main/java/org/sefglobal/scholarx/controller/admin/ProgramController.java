@@ -70,4 +70,11 @@ public class ProgramController {
         return programService.getAllMenteesByProgramId(id);
     }
 
+    @GetMapping("/{id}/emails")
+    @ResponseStatus(HttpStatus.OK)
+    public List<String> getAllEmails(@PathVariable long id)
+            throws ResourceNotFoundException {
+        return programService.getEmails(id);
+    }
+
 }
