@@ -45,22 +45,26 @@ public class ProgramUtil {
                         "apply and keep you posted on the progress via email. Until " +
                         "then, read more about student experience " +
                         "<a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via " +
-                        "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
+                        "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> "
+                        +
                         "for any clarifications.";
 
-                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()),
+                        message, false);
 
             } else if (mentor.getState().name().equals("REJECTED")) {
 
                 message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
-                        "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
+                        "Thank you very much for taking your time to apply for the " + program.get().getTitle()
+                        + " program. " +
                         "However, due to the competitive nature of the mentor applications, your application " +
                         "did not make it to the final list of mentors for the program. We encourage you to try " +
                         "again next year and follow us on our social media channels for future programs. " +
                         "If you have any clarifications, please reach out to us via " +
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
-                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()),
+                        message, false);
 
             }
         }
@@ -71,9 +75,12 @@ public class ProgramUtil {
         // Notify mentees
         for (Mentee mentee : mentees) {
             String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
-                    "Thank you very much for applying to the " + program.get().getTitle() + " program. Your application has been received. " +
-                    "Mentors will soon review your applications and we will keep you posted on the progress via email. " +
-                    "Until then, read more about student experience <a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via " +
+                    "Thank you very much for applying to the " + program.get().getTitle()
+                    + " program. Your application has been received. " +
+                    "Mentors will soon review your applications and we will keep you posted on the progress via email. "
+                    +
+                    "Until then, read more about student experience <a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via "
+                    +
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                     "for any clarifications.";
 
@@ -83,14 +90,31 @@ public class ProgramUtil {
 
     public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-
         // Notify mentors
         for (Mentor mentor : approvedMentors) {
 
             String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
-                    "You have student applications waiting to be reviewed. You can approve or reject your mentees " +
-                    "by visiting the <b>ScholarX dashboard.</b>";
 
+                    "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" + 
+                    "There are a few points that we would like to share with you with regard to the mentee applications.<br />"+
+                    "<ul>"+
+                    "<li>The minimum word limit for each question of the application was introduced halfway through the application"+
+                    "period in order to enhance competitiveness. Due to this reason, the applications which were received at the earliest"+
+                    " stage might contain relatively short answers.</li>"+
+                    "<li>Mentor-mentee matching process consists of two rounds.</li>"+
+                    "<li>Some mentors have received an excess number of applications and we have selected potential mentees for those mentors"+
+                    "after a filtering process. We kindly request you to go through these applications and select the mentees of your choice"+
+                    "and decline the mentees who are not commendable enough before 28th April 11.59 p.m (IST), so that we can replace them during"+
+                    "the second round of matching.</li>"+
+                    "<li>Some mentors have received less than the number of available slots or none, owing to facts such as lack of compatibility"+
+                    "of subject areas, more mentors representing the same subject area etc. We will be choosing the potential mentees for those mentors"+
+                    "as well during the second round of matching.</li><br />"+
+                    "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
+                    "If you have any further queries please don't hesitate to contact us at"+
+                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a><br /><br />"+
+                    "Thank you and Best Regards<br />"+
+                    "SEF Team";
+        
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
     }
@@ -98,7 +122,8 @@ public class ProgramUtil {
     public void sendOnGoingEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
         List<Mentee> approvedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-        List<Mentee> discardedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.FAILED_FROM_WILDCARD);
+        List<Mentee> discardedMentees = menteeRepository.findAllByProgramIdAndState(id,
+                EnrolmentState.FAILED_FROM_WILDCARD);
 
         for (Mentor mentor : approvedMentors) {
 
@@ -110,7 +135,7 @@ public class ProgramUtil {
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
 
-        for (Mentee mentee: approvedMentees) {
+        for (Mentee mentee : approvedMentees) {
             Profile assignedMentor = mentee.getAssignedMentor().getProfile();
             String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
                     "<b>Congratulations!</b><br /> You have been accepted as a mentee to be mentored under  " +
@@ -122,9 +147,10 @@ public class ProgramUtil {
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
 
-        for (Mentee mentee: discardedMentees) {
+        for (Mentee mentee : discardedMentees) {
             String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
-                    "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
+                    "Thank you very much for taking your time to apply for the " + program.get().getTitle()
+                    + " program. " +
                     "However, We regret to inform you that your application couldn't make the cut this time." +
                     "We encourage you to try again next year and follow us on our social media channels for " +
                     "future programs. If you have any clarifications, please reach out to us via " +
@@ -135,10 +161,12 @@ public class ProgramUtil {
         }
     }
 
-    public void sendConfirmationEmails(long profileId, Optional<Program> program) throws MessagingException, IOException {
+    public void sendConfirmationEmails(long profileId, Optional<Program> program)
+            throws MessagingException, IOException {
         Optional<Profile> profile = profileRepository.findById(profileId);
         String message = "Dear " + profile.get().getFirstName() + ",<br /><br />" +
-                "Thank you very much for applying to the " + program.get().getTitle() + " program. Your application has been received. " +
+                "Thank you very much for applying to the " + program.get().getTitle()
+                + " program. Your application has been received. " +
                 "You can view/edit your application by visiting the <b>ScholarX dashboard.</b> " +
                 "Reach out to us via " +
                 "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
@@ -153,7 +181,7 @@ public class ProgramUtil {
     private List<Mentee> getMenteesWithoutDuplicatesByProgramId(long id) {
         List<Mentee> output = new ArrayList<>();
         List<Long> idList = new ArrayList<>();
-        for (Mentee mentee: menteeRepository.findAllByProgramId(id)) {
+        for (Mentee mentee : menteeRepository.findAllByProgramId(id)) {
             if (!idList.contains(mentee.getProfile().getId())) {
                 idList.add(mentee.getProfile().getId());
                 output.add(mentee);
