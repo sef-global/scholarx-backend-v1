@@ -1,15 +1,13 @@
 package org.sefglobal.scholarx.model;
 
-import lombok.Data;
 import org.sefglobal.scholarx.util.MailGroup;
 
 import java.util.List;
 
-@Data
 public class BulkEmailDto {
 	private String subject;
 	private String message;
-	private MailGroup mailGroup;
+	private List<MailGroup> mailGroups;
 	private List<String> additionalEmails;
 
 	public String getSubject() {
@@ -28,12 +26,12 @@ public class BulkEmailDto {
 		this.message = message;
 	}
 
-	public MailGroup getMailGroup() {
-		return mailGroup;
+	public List<MailGroup> getMailGroups() {
+		return mailGroups;
 	}
 
-	public void setMailGroup(MailGroup mailGroup) {
-		this.mailGroup = mailGroup;
+	public void setMailGroups(List<MailGroup> mailGroups) {
+		this.mailGroups = mailGroups;
 	}
 
 	public List<String> getAdditionalEmails() {

@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProgramService {
@@ -536,41 +539,29 @@ public class ProgramService {
             throw new ResourceNotFoundException(msg);
         }
         Set<String> emails = new HashSet<>();
-        switch (bulkEmailDto.getMailGroup()) {
-            case ALL:
+        for (MailGroup mailGroup : bulkEmailDto.getMailGroups()) {
+            if (mailGroup.equals(MailGroup.ALL)){
                 optionalProgram.get().getEnrolledUsers()
                         .forEach(user -> emails.add(user.getProfile().getEmail()));
-                break;
-
-            case ALL_MENTORS:
+            } else if (mailGroup.equals(MailGroup.ALL_MENTORS)){
                 mentorRepository.findAllByProgramId(programId)
                         .forEach(mentor -> emails.add(mentor.getProfile().getEmail()));
-                break;
-
-            case ALL_MENTEES:
+            } else if (mailGroup.equals(MailGroup.ALL_MENTEES)){
                 menteeRepository.findAllByProgramId(programId)
                         .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
-                break;
-
-            case SELECTED_MENTORS:
+            } else if (mailGroup.equals(MailGroup.APPROVED_MENTORS)){
                 mentorRepository.findAllByProgramIdAndState(programId, EnrolmentState.APPROVED)
                         .forEach(mentor -> emails.add(mentor.getProfile().getEmail()));
-                break;
-
-            case SELECTED_MENTEES:
-                menteeRepository.findAllByProgramIdAndState(programId, EnrolmentState.APPROVED)
-                        .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
-                break;
-
-            case REJECTED_MENTORS:
+            } else if (mailGroup.equals(MailGroup.REJECTED_MENTORS)){
                 mentorRepository.findAllByProgramIdAndState(programId, EnrolmentState.REJECTED)
                         .forEach(mentor -> emails.add(mentor.getProfile().getEmail()));
-                break;
-
-            case REJECTED_MENTEES:
-                menteeRepository.findAllByProgramIdAndState(programId, EnrolmentState.REJECTED)
+            } else if (mailGroup.equals(MailGroup.APPROVED_MENTEES)) {
+                menteeRepository.findAllByProgramIdAndState(programId, EnrolmentState.APPROVED)
                         .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
-                break;
+            } else if (mailGroup.equals(MailGroup.NOT_SELECTED_MENTEES)) {
+                menteeRepository.findAllByProgramIdAndStateIn(programId, ImmutableList.of(EnrolmentState.DISCARDED, EnrolmentState.FAILED_FROM_WILDCARD))
+                        .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
+            }
         }
 
         emails.addAll(bulkEmailDto.getAdditionalEmails());
