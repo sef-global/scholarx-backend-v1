@@ -558,7 +558,7 @@ public class ProgramService {
             } else if (mailGroup.equals(MailGroup.APPROVED_MENTEES)) {
                 menteeRepository.findAllByProgramIdAndState(programId, EnrolmentState.APPROVED)
                         .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
-            } else if (mailGroup.equals(MailGroup.NOT_SELECTED_MENTEES)) {
+            } else if (mailGroup.equals(MailGroup.DISCARDED_MENTEES)) {
                 menteeRepository.findAllByProgramIdAndStateIn(programId, ImmutableList.of(EnrolmentState.DISCARDED, EnrolmentState.FAILED_FROM_WILDCARD))
                         .forEach(mentee -> emails.add(mentee.getProfile().getEmail()));
             }
