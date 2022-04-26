@@ -522,7 +522,7 @@ public class ProgramService {
      * @return {@link List<String>}
      * @throws ResourceNotFoundException if the {@link Program} doesn't exist
      */
-    public List<String> getEmails(long programId)
+    public List<String> getEmailsAddresses(long programId)
     throws ResourceNotFoundException {
         Optional<Program> program = programRepository.findById(programId);
         if (!program.isPresent()) {

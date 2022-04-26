@@ -72,9 +72,9 @@ public class ProgramController {
 
     @GetMapping("/{id}/emails")
     @ResponseStatus(HttpStatus.OK)
-    public List<String> getAllEmails(@PathVariable long id)
+    public List<String> getAllEmailAddresses(@PathVariable long id)
             throws ResourceNotFoundException {
-        return programService.getEmails(id);
+        return programService.getEmailsAddresses(id);
     }
 
 }
