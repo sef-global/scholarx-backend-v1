@@ -4,6 +4,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.BulkEmailDto;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Program;
@@ -77,4 +78,11 @@ public class ProgramController {
         return programService.getEmailsAddresses(id);
     }
 
+    @PostMapping("/{id}/email")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendBulkEmails(@PathVariable long id,
+                               @Valid @RequestBody BulkEmailDto bulkEmailDto)
+            throws ResourceNotFoundException {
+        programService.sendBulkEmails(id, bulkEmailDto);
+    }
 }
