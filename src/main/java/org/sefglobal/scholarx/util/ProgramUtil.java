@@ -83,14 +83,29 @@ public class ProgramUtil {
 
     public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
-
         // Notify mentors
         for (Mentor mentor : approvedMentors) {
 
             String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
-                    "You have student applications waiting to be reviewed. You can approve or reject your mentees " +
-                    "by visiting the <b>ScholarX dashboard.</b>";
 
+                    "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" + 
+                    "There are a few points that we would like to share with you with regard to the mentee applications.<br />"+
+                    "<ul>"+
+                    "<li>The minimum word limit for each question of the application was introduced halfway through the application"+
+                    "period in order to enhance competitiveness. Due to this reason, the applications which were received at the earliest"+
+                    " stage might contain relatively short answers.</li>"+
+                    "<li>Mentor-mentee matching process consists of two rounds.</li>"+
+                    "<li>Some mentors have received an excess number of applications and we have selected potential mentees for those mentors"+
+                    "after a filtering process. We kindly request you to go through these applications and select the mentees of your choice"+
+                    "and decline the mentees who are not commendable enough before 28th April 11.59 p.m (IST), so that we can replace them during"+
+                    "the second round of matching.</li>"+
+                    "<li>Some mentors have received less than the number of available slots or none, owing to facts such as lack of compatibility"+
+                    "of subject areas, more mentors representing the same subject area etc. We will be choosing the potential mentees for those mentors"+
+                    "as well during the second round of matching.</li><br />"+
+                    "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
+                    "If you have any further queries please don't hesitate to contact us at"+
+                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
+        
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
     }

@@ -71,6 +71,13 @@ public class ProgramController {
         return programService.getAllMenteesByProgramId(id);
     }
 
+    @GetMapping("/{id}/emails")
+    @ResponseStatus(HttpStatus.OK)
+    public List<String> getAllEmailAddresses(@PathVariable long id)
+            throws ResourceNotFoundException {
+        return programService.getEmailsAddresses(id);
+    }
+
     @PostMapping("/{id}/email")
     @ResponseStatus(HttpStatus.OK)
     public void sendBulkEmails(@PathVariable long id,
