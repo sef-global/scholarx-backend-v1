@@ -24,7 +24,7 @@ public class Program extends BaseScholarxModel {
   @Column
   private String headline;
 
-  @Column
+  @Column(columnDefinition="TEXT")
   private String imageUrl;
 
   @Column
