@@ -126,7 +126,7 @@ public class ProgramUtil {
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make the first contact with them as we have instructed them to wait for your email.";
             
-            String logMsg = "Email sent to mentor " + mentor.getProfile().getFirstName() + mentor.getProfile().getLastName() + " " +
+            String logMsg = "Email sent to mentor " + mentor.getProfile().getFirstName() + " " + mentor.getProfile().getLastName() + " " +
                             "of " + mentor.getProfile().getEmail();
             log.info(logMsg);
 
@@ -145,7 +145,7 @@ public class ProgramUtil {
                     "weeks to take you through next steps of the program and answer any questions you may have about " +
                     "the matching process that was undertaken to enable the mentor-mentee pairing.";
 
-            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + mentee.getProfile().getLastName() + " " +
+            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
                          "of " + mentee.getProfile().getEmail();
 
             log.info(logMsg);
@@ -162,7 +162,7 @@ public class ProgramUtil {
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
                     "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
 
-            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + mentee.getProfile().getLastName() + " " +
+            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
                             "of " + mentee.getProfile().getEmail();
             log.info(logMsg);
 
