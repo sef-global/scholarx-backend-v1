@@ -11,6 +11,8 @@ import org.sefglobal.scholarx.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -18,6 +20,8 @@ import java.util.*;
 
 @Component
 public class ProgramUtil {
+    private static final Logger log=LoggerFactory.getLogger(ProgramUtil.class);
+
     @Autowired
     MentorRepository mentorRepository;
 
@@ -121,6 +125,10 @@ public class ProgramUtil {
                     "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make the first contact with them as we have instructed them to wait for your email.";
+            
+            String logMsg = "Email sent to mentor " + mentor.getProfile().getFirstName() + " " + mentor.getProfile().getLastName() + " " +
+                            "of " + mentor.getProfile().getEmail();
+            log.info(logMsg);
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
@@ -132,8 +140,16 @@ public class ProgramUtil {
                     assignedMentor.getFirstName() + " " + assignedMentor.getLastName() + ". <br />" +
                     "You can check your mentor and their details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make sure not to contact your mentor until they do as we have instructed them to " +
-                    "make the first contact";
+                    "make the first contact.<br />"+
+                    "We will be holding an induction session for all successful ScholarX applicants over the coming " +
+                    "weeks to take you through next steps of the program and answer any questions you may have about " +
+                    "the matching process that was undertaken to enable the mentor-mentee pairing.";
 
+            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
+                         "of " + mentee.getProfile().getEmail();
+
+            log.info(logMsg);
+            
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
 
@@ -145,6 +161,10 @@ public class ProgramUtil {
                     "future programs. If you have any clarifications, please reach out to us via " +
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
                     "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
+
+            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
+                            "of " + mentee.getProfile().getEmail();
+            log.info(logMsg);
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
         }
