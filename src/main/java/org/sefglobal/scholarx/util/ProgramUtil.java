@@ -4,7 +4,7 @@ import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
-import org.sefglobal.scholarx.model.SentEmails;
+import org.sefglobal.scholarx.model.SentEmail;
 import org.sefglobal.scholarx.repository.EmailRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
@@ -61,7 +61,7 @@ public class ProgramUtil {
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
-                SentEmails email = new SentEmails();
+                SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
                 email.setMessage(message);
                 email.setProgramId(program.get());
@@ -81,7 +81,7 @@ public class ProgramUtil {
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
-                SentEmails email = new SentEmails();
+                SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
                 email.setMessage(message);
                 email.setProgramId(program.get());
@@ -106,7 +106,7 @@ public class ProgramUtil {
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
 
-            SentEmails email = new SentEmails();
+            SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
             email.setMessage(message);
             email.setProgramId(program.get());
@@ -143,7 +143,7 @@ public class ProgramUtil {
         
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
-            SentEmails email = new SentEmails();
+            SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
             email.setMessage(message);
             email.setProgramId(program.get());
@@ -171,7 +171,7 @@ public class ProgramUtil {
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
-            SentEmails email = new SentEmails();
+            SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
             email.setMessage(message);
             email.setProgramId(program.get());
@@ -199,7 +199,7 @@ public class ProgramUtil {
             
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
-            SentEmails email = new SentEmails();
+            SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
             email.setMessage(message);
             email.setProgramId(program.get());
@@ -223,7 +223,7 @@ public class ProgramUtil {
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
-            SentEmails email = new SentEmails();
+            SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
             email.setMessage(message);
             email.setProgramId(program.get());
@@ -244,7 +244,7 @@ public class ProgramUtil {
 
         emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
 
-        SentEmails email = new SentEmails();
+        SentEmail email = new SentEmail();
         email.setEmail(profile.get().getEmail());
         email.setMessage(message);
         email.setProgramId(program.get());

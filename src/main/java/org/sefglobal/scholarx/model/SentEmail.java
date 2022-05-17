@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
 @Entity
 @Table(name = "email")
 @JsonIgnoreProperties({"createdAt"})
-public class SentEmails extends BaseScholarxModel {
+public class SentEmail extends BaseScholarxModel {
     @Column
     private String email;
 
@@ -68,13 +68,6 @@ public class SentEmails extends BaseScholarxModel {
         return receiver;
     }
 
-    // public String getUserType() {
-    //     return userType;
-    // }
-
-    // public void setUserType(String userType) {
-    //     this.userType = userType;
-    // }
 }
 
 
