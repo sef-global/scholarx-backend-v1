@@ -43,3 +43,9 @@ spring:
             enable: true
   jmx:
     unique-names: true
+server:
+  servlet:
+    session:
+      cookie:
+        max-age: 1d
+      timeout: 1d
