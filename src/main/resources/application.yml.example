@@ -47,5 +47,5 @@ server:
   servlet:
     session:
       cookie:
-        max-age: 1d
-      timeout: 1d
+        max-age: 2d
+      timeout: 2d
