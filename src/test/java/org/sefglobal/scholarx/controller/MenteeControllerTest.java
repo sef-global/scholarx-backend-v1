@@ -2,9 +2,11 @@ package org.sefglobal.scholarx.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.exception.UnauthorizedException;
+import org.sefglobal.scholarx.model.Comment;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.service.MenteeService;
 import org.sefglobal.scholarx.service.CommentService;
@@ -19,12 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = {MenteeController.class, org.sefglobal.scholarx.controller.admin.MenteeController.class})
@@ -39,6 +41,10 @@ public class MenteeControllerTest {
 	private CommentService commentService;
 	private final Long menteeId = 1L;
 	private final Long mentorId = 1L;
+	private final Long commentId = 1L;
+
+	private final Comment comment = new Comment();
+
 
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();
@@ -165,5 +171,82 @@ public class MenteeControllerTest {
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void addComment_withValidData_thenReturn201() throws Exception {
+		mockMvc.perform(post("/api/mentees/{id}/comments",menteeId)
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(comment)))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void addComment_withValidData_thenReturnsValidResponseBody() throws Exception {
+		mockMvc.perform(post("/api/mentees/{id}/comments",menteeId)
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(comment)))
+				.andReturn();
+
+		ArgumentCaptor<Comment> commentCaptor = ArgumentCaptor.forClass(Comment.class);
+		verify(commentService, times(1)).addMenteeComment(anyLong(),anyLong(),commentCaptor.capture());
+
+		String expectedResponse = objectMapper.writeValueAsString(comment);
+		String actualResponse = objectMapper.writeValueAsString(commentCaptor.getValue());
+		assertThat(actualResponse).isEqualTo(expectedResponse);
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void getMenteeComments_withValidData_thenReturns200() throws Exception {
+		mockMvc.perform(get("/api/mentees/{id}/comments",menteeId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void getMenteeComments_withUnavailableData_thenReturns404() throws Exception {
+		doThrow(ResourceNotFoundException.class)
+				.when(commentService)
+				.getAllMenteeComments(anyLong(),anyLong());
+
+		mockMvc.perform(get("/api/mentees/{id}/comments", menteeId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void deleteMenteeComment_withValidData_thenReturns204() throws Exception {
+		mockMvc.perform(delete("/api/mentees//comment/{id}", commentId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void deleteMenteeComment_withUnavailableData_thenReturns404() throws Exception {
+		doThrow(ResourceNotFoundException.class)
+				.when(commentService)
+				.deleteComment(anyLong(),anyLong());
+
+		mockMvc.perform(delete("/api/mentees//comment/{id}", commentId)
+						.with(authentication(getOauthAuthentication())))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithMockUser(username = "user", authorities = {"DEFAULT"})
+	void updateComment_withValidData_thenReturns200() throws Exception {
+		mockMvc.perform(put("/api/mentees/comment/{id}", commentId)
+						.contentType("application/json")
+						.with(authentication(getOauthAuthentication()))
+						.content(objectMapper.writeValueAsString(comment)))
+				.andExpect(status().isOk());
 	}
 }
