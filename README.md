@@ -7,7 +7,7 @@ Backend of the ScholarX project
 ### Prerequisites
 * Java 
 * Maven
-* MySQL
+* PostgreSQL
 * Linkedin Social Login App
 * Gmail Account with an App Password 
 
@@ -53,12 +53,37 @@ example:
 example:
 ```yaml
   datasource:
-    url: jdbc:mysql://localhost:3306/scholarx_DB?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:postgresql://localhost:5432/scholarx_DB?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: rootuser
     password: rootpassword
+    platform: postgres
 ```
 
 6. Run the application
 ```shell
 mvn spring-boot:run
+```
+
+### Configuring a MySQL Database (Optional)
+
+1. Add the `mysql-connector-java` dependency to the `pom.xml` file.
+```xml
+<dependency>
+  <groupId>mysql</groupId>
+  <artifactId>mysql-connector-java</artifactId>
+  <scope>runtime</scope>
+</dependency>
+```
+
+2. Replace the `spring.jpa` and `spring.datasource` configurations in `application.yml` with the following configuration.
+```yaml
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://${DB_URL}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: ${DB_USER_NAME}
+    password: ${DB_USER_PASSWORD}
+    platform: postgres
 ```
