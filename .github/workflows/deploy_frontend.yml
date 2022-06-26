@@ -8,7 +8,7 @@ jobs:
       - name: Checkout backend
         uses: actions/checkout@v2
         with:
-          ref: sx-feb-demo
+          ref: deployment
           path: backend
       - name: Checkout frontend
         uses: actions/checkout@v2

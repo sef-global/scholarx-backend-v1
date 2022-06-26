@@ -5,9 +5,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ sx-february ]
+    branches: [ development ]
   pull_request:
-    branches: [ sx-february ]
+    branches: [ development ]
 
 jobs:
   build:
