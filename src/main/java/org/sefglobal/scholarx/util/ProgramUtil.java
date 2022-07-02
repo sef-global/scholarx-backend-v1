@@ -10,6 +10,7 @@ import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.service.EmailService;
+import org.sefglobal.scholarx.service.SimpleJavaMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -41,6 +42,9 @@ public class ProgramUtil {
     @Autowired
     private EmailService emailService;
 
+    private SimpleJavaMail mailService;
+
+
     public void sendMenteeApplicationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
 
@@ -59,7 +63,8 @@ public class ProgramUtil {
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                         "for any clarifications.";
 
-                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+//                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());

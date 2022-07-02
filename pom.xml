@@ -142,6 +142,11 @@
       <artifactId>lombok</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.simplejavamail</groupId>
+      <artifactId>simple-java-mail</artifactId>
+      <version>7.1.1</version>
+    </dependency>
   </dependencies>
 
   <build>

@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.util;
 
 import org.sefglobal.scholarx.model.Email;
+import org.sefglobal.scholarx.service.SimpleJavaMail;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
