@@ -8,13 +8,13 @@ jobs:
       - name: Checkout backend
         uses: actions/checkout@v2
         with:
-          ref: sx-feb-demo
+          ref: deployment
           path: backend
       - name: Checkout frontend
         uses: actions/checkout@v2
         with:
           repository: sef-global/scholarx-frontend
-          ref: scholarx-feb-edition
+          ref: master
           path: frontend
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2

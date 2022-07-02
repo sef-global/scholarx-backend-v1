@@ -4,6 +4,8 @@ import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
+import org.sefglobal.scholarx.model.SentEmail;
+import org.sefglobal.scholarx.repository.EmailRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
@@ -21,6 +23,11 @@ import java.util.*;
 @Component
 public class ProgramUtil {
     private static final Logger log=LoggerFactory.getLogger(ProgramUtil.class);
+    private final EmailRepository emailRepository;
+
+    public ProgramUtil(EmailRepository emailRepository){
+        this.emailRepository = emailRepository;
+    }
 
     @Autowired
     MentorRepository mentorRepository;
@@ -54,6 +61,14 @@ public class ProgramUtil {
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
+                SentEmail email = new SentEmail();
+                email.setEmail(mentor.getProfile().getEmail());
+                email.setMessage(message);
+                email.setProgramId(program.get());
+                email.setReceiver(mentor.getProfile());
+                email.setState(program.get().getState());
+                emailRepository.save(email);
+
             } else if (mentor.getState().name().equals("REJECTED")) {
 
                 message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
@@ -65,6 +80,14 @@ public class ProgramUtil {
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+
+                SentEmail email = new SentEmail();
+                email.setEmail(mentor.getProfile().getEmail());
+                email.setMessage(message);
+                email.setProgramId(program.get());
+                email.setReceiver(mentor.getProfile());
+                email.setState(program.get().getState());
+                emailRepository.save(email);
 
             }
         }
@@ -82,6 +105,14 @@ public class ProgramUtil {
                     "for any clarifications.";
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
+
+            SentEmail email = new SentEmail();
+            email.setEmail(mentee.getProfile().getEmail());
+            email.setMessage(message);
+            email.setProgramId(program.get());
+            email.setReceiver(mentee.getProfile());
+            email.setState(program.get().getState());
+            emailRepository.save(email);
         }
     }
 
@@ -111,6 +142,14 @@ public class ProgramUtil {
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
         
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+
+            SentEmail email = new SentEmail();
+            email.setEmail(mentor.getProfile().getEmail());
+            email.setMessage(message);
+            email.setProgramId(program.get());
+            email.setReceiver(mentor.getProfile());
+            email.setState(program.get().getState());
+            emailRepository.save(email);
         }
     }
 
@@ -131,6 +170,14 @@ public class ProgramUtil {
             log.info(logMsg);
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+
+            SentEmail email = new SentEmail();
+            email.setEmail(mentor.getProfile().getEmail());
+            email.setMessage(message);
+            email.setProgramId(program.get());
+            email.setReceiver(mentor.getProfile());
+            email.setState(program.get().getState());
+            emailRepository.save(email);
         }
 
         for (Mentee mentee: approvedMentees) {
@@ -151,6 +198,14 @@ public class ProgramUtil {
             log.info(logMsg);
             
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+
+            SentEmail email = new SentEmail();
+            email.setEmail(mentee.getProfile().getEmail());
+            email.setMessage(message);
+            email.setProgramId(program.get());
+            email.setReceiver(mentee.getProfile());
+            email.setState(program.get().getState());
+            emailRepository.save(email);
         }
 
         for (Mentee mentee: discardedMentees) {
@@ -167,6 +222,14 @@ public class ProgramUtil {
             log.info(logMsg);
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+
+            SentEmail email = new SentEmail();
+            email.setEmail(mentee.getProfile().getEmail());
+            email.setMessage(message);
+            email.setProgramId(program.get());
+            email.setReceiver(mentee.getProfile());
+            email.setState(program.get().getState());
+            emailRepository.save(email);
         }
     }
 
@@ -180,6 +243,14 @@ public class ProgramUtil {
                 "for any clarifications.";
 
         emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
+
+        SentEmail email = new SentEmail();
+        email.setEmail(profile.get().getEmail());
+        email.setMessage(message);
+        email.setProgramId(program.get());
+        email.setReceiver(profile.get());
+        email.setState(program.get().getState());
+        emailRepository.save(email);
     }
 
     /**
