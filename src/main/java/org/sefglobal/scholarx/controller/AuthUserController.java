@@ -65,15 +65,4 @@ public class AuthUserController {
     Profile profile = (Profile) authentication.getPrincipal();
     return introspectionService.getMentees(id, profile.getId(), menteeStates);
   }
-
-  @PutMapping("/mentor/{id}/confirmation")
-  @ResponseStatus(HttpStatus.OK)
-  public Mentee confirmMentor(
-    @PathVariable long id,
-    Authentication authentication
-  )
-    throws ResourceNotFoundException, BadRequestException {
-    Profile profile = (Profile) authentication.getPrincipal();
-    return introspectionService.confirmMentor(id, profile.getId());
-  }
 }

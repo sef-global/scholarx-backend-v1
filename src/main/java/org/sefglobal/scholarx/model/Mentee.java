@@ -15,29 +15,114 @@ public class Mentee extends EnrolledUser {
     public Mentee() {
     }
 
-    public Mentee(String submissionUrl) {
-        this.submissionUrl = submissionUrl;
-    }
+    @Column
+    private String university;
+
+    @Column
+    private String course;
+
+    @Column
+    private String year;
+
+    @Column(columnDefinition = "TEXT")
+    private String intent;
+
+    @Column(columnDefinition = "TEXT")
+    private String reasonForChoice;
+
+    @Column(columnDefinition = "TEXT")
+    private String resumeUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String achievements;
 
     @ManyToOne(optional = false)
-    private Mentor mentor;
+    private Mentor appliedMentor;
 
-    @Column(nullable = false)
-    private String submissionUrl;
+    @ManyToOne
+    private Mentor assignedMentor;
 
-    public Mentor getMentor() {
-        return mentor;
+    @ManyToOne
+    private Mentor rejectedBy;
+
+    public Mentor getAppliedMentor() {
+        return appliedMentor;
     }
 
-    public void setMentor(Mentor mentor) {
-        this.mentor = mentor;
+    public void setAppliedMentor(Mentor appliedMentor) {
+        this.appliedMentor = appliedMentor;
     }
 
-    public String getSubmissionUrl() {
-        return submissionUrl;
+    public Mentor getAssignedMentor() {
+        return assignedMentor;
     }
 
-    public void setSubmissionUrl(String submissionUrl) {
-        this.submissionUrl = submissionUrl;
+    public void setAssignedMentor(Mentor assignedMentor) {
+        this.assignedMentor = assignedMentor;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getIntent() {
+        return intent;
+    }
+
+    public void setIntent(String intent) {
+        this.intent = intent;
+    }
+
+    public String getReasonForChoice() {
+        return reasonForChoice;
+    }
+
+    public void setReasonForChoice(String reasonForChoice) {
+        this.reasonForChoice = reasonForChoice;
+    }
+
+
+    public Mentor getRejectedBy() {
+        return rejectedBy;
+    }
+
+    public void setRejectedBy(Mentor rejectedBy) {
+        this.rejectedBy = rejectedBy;
+    }
+
+    public String getResumeUrl() {
+        return resumeUrl;
+    }
+
+    public void setResumeUrl(String resumeUrl) {
+        this.resumeUrl = resumeUrl;
+    }
+
+    public String getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(String achievements) {
+        this.achievements = achievements;
     }
 }

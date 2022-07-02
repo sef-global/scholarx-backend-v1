@@ -11,15 +11,18 @@ import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
+import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.EnrolmentState;
+import org.sefglobal.scholarx.util.ProgramState;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -39,8 +42,7 @@ public class MentorServiceTest {
     private final Long profileId = 1L;
     private final Mentor mentor = new Mentor();
     private final Profile profile = new Profile();
-    private final Mentee mentee =
-            new Mentee("http://submission.url/");
+    private final Mentee mentee = new Mentee();
 
     @Test
     void getMentorById_withUnavailableData_thenThrowResourceNotFound() {
@@ -57,7 +59,7 @@ public class MentorServiceTest {
 
     @Test
     void updateState_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, BadRequestException {
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
                 .findById(anyLong());
@@ -70,10 +72,24 @@ public class MentorServiceTest {
     }
 
     @Test
+    void updateState_withInvalidData_thenThrowsBadRequestException() {
+        Throwable thrown = catchThrowable(
+                () -> mentorService.updateState(mentorId, EnrolmentState.ASSIGNED));
+        assertThat(thrown)
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Error, Mentor with id: 1 cannot be updated. " +
+                        "ASSIGNED is not an applicable state.");
+    }
+
+    @Test
     void applyAsMentee_withValidData_thenReturnCreatedData()
             throws ResourceNotFoundException, BadRequestException {
         final Mentor mentor = new Mentor();
         mentor.setState(EnrolmentState.APPROVED);
+
+        Program program = new Program();
+        program.setState(ProgramState.MENTEE_APPLICATION);
+        mentor.setProgram(program);
 
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
@@ -81,11 +97,17 @@ public class MentorServiceTest {
         doReturn(Optional.of(profile))
                 .when(profileRepository)
                 .findById(anyLong());
+        doReturn(Optional.empty())
+                .when(mentorRepository)
+                .findByProfileIdAndProgramId(anyLong(), anyLong());
+        doReturn(Optional.empty())
+                .when(menteeRepository)
+                .findByProgramIdAndProfileId(anyLong(), anyLong());
         doReturn(mentee)
                 .when(menteeRepository)
                 .save(any(Mentee.class));
 
-        Mentee savedMentee = mentorService.applyAsMentee(programId, profileId, mentee);
+        Mentee savedMentee = mentorService.applyAsMentee(mentorId, profileId, mentee);
         assertThat(savedMentee).isNotNull();
     }
 
@@ -124,6 +146,10 @@ public class MentorServiceTest {
     void applyAsMentee_withUnavailableProfile_thenThrowResourceNotFound() {
         final Mentor mentor = new Mentor();
         mentor.setState(EnrolmentState.APPROVED);
+
+        Program program = new Program();
+        program.setState(ProgramState.MENTEE_APPLICATION);
+        mentor.setProgram(program);
 
         doReturn(Optional.of(mentor))
                 .when(mentorRepository)
@@ -165,64 +191,5 @@ public class MentorServiceTest {
         assertThat(thrown)
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Error, Mentor by id: 1 is not an approved mentor.");
-    }
-
-    @Test
-    void updateMenteeData_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException, BadRequestException {
-        mentee.setState(EnrolmentState.PENDING);
-        mentee.setMentor(mentor);
-        doReturn(Optional.of(mentee))
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-        doReturn(mentee)
-                .when(menteeRepository)
-                .save(any(Mentee.class));
-
-        Mentee savedMentee = mentorService.updateMenteeData(profileId, mentorId, mentee);
-        assertThat(savedMentee).isNotNull();
-    }
-
-    @Test
-    void updateMenteeData_withUnavailableData_thenThrowResourceNotFound() {
-        doReturn(Optional.empty())
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
-        assertThat(thrown)
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentee by profile id: 1 and mentor id: 1 cannot be updated. " +
-                            "Mentee doesn't exist.");
-    }
-
-    @Test
-    void updateMenteeData_withUnsuitableData_thenThrowBadRequest() {
-        mentee.setState(EnrolmentState.APPROVED);
-        doReturn(Optional.of(mentee))
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> mentorService.updateMenteeData(profileId, mentorId, mentee));
-        assertThat(thrown)
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error, Application cannot be updated. " +
-                            "Mentee is not in a valid state.");
-    }
-
-    @Test
-    void getLoggedInMentee_withUnavailableData_thenThrowNoContent() {
-        doReturn(Optional.empty())
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> mentorService.getLoggedInMentee(mentorId, profileId));
-        assertThat(thrown)
-                .isInstanceOf(NoContentException.class)
-                .hasMessage("Error, User by profile id: 1 " +
-                            "hasn't applied for mentor with id: 1.");
     }
 }

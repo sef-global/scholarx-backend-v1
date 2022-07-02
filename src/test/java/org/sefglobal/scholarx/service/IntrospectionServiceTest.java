@@ -41,8 +41,7 @@ public class IntrospectionServiceTest {
     private final long profileId = 1L;
     private final long mentorId = 1L;
     private final Mentor mentor = new Mentor();
-    private final Mentee mentee =
-            new Mentee("http://submission.url/");
+    private final Mentee mentee = new Mentee();
 
     @Test
     void getLoggedInUser_withUnavailableData_thenThrowResourceNotFound() {
@@ -58,7 +57,7 @@ public class IntrospectionServiceTest {
     }
 
     @Test
-    void getLoggedInUser_withUnsuitableData_thenThrowResourceNotFound() {
+    void getLoggedInUser_withUnsuitableData_thenThrowUnauthorized() {
         Throwable thrown = catchThrowable(
                 () -> introspectionService.getLoggedInUser(-1));
         assertThat(thrown)
@@ -102,7 +101,7 @@ public class IntrospectionServiceTest {
                 .existsById(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> introspectionService.getMentoringPrograms(profileId));
+                () -> introspectionService.getMentoringPrograms(profileId, EnrolmentState.APPROVED));
         assertThat(thrown)
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Error, Profile with id: 1 doesn't exist.");
@@ -113,12 +112,9 @@ public class IntrospectionServiceTest {
         doReturn(true)
                 .when(profileRepository)
                 .existsById(anyLong());
-        doReturn(new ArrayList<Mentor>())
-                .when(mentorRepository)
-                .findAllByProfileId(anyLong());
 
         Throwable thrown = catchThrowable(
-                () -> introspectionService.getMentoringPrograms(profileId));
+                () -> introspectionService.getMentoringPrograms(profileId, EnrolmentState.APPROVED));
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("Error, User has not enrolled in any program as a mentor.");
@@ -151,70 +147,5 @@ public class IntrospectionServiceTest {
         assertThat(thrown)
                 .isInstanceOf(NoContentException.class)
                 .hasMessage("No mentees exist for the required program: 1 for the profile: 1");
-    }
-
-    @Test
-    void confirmMentor_withValidData_thenReturnUpdatedData()
-            throws ResourceNotFoundException, BadRequestException {
-        mentee.setState(EnrolmentState.APPROVED);
-        Program program = new Program();
-        program.setId(programId);
-        mentor.setProgram(program);
-        doReturn(Optional.of(mentor))
-                .when(mentorRepository)
-                .findById(anyLong());
-        doReturn(Optional.of(mentee))
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-
-        Mentee savedMentee = introspectionService.confirmMentor(mentorId, profileId);
-        assertThat(savedMentee).isNotNull();
-        assertThat(savedMentee.getState()).isEqualTo(EnrolmentState.APPROVED);
-    }
-
-    @Test
-    void confirmMentor_withUnavailableData_thenThrowResourceNotFound() {
-        doReturn(Optional.empty())
-                .when(mentorRepository)
-                .findById(anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> introspectionService.confirmMentor(mentorId, profileId));
-        assertThat(thrown)
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Error, Mentor by id: 1 doesn't exist.");
-    }
-
-    @Test
-    void confirmMentor_withUnavailableData_thenThrowBadRequest() {
-        doReturn(Optional.of(mentor))
-                .when(mentorRepository)
-                .findById(anyLong());
-        doReturn(Optional.empty())
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> introspectionService.confirmMentor(mentorId, profileId));
-        assertThat(thrown)
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error, User with id: 1 haven't applied for mentor by id: 1.");
-    }
-
-    @Test
-    void confirmMentor_withUnsuitableData_thenThrowBadRequest() {
-        mentee.setState(EnrolmentState.PENDING);
-        doReturn(Optional.of(mentor))
-                .when(mentorRepository)
-                .findById(anyLong());
-        doReturn(Optional.of(mentee))
-                .when(menteeRepository)
-                .findByProfileIdAndMentorId(anyLong(), anyLong());
-
-        Throwable thrown = catchThrowable(
-                () -> introspectionService.confirmMentor(mentorId, profileId));
-        assertThat(thrown)
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage("Error, User with id: 1 is not approved by the mentor by id: 1.");
     }
 }

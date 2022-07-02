@@ -15,23 +15,23 @@ import java.util.Optional;
 @Transactional
 public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
-    List<Mentee> findAllByMentorIdAndState(long id, EnrolmentState state);
+    List<Mentee> findAllByAssignedMentorIdAndState(long id, EnrolmentState state);
 
-    List<Mentee> findAllByMentorIdAndStateIn(long id, List<EnrolmentState> states);
-
-    List<Mentee> findAllByProgramIdAndProfileId(long programId, long profileId);
+    List<Mentee> findAllByAssignedMentorIdAndStateIn(long id, List<EnrolmentState> states);
 
     List<Mentee> findAllByProgramIdAndProfileIdAndState(long programId, long profileId, EnrolmentState state);
 
-    List<Mentee> findAllByProgramIdAndProfileIdAndStateIn(long programId, long profileId, List<EnrolmentState> states);
+    Optional<Mentee> findByProfileIdAndAppliedMentorId(long profileId, long mentorId);
 
-    Optional<Mentee> findByProfileIdAndMentorId(long profileId, long mentorId);
+    Optional<Mentee> findByProgramIdAndProfileId(long programId, long profileId);
 
     List<Mentee> findAllByProfileId(long profileId);
 
     List<Mentee> findAllByProgramId(long id);
 
     List<Mentee> findAllByProgramIdAndState(long programId, EnrolmentState state);
+
+    List<Mentee> findAllByProgramIdAndStateIn(long programId, List<EnrolmentState> states);
 
     @Modifying
     @Query(

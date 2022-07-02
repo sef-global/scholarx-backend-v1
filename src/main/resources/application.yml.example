@@ -21,15 +21,14 @@ spring:
             user-name-attribute: id
             email-address-uri: https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: postgresql
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://${DB_URL}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:postgresql://${DB_URL}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: ${DB_USER_NAME}
     password: ${DB_USER_PASSWORD}
+    platform: postgres
   mail:
     host: smtp.gmail.com
     port: 587
@@ -43,3 +42,9 @@ spring:
             enable: true
   jmx:
     unique-names: true
+server:
+  servlet:
+    session:
+      cookie:
+        max-age: 2d
+      timeout: 2d

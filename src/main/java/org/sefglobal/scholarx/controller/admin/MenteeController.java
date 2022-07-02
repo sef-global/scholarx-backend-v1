@@ -1,13 +1,15 @@
 package org.sefglobal.scholarx.controller.admin;
 
+import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
+import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.service.MenteeService;
+import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Map;
 
 @RestController("MenteeAdminController")
 @RequestMapping("/api/admin/mentees")
@@ -24,5 +26,20 @@ public class MenteeController {
     public void deleteMentee(@PathVariable long id)
             throws ResourceNotFoundException {
         menteeService.deleteMentee(id);
+    }
+    
+    @PutMapping("/{id}/assign")
+    @ResponseStatus(HttpStatus.OK)
+    public Mentee updateAssignedMentor(@PathVariable long id,
+                                       @Valid @RequestBody Map<String, Long> payload)
+            throws ResourceNotFoundException, BadRequestException {
+        return menteeService.updateAssignedMentor(id, payload.get("mentorId"));
+    }
+
+    @PutMapping("/{id}/state")
+    public Mentee changeState(@PathVariable long id,
+                              @Valid @RequestBody Map<String, EnrolmentState> payload)
+            throws ResourceNotFoundException, BadRequestException {
+        return menteeService.changeState(id, payload.get("state"));
     }
 }
