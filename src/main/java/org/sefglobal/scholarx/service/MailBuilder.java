@@ -18,6 +18,8 @@ public class MailBuilder {
                 .withSMTPServer(host, port, username, password)
                 .buildMailer()
                 .sendMail(email);
+
+        System.out.println("Email sent successfully");
     }
 
     public static MailBuilder getInstance(Email email)
