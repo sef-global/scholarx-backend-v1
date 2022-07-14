@@ -22,7 +22,5 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
-      - name: Configure build
-        run: cp src/main/resources/application.yml.example src/main/resources/application.yml
       - name: Build and Run Tests with Maven
         run: mvn clean install
