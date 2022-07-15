@@ -147,6 +147,16 @@
       <artifactId>simple-java-mail</artifactId>
       <version>7.1.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>7.0.4.Final</version>
+    </dependency>
   </dependencies>
 
   <build>

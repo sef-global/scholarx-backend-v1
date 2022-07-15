@@ -1,33 +1,26 @@
 package org.sefglobal.scholarx.service;
 
-import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
+import org.springframework.core.env.Environment;
 
 public class MailBuilder {
-
-    private static MailBuilder mailBuilder_instance = null;
-
     private String username = "pasindur2@gmail.com";
     private String password = "wwooravkrkhorobx";
-    private String host = "smtp.mailtrap.io";
-    private int port = 2525;
-
-    private MailBuilder(Email email){
+    private String host = "smtp.host.io";
+    private int port = 587;
+    private static MailBuilder mailBuilder_instance = null;
+    private MailBuilder(){
 
         MailerBuilder
                 .withSMTPServer(host, port, username, password)
-                .buildMailer()
-                .sendMail(email);
-
-        System.out.println("Email sent successfully");
+                .buildMailer();
     }
 
-    public static MailBuilder getInstance(Email email)
-    {
-        if (mailBuilder_instance == null)
-            mailBuilder_instance = new MailBuilder(email);
-
+    public static MailBuilder getInstance() {
+        if (mailBuilder_instance == null){
+            mailBuilder_instance = new MailBuilder();
+        }
         return mailBuilder_instance;
     }
-
 }

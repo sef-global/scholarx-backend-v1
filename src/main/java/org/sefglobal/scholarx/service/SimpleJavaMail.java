@@ -1,8 +1,8 @@
 package org.sefglobal.scholarx.service;
 
 import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
-import org.simplejavamail.mailer.MailerBuilder;
 
 public class SimpleJavaMail {
 
@@ -14,7 +14,7 @@ public class SimpleJavaMail {
                 .withHTMLText(message)
                 .buildEmail();
 
-        MailBuilder.getInstance(email);
-
+        Mailer mailer = (Mailer) MailBuilder.getInstance();
+        mailer.sendMail(email);
     }
 }
