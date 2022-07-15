@@ -6,7 +6,7 @@ import org.springframework.core.env.Environment;
 
 public class MailBuilder {
     private String username = "pasindur2@gmail.com";
-    private String password = "wwooravkrkhorobx";
+    private String password = "cexytifgusjscwst";
     private String host = "smtp.host.io";
     private int port = 587;
     private static MailBuilder mailBuilder_instance = null;

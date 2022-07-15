@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.util;
 
+import jakarta.mail.MessagingException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
@@ -9,7 +10,6 @@ import org.sefglobal.scholarx.repository.EmailRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
-//import org.sefglobal.scholarx.service.EmailService;
 import org.sefglobal.scholarx.service.SimpleJavaMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 
@@ -39,13 +38,10 @@ public class ProgramUtil {
     @Autowired
     ProfileRepository profileRepository;
 
-//    @Autowired
-//    private EmailService emailService;
-
     private SimpleJavaMail mailService;
 
 
-    public void sendMenteeApplicationEmails(long id, Optional<Program> program) throws IOException {
+    public void sendMenteeApplicationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
 
         String message;
@@ -63,7 +59,6 @@ public class ProgramUtil {
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                         "for any clarifications.";
 
-//                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
                 mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
@@ -84,7 +79,7 @@ public class ProgramUtil {
                         "If you have any clarifications, please reach out to us via " +
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
-//                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
@@ -98,7 +93,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendMenteeFiltrationEmails(long id, Optional<Program> program) throws IOException {
+    public void sendMenteeFiltrationEmails(long id, Optional<Program> program) throws MessagingException, IOException {
         List<Mentee> mentees = getMenteesWithoutDuplicatesByProgramId(id);
         // Notify mentees
         for (Mentee mentee : mentees) {
@@ -109,7 +104,7 @@ public class ProgramUtil {
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                     "for any clarifications.";
 
-//            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
+            mailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -121,7 +116,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException {
+    public void sendMenteeSelectionEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
         // Notify mentors
         for (Mentor mentor : approvedMentors) {
@@ -146,7 +141,7 @@ public class ProgramUtil {
                     "If you have any further queries please don't hesitate to contact us at"+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
         
-//            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+            mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
@@ -158,7 +153,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendOnGoingEmails(long id, Optional<Program> program) throws IOException {
+    public void sendOnGoingEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> approvedMentors = mentorRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
         List<Mentee> approvedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.APPROVED);
         List<Mentee> discardedMentees = menteeRepository.findAllByProgramIdAndState(id, EnrolmentState.FAILED_FROM_WILDCARD);
@@ -174,7 +169,7 @@ public class ProgramUtil {
                             "of " + mentor.getProfile().getEmail();
             log.info(logMsg);
 
-//            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+            mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
@@ -202,7 +197,7 @@ public class ProgramUtil {
 
             log.info(logMsg);
             
-//            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+            mailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -226,7 +221,7 @@ public class ProgramUtil {
                             "of " + mentee.getProfile().getEmail();
             log.info(logMsg);
 
-//            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+            mailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -238,7 +233,7 @@ public class ProgramUtil {
         }
     }
 
-    public void sendConfirmationEmails(long profileId, Optional<Program> program) throws IOException {
+    public void sendConfirmationEmails(long profileId, Optional<Program> program) throws MessagingException, IOException {
         Optional<Profile> profile = profileRepository.findById(profileId);
         String message = "Dear " + profile.get().getFirstName() + ",<br /><br />" +
                 "Thank you very much for applying to the " + program.get().getTitle() + " program. Your application has been received. " +
@@ -247,7 +242,7 @@ public class ProgramUtil {
                 "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                 "for any clarifications.";
 
-//        emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
+        mailService.sendEmail(profile.get().getName(), profile.get().getEmail(), program.get().getTitle(), message, true);
 
         SentEmail email = new SentEmail();
         email.setEmail(profile.get().getEmail());
