@@ -10,7 +10,7 @@ import org.sefglobal.scholarx.repository.EmailRepository;
 import org.sefglobal.scholarx.repository.MenteeRepository;
 import org.sefglobal.scholarx.repository.MentorRepository;
 import org.sefglobal.scholarx.repository.ProfileRepository;
-import org.sefglobal.scholarx.service.SimpleJavaMail;
+import org.sefglobal.scholarx.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -38,8 +38,8 @@ public class ProgramUtil {
     @Autowired
     ProfileRepository profileRepository;
 
-    private SimpleJavaMail mailService;
-
+    @Autowired
+    private EmailService emailService;
 
     public void sendMenteeApplicationEmails(long id, Optional<Program> program) throws IOException, MessagingException {
         List<Mentor> mentors = mentorRepository.findAllByProgramId(id);
@@ -59,7 +59,7 @@ public class ProgramUtil {
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                         "for any clarifications.";
 
-                mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
@@ -79,7 +79,7 @@ public class ProgramUtil {
                         "If you have any clarifications, please reach out to us via " +
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
-                mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
@@ -104,7 +104,7 @@ public class ProgramUtil {
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                     "for any clarifications.";
 
-            mailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
+            emailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -123,7 +123,7 @@ public class ProgramUtil {
 
             String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
 
-                    "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" + 
+                    "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" +
                     "There are a few points that we would like to share with you with regard to the mentee applications.<br />"+
                     "<ul>"+
                     "<li>The minimum word limit for each question of the application was introduced halfway through the application"+
@@ -140,8 +140,8 @@ public class ProgramUtil {
                     "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
                     "If you have any further queries please don't hesitate to contact us at"+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
-        
-            mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+
+            emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
@@ -164,12 +164,12 @@ public class ProgramUtil {
                     "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make the first contact with them as we have instructed them to wait for your email.";
-            
+
             String logMsg = "Email sent to mentor " + mentor.getProfile().getFirstName() + " " + mentor.getProfile().getLastName() + " " +
                             "of " + mentor.getProfile().getEmail();
             log.info(logMsg);
 
-            mailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+            emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
@@ -193,11 +193,11 @@ public class ProgramUtil {
                     "the matching process that was undertaken to enable the mentor-mentee pairing.";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
-                         "of " + mentee.getProfile().getEmail();
+                        "of " + mentee.getProfile().getEmail();
 
             log.info(logMsg);
-            
-            mailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+
+            emailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -221,7 +221,7 @@ public class ProgramUtil {
                             "of " + mentee.getProfile().getEmail();
             log.info(logMsg);
 
-            mailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+            emailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -242,7 +242,7 @@ public class ProgramUtil {
                 "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                 "for any clarifications.";
 
-        mailService.sendEmail(profile.get().getName(), profile.get().getEmail(), program.get().getTitle(), message, true);
+        emailService.sendEmail(profile.get().getName(), profile.get().getEmail(), program.get().getTitle(), message, true);
 
         SentEmail email = new SentEmail();
         email.setEmail(profile.get().getEmail());

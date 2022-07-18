@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,7 +31,7 @@ public class ProgramService {
     private ProgramUtil programUtil;
 
     @Autowired
-//    private EmailService emailService;
+    private EmailService emailService;
 
     public ProgramService(ProgramRepository programRepository,
                           ProfileRepository profileRepository,
@@ -402,14 +401,14 @@ public class ProgramService {
     public Mentor getAppliedMentorOfMentee(long programId, long profileId)
             throws NoContentException {
         Optional<Mentee> mentee = menteeRepository.findByProgramIdAndProfileId(programId, profileId);
-        
+
         if (!mentee.isPresent()) {
             String msg = "Error, Mentee by program id: " + programId + " and " +
                          "profile id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new NoContentException(msg);
         }
-        
+
         return mentee.get().getAppliedMentor();
     }
 
@@ -592,11 +591,11 @@ public class ProgramService {
         emails.addAll(bulkEmailDto.getAdditionalEmails());
         Thread thread = new Thread(() -> {
             for (String email : emails) {
-//                try {
-//                    emailService.sendEmail(email, bulkEmailDto.getSubject(), bulkEmailDto.getMessage(), true);
-//                } catch (MessagingException | IOException exception) {
-//                    log.error("Email service error: ", exception);
-//                }
+                try {
+                    emailService.sendEmail(bulkEmailDto.getName(), email, bulkEmailDto.getSubject(), bulkEmailDto.getMessage(), true);
+                } catch (IOException exception) {
+                    log.error("Email service error: ", exception);
+                }
             }
         });
         thread.start();
