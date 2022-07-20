@@ -16,14 +16,14 @@ public class MailInstance {
     private static String password = env.getProperty("spring.mail.password");
     private static String host = env.getProperty("spring.mail.host");
     private static String port = env.getProperty("spring.mail.port");
-    private static Mailer mailBuilder_instance = null;
+    private static Mailer instance = null;
 
     public static Mailer getInstance() {
-        if (mailBuilder_instance == null){
-            mailBuilder_instance = MailerBuilder
+        if (instance == null){
+            instance = MailerBuilder
                                     .withSMTPServer(host, Integer.valueOf(port), username, password)
                                     .buildMailer();
         }
-        return mailBuilder_instance;
+        return instance;
     }
 }
