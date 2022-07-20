@@ -1,15 +1,15 @@
-package org.sefglobal.scholarx.service;
+package org.sefglobal.scholarx.util;
 
 import org.sefglobal.scholarx.model.Mail;
+import org.sefglobal.scholarx.service.MailInstance;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 
-public class SimpleJavaMail {
-
+public class EmailUtil {
     private final MailInstance mailInstance;
 
-    public SimpleJavaMail(MailInstance mailInstance) {
+    public EmailUtil(MailInstance mailInstance) {
         this.mailInstance = mailInstance;
     }
 
