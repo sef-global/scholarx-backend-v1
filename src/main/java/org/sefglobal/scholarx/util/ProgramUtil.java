@@ -59,7 +59,7 @@ public class ProgramUtil {
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                         "for any clarifications.";
 
-                emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
@@ -79,7 +79,7 @@ public class ProgramUtil {
                         "If you have any clarifications, please reach out to us via " +
                         "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
-                emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
+                emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
                 SentEmail email = new SentEmail();
                 email.setEmail(mentor.getProfile().getEmail());
@@ -104,7 +104,7 @@ public class ProgramUtil {
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                     "for any clarifications.";
 
-            emailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
+            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -141,7 +141,7 @@ public class ProgramUtil {
                     "If you have any further queries please don't hesitate to contact us at"+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
-            emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
@@ -169,7 +169,7 @@ public class ProgramUtil {
                             "of " + mentor.getProfile().getEmail();
             log.info(logMsg);
 
-            emailService.sendEmail(mentor.getProfile().getName(), mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
+            emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentor.getProfile().getEmail());
@@ -197,7 +197,7 @@ public class ProgramUtil {
 
             log.info(logMsg);
 
-            emailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -221,7 +221,7 @@ public class ProgramUtil {
                             "of " + mentee.getProfile().getEmail();
             log.info(logMsg);
 
-            emailService.sendEmail(mentee.getProfile().getName(), mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
+            emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
             email.setEmail(mentee.getProfile().getEmail());
@@ -242,7 +242,7 @@ public class ProgramUtil {
                 "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                 "for any clarifications.";
 
-        emailService.sendEmail(profile.get().getName(), profile.get().getEmail(), program.get().getTitle(), message, true);
+        emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
 
         SentEmail email = new SentEmail();
         email.setEmail(profile.get().getEmail());

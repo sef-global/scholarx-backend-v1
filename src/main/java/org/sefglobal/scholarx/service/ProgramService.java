@@ -592,7 +592,7 @@ public class ProgramService {
         Thread thread = new Thread(() -> {
             for (String email : emails) {
                 try {
-                    emailService.sendEmail(bulkEmailDto.getName(), email, bulkEmailDto.getSubject(), bulkEmailDto.getMessage(), true);
+                    emailService.sendEmail(email, bulkEmailDto.getSubject(), bulkEmailDto.getMessage(), true);
                 } catch (IOException exception) {
                     log.error("Email service error: ", exception);
                 }

@@ -5,15 +5,10 @@ import org.sefglobal.scholarx.util.MailGroup;
 import java.util.List;
 
 public class BulkEmailDto {
-	private String name;
 	private String subject;
 	private String message;
 	private List<MailGroup> mailGroups;
 	private List<String> additionalEmails;
-
-	public String getName() {return name;}
-
-	public void setName(String name) {this.name= name;}
 	public String getSubject() {
 		return subject;
 	}

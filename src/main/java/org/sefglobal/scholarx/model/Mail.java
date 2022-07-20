@@ -5,15 +5,10 @@ import java.util.Map;
 
 @Data
 public class Mail {
-    private String name;
     private String emailAddress;
     private String subject;
     private String message;
     private Map<String, Object> props;
-
-    public String getName() {return name;};
-
-    public void setName(String name) {this.name = name;};
 
     public String getEmail() {
         return emailAddress;

@@ -16,7 +16,7 @@ public class SimpleJavaMail {
     public void sendEmail(Mail mail) {
 
         Email email = EmailBuilder.startingBlank()
-                .to(mail.getName(), mail.getEmailAddress())
+                .to(mail.getEmailAddress())
                 .withSubject(mail.getSubject())
                 .withHTMLText(mail.getMessage())
                 .buildEmail();
