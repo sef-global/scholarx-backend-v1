@@ -1,16 +1,16 @@
 package org.sefglobal.scholarx.util;
 
 import org.sefglobal.scholarx.model.Mail;
-import org.sefglobal.scholarx.service.MailInstance;
+import org.sefglobal.scholarx.service.MailConnection;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 
 public class EmailUtil {
-    private final MailInstance mailInstance;
+    private final MailConnection mailConnection;
 
-    public EmailUtil(MailInstance mailInstance) {
-        this.mailInstance = mailInstance;
+    public EmailUtil(MailConnection mailConnection) {
+        this.mailConnection = mailConnection;
     }
 
     public void sendEmail(Mail mail) {
@@ -21,7 +21,7 @@ public class EmailUtil {
                 .withHTMLText(mail.getMessage())
                 .buildEmail();
 
-        Mailer mailer = mailInstance.getInstance();
+        Mailer mailer = mailConnection.getInstance();
         mailer.sendMail(email);
     }
 }

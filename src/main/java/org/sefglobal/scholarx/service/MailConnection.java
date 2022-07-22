@@ -3,13 +3,11 @@ package org.sefglobal.scholarx.service;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 
-@Service
-public class MailInstance {
+public class MailConnection {
     private static Environment env;
 
-    private MailInstance(Environment env){
+    private MailConnection(Environment env){
         this.env = env;
     }
     private static String username = env.getProperty("spring.mail.username");
