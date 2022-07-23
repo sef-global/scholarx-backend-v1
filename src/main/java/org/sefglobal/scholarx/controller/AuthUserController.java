@@ -9,6 +9,7 @@ import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.model.Program;
 import org.sefglobal.scholarx.service.IntrospectionService;
+import org.sefglobal.scholarx.service.ProfileService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthUserController {
 
   private final IntrospectionService introspectionService;
+  private final ProfileService profileService;
 
   public AuthUserController(IntrospectionService introspectionService) {
     this.introspectionService = introspectionService;
@@ -35,6 +37,16 @@ public class AuthUserController {
   public Object getLoggedUser(Authentication authentication)
     throws ResourceNotFoundException, UnauthorizedException {
     return authentication.getPrincipal();
+  }
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.OK)
+  public Profile updateUserDetails(
+          Authentication authentication,
+          @Valid @RequestBody Profile profile)
+          throws ResourceNotFoundException, UnauthorizedException {
+    Profile profile = (Profile) authentication.getPrincipal();
+    return profileService.updateUserDetails(profile.getUid, profile);
   }
 
   @GetMapping("/programs/mentee")

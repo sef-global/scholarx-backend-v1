@@ -36,7 +36,6 @@ public class ProfileService {
             profile.get().setFirstName(oAuth2UserInfo.getFirstName());
             profile.get().setLastName(oAuth2UserInfo.getLastName());
             profile.get().setImageUrl(oAuth2UserInfo.getImageUrl());
-            profile.get().setEmail(oAuth2UserInfo.getEmail());
             return profileRepository.save(profile.get());
         } else {
             return createProfile(oAuth2UserInfo);
@@ -65,10 +64,24 @@ public class ProfileService {
         profile.setLinkedinUrl("https://www.linkedin.com/search/results/all/?keywords="+
                 oAuth2UserInfo.getFirstName()+"%20"+
                 oAuth2UserInfo.getLastName()+"&origin=TYPEAHEAD_ESCAPE_HATCH");
+        profile.setHasConfirmedUserDetails(false);
         Date now = Calendar.getInstance().getTime();
         profile.setCreatedAt(now);
         profile.setUpdatedAt(now);
         return profile;
     }
 
+    private Profile updateUserDetails(long profileId, Profile profile)
+            throws ResourceNotFoundException, UnauthorizedException {
+        Optional <Profile> optionalUser = profileRepository.findByUid(profileId);
+        if (!optionalUser.isPresent()) {
+            String msg = "Error, Unable update details. " +
+                    "Profile with id: " + profileId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        optionalUser.get().setEmail(profile.getEmail());
+        optionalUser.get().setHasConfirmedUserDetails(true);
+        return profileRepository.save(optionalUser.get());
+    }
 }
