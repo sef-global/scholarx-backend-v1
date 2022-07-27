@@ -62,15 +62,16 @@
       <artifactId>thymeleaf-layout-dialect</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>provided</scope>
-    </dependency>
+    <!--    <dependency>-->
+    <!--    <groupId>javax.servlet</groupId>-->
+    <!--    <artifactId>servlet-api</artifactId>-->
+    <!--    <version>2.5</version>-->
+    <!--    <scope>provided</scope>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -89,7 +90,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.5.7</version>
+      <version>5.3.10.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>

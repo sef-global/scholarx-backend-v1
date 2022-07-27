@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
@@ -15,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,8 +31,9 @@ public class AuthUserController {
   private final IntrospectionService introspectionService;
   private final ProfileService profileService;
 
-  public AuthUserController(IntrospectionService introspectionService) {
+  public AuthUserController(IntrospectionService introspectionService, ProfileService profileService) {
     this.introspectionService = introspectionService;
+    this.profileService = profileService;
   }
 
   @GetMapping
@@ -43,10 +47,10 @@ public class AuthUserController {
   @ResponseStatus(HttpStatus.OK)
   public Profile updateUserDetails(
           Authentication authentication,
-          @Valid @RequestBody Profile profile)
+          @Valid @RequestBody Profile profileDetails)
           throws ResourceNotFoundException, UnauthorizedException {
     Profile profile = (Profile) authentication.getPrincipal();
-    return profileService.updateUserDetails(profile.getUid, profile);
+    return profileService.updateUserDetails(profile.getId(), profileDetails);
   }
 
   @GetMapping("/programs/mentee")
