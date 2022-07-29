@@ -3,25 +3,31 @@ package org.sefglobal.scholarx.util;
 import org.sefglobal.scholarx.model.Mail;
 import org.sefglobal.scholarx.service.MailConnection;
 import org.simplejavamail.api.email.Email;
-import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.context.Context;
 
 public class EmailUtil {
-    private final MailConnection mailConnection;
 
-    public EmailUtil(MailConnection mailConnection) {
-        this.mailConnection = mailConnection;
+    private final SpringTemplateEngine templateEngine;
+
+    public EmailUtil(SpringTemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
     }
 
     public void sendEmail(Mail mail) {
 
-        Email email = EmailBuilder.startingBlank()
+        Context context = new Context();
+        context.setVariables(mail.getProps());
+
+        String htmlText = templateEngine.process("scholarx", context);
+
+         Email email = EmailBuilder.startingBlank()
                 .to(mail.getEmailAddress())
                 .withSubject(mail.getSubject())
-                .withHTMLText(mail.getMessage())
+                .withHTMLText(htmlText)
                 .buildEmail();
 
-        Mailer mailer = mailConnection.getInstance();
-        mailer.sendMail(email);
+        MailConnection.getInstance().sendMail(email);
     }
 }
