@@ -23,7 +23,7 @@ public class EmailUtil {
         String htmlText = templateEngine.process("scholarx", context);
 
          Email email = EmailBuilder.startingBlank()
-                .to(mail.getEmailAddress())
+                .to(mail.getEmail())
                 .withSubject(mail.getSubject())
                 .withHTMLText(htmlText)
                 .buildEmail();
