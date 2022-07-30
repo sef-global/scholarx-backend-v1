@@ -11,7 +11,11 @@ import java.util.Map;
 @Service
 public class EmailService {
 
-    private EmailUtil emailUtil;
+    private final EmailUtil emailUtil;
+
+    public EmailService(EmailUtil emailUtil) {
+        this.emailUtil = emailUtil;
+    }
 
     public void sendEmail(String emailAddress, String subject, String message, boolean showButton) throws IOException {
         Mail mail = new Mail();

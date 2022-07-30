@@ -4,9 +4,11 @@ import org.sefglobal.scholarx.model.Mail;
 import org.sefglobal.scholarx.service.MailConnection;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.email.EmailBuilder;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.context.Context;
 
+@Component
 public class EmailUtil {
 
     private final SpringTemplateEngine templateEngine;
