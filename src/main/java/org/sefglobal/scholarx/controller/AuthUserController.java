@@ -48,7 +48,7 @@ public class AuthUserController {
   public Profile updateUserDetails(
           Authentication authentication,
           @Valid @RequestBody Profile profileDetails)
-          throws ResourceNotFoundException, UnauthorizedException {
+          throws ResourceNotFoundException {
     Profile profile = (Profile) authentication.getPrincipal();
     return profileService.updateUserDetails(profile.getId(), profileDetails);
   }

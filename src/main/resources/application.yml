@@ -6,8 +6,8 @@ spring:
       client:
         registration:
           linkedin:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT-SECRET}
+            client-id: 86ku70j6ydy2u4
+            client-secret: M8cwnZb1oM4iqPFh
             client-authentication-method: post
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
@@ -25,15 +25,15 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:postgresql://${DB_URL}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
-    username: ${DB_USER_NAME}
-    password: ${DB_USER_PASSWORD}
+    url: jdbc:postgresql://ec2-54-211-160-34.compute-1.amazonaws.com:5432/dcb09bo9si1ups?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: wxunfwrlrnnlkc
+    password: "e4e68f54bda7e4122220a22e793ddea1c0c1753918841851fa8198632a637137"
     platform: postgres
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL}
-    password: ${APP_PASSWORD}
+    username: kumudithaudaya@gmail.com
+    password: wkqjiouopskwjfpv
     properties:
       mail:
         smtp:
