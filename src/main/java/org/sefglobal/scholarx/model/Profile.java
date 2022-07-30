@@ -39,6 +39,9 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
   @Column
   private String linkedinUrl;
 
+  @Column
+  private Boolean hasConfirmedUserDetails;
+
   @Column(length = 50)
   private String headline;
 
@@ -119,6 +122,14 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
 
   public void setEnrolledUsers(List<EnrolledUser> enrolledUsers) {
     this.enrolledUsers = enrolledUsers;
+  }
+
+  public Boolean getHasConfirmedUserDetails() {
+    return hasConfirmedUserDetails;
+  }
+
+  public void setHasConfirmedUserDetails(Boolean hasConfirmedUserDetails) {
+    this.hasConfirmedUserDetails = hasConfirmedUserDetails;
   }
 
   @Override

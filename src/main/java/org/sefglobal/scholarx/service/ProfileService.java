@@ -2,12 +2,15 @@ package org.sefglobal.scholarx.service;
 
 import org.sefglobal.scholarx.exception.OAuth2AuthenticationProcessingException;
 import org.sefglobal.scholarx.exception.UserAlreadyExistsAuthenticationException;
+import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.oauth.LinkedInAuthUserInfo;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -16,7 +19,7 @@ import java.util.Optional;
 
 @Service
 public class ProfileService {
-
+    private final static Logger log = LoggerFactory.getLogger(ProfileService.class);
     private final ProfileRepository profileRepository;
 
     public ProfileService(ProfileRepository profileRepository) {
@@ -36,7 +39,6 @@ public class ProfileService {
             profile.get().setFirstName(oAuth2UserInfo.getFirstName());
             profile.get().setLastName(oAuth2UserInfo.getLastName());
             profile.get().setImageUrl(oAuth2UserInfo.getImageUrl());
-            profile.get().setEmail(oAuth2UserInfo.getEmail());
             return profileRepository.save(profile.get());
         } else {
             return createProfile(oAuth2UserInfo);
@@ -69,6 +71,20 @@ public class ProfileService {
         profile.setCreatedAt(now);
         profile.setUpdatedAt(now);
         return profile;
+    }
+
+    public Profile updateUserDetails(long profileId, Profile profile)
+            throws ResourceNotFoundException {
+        Optional <Profile> optionalUser = profileRepository.findById(profileId);
+        if (!optionalUser.isPresent()) {
+            String msg = "Error, Unable update details. " +
+                    "Profile with id: " + profileId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        optionalUser.get().setEmail(profile.getEmail());
+        optionalUser.get().setHasConfirmedUserDetails(true);
+        return profileRepository.save(optionalUser.get());
     }
 
 }
