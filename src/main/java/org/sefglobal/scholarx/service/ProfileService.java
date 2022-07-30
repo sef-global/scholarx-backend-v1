@@ -39,7 +39,6 @@ public class ProfileService {
             profile.get().setFirstName(oAuth2UserInfo.getFirstName());
             profile.get().setLastName(oAuth2UserInfo.getLastName());
             profile.get().setImageUrl(oAuth2UserInfo.getImageUrl());
-            profile.get().setEmail(oAuth2UserInfo.getEmail());
             return profileRepository.save(profile.get());
         } else {
             return createProfile(oAuth2UserInfo);

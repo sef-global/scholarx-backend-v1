@@ -6,6 +6,7 @@ import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Profile;
 import org.sefglobal.scholarx.service.IntrospectionService;
+import org.sefglobal.scholarx.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,13 +20,14 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AuthUserController.class)
 public class AuthUserControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
+	@MockBean
+	private ProfileService profileService;
 	@MockBean
 	private IntrospectionService introspectionService;
 	private final Long programId = 1L;
