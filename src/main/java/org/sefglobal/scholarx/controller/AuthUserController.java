@@ -37,9 +37,10 @@ public class AuthUserController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Object getLoggedUser(Authentication authentication)
+  public Profile getLoggedUser(Authentication authentication)
     throws ResourceNotFoundException, UnauthorizedException {
-    return authentication.getPrincipal();
+    Profile profile = (Profile) authentication.getPrincipal();
+    return profileService.getLoggedUser(profile.getId());
   }
 
   @PostMapping
