@@ -73,6 +73,17 @@ public class ProfileService {
         return profile;
     }
 
+    public Profile getLoggedUser(long profileId)
+            throws ResourceNotFoundException {
+        Optional<Profile> optionalProfile = profileRepository.findById(profileId);
+        if (!optionalProfile.isPresent()) {
+			String msg = "Error, User with id: " + profileId + " doesn't exist.";
+            log.error(msg);
+            throw new ResourceNotFoundException(msg);
+        }
+        return optionalProfile.get();
+    }
+
     public Profile updateUserDetails(long profileId, Profile profile)
             throws ResourceNotFoundException {
         Optional <Profile> optionalUser = profileRepository.findById(profileId);
@@ -86,5 +97,4 @@ public class ProfileService {
         optionalUser.get().setHasConfirmedUserDetails(true);
         return profileRepository.save(optionalUser.get());
     }
-
 }
