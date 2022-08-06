@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -402,14 +401,14 @@ public class ProgramService {
     public Mentor getAppliedMentorOfMentee(long programId, long profileId)
             throws NoContentException {
         Optional<Mentee> mentee = menteeRepository.findByProgramIdAndProfileId(programId, profileId);
-        
+
         if (!mentee.isPresent()) {
             String msg = "Error, Mentee by program id: " + programId + " and " +
                          "profile id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new NoContentException(msg);
         }
-        
+
         return mentee.get().getAppliedMentor();
     }
 
@@ -594,7 +593,7 @@ public class ProgramService {
             for (String email : emails) {
                 try {
                     emailService.sendEmail(email, bulkEmailDto.getSubject(), bulkEmailDto.getMessage(), true);
-                } catch (MessagingException | IOException exception) {
+                } catch (IOException exception) {
                     log.error("Email service error: ", exception);
                 }
             }

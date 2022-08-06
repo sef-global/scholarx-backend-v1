@@ -9,7 +9,6 @@ public class BulkEmailDto {
 	private String message;
 	private List<MailGroup> mailGroups;
 	private List<String> additionalEmails;
-
 	public String getSubject() {
 		return subject;
 	}

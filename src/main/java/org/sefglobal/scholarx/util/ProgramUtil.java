@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.util;
 
+import jakarta.mail.MessagingException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
@@ -16,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 
@@ -123,7 +123,7 @@ public class ProgramUtil {
 
             String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
 
-                    "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" + 
+                    "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" +
                     "There are a few points that we would like to share with you with regard to the mentee applications.<br />"+
                     "<ul>"+
                     "<li>The minimum word limit for each question of the application was introduced halfway through the application"+
@@ -140,7 +140,7 @@ public class ProgramUtil {
                     "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
                     "If you have any further queries please don't hesitate to contact us at"+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
-        
+
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();
@@ -164,7 +164,7 @@ public class ProgramUtil {
                     "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make the first contact with them as we have instructed them to wait for your email.";
-            
+
             String logMsg = "Email sent to mentor " + mentor.getProfile().getFirstName() + " " + mentor.getProfile().getLastName() + " " +
                             "of " + mentor.getProfile().getEmail();
             log.info(logMsg);
@@ -193,10 +193,10 @@ public class ProgramUtil {
                     "the matching process that was undertaken to enable the mentor-mentee pairing.";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
-                         "of " + mentee.getProfile().getEmail();
+                        "of " + mentee.getProfile().getEmail();
 
             log.info(logMsg);
-            
+
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, true);
 
             SentEmail email = new SentEmail();

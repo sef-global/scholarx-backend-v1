@@ -1,9 +1,9 @@
 package org.sefglobal.scholarx.service;
-import org.sefglobal.scholarx.model.Email;
+
+import org.sefglobal.scholarx.model.Mail;
 import org.sefglobal.scholarx.util.EmailUtil;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,21 +17,19 @@ public class EmailService {
         this.emailUtil = emailUtil;
     }
 
-    public Email sendEmail(String emailAddress, String subject, String message, boolean showButton) throws IOException, MessagingException {
-        Email email = new Email();
-        email.setEmail(emailAddress);
-        email.setSubject(subject);
-        email.setMessage(message);
+    public void sendEmail(String emailAddress, String subject, String message, boolean showButton) throws IOException {
+        Mail mail = new Mail();
+        mail.setEmail(emailAddress);
+        mail.setSubject(subject);
+        mail.setMessage(message);
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("emailAddress", emailAddress);
         model.put("subject", subject);
         model.put("message", message);
         model.put("showButton", showButton);
-        email.setProps(model);
+        mail.setProps(model);
 
-        emailUtil.sendSimpleMessage(email);
-
-        return email;
+        emailUtil.sendEmail(mail);
     }
 }

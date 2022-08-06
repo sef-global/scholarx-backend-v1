@@ -29,17 +29,6 @@ spring:
     username: ${DB_USER_NAME}
     password: ${DB_USER_PASSWORD}
     platform: postgres
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${EMAIL}
-    password: ${APP_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
   jmx:
     unique-names: true
 server:

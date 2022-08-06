@@ -1,10 +1,8 @@
 package org.sefglobal.scholarx.model;
 
-import lombok.Data;
 import java.util.Map;
 
-@Data
-public class Email {
+public class Mail {
     private String emailAddress;
     private String subject;
     private String message;
