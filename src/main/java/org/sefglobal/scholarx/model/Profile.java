@@ -28,16 +28,10 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
   private String email;
 
   @Column
-  private String firstName;
-
-  @Column
-  private String lastName;
+  private String name;
 
   @Column
   private String imageUrl;
-
-  @Column
-  private String linkedinUrl;
 
   @Column
   private Boolean hasConfirmedUserDetails;
@@ -68,20 +62,8 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
     this.email = email;
   }
 
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getImageUrl() {
@@ -90,14 +72,6 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
 
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
-  }
-
-  public void setLinkedinUrl(String linkedinUrl) {
-    this.linkedinUrl = linkedinUrl;
-  }
-
-  public String getLinkedinUrl() {
-    return linkedinUrl;
   }
 
   public String getHeadline() {
@@ -146,6 +120,6 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
 
   @Override
   public String getName() {
-    return getFirstName().concat(getLastName());
+    return name;
   }
 }

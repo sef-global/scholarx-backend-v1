@@ -44,8 +44,7 @@ public class MentorControllerTest {
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();
 		profile.setId(1);
-		profile.setFirstName("John");
-		profile.setLastName("Doe");
+		profile.setName("John Doe");
 		return new OAuth2AuthenticationToken(profile, null, "linkedin");
 	}
 

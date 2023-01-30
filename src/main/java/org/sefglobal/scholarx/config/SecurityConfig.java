@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 import org.sefglobal.scholarx.oauth.AuthAccessTokenResponseConverter;
+import org.sefglobal.scholarx.oauth.CustomOidcUserService;
 import org.sefglobal.scholarx.oauth.OAuthAuthenticationSuccessHandler;
+import org.sefglobal.scholarx.service.AuthUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -25,7 +28,10 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -40,30 +46,36 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Autowired
+  CustomOidcUserService customOidcUserService;
+
+  @Autowired
+  private AuthUserService customOAuth2UserService;
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-      .cors()
-      .and()
-      .csrf()
-      .disable()
-      .authorizeRequests()
-      .antMatchers("/api/admin/**")
-      .hasAnyAuthority("ADMIN")
-      .antMatchers("/api/programs")
-      .permitAll()
+            .cors()
+            .and()
+            .csrf()
+            .disable()
+            .authorizeRequests()
+            .antMatchers("/api/admin/**")
+            .hasAnyAuthority("ADMIN")
+            .antMatchers("/api/programs")
+            .permitAll()
             .antMatchers("/api/programs/*")
             .permitAll()
             .antMatchers("/api/programs/*/mentors")
             .permitAll()
             .antMatchers("/api/mentors/*")
             .permitAll()
-      .antMatchers("/api/**")
-      .authenticated()
-      .anyRequest()
-      .permitAll()
-      .and()
-      .logout()
+            .antMatchers("/api/**")
+            .authenticated()
+            .anyRequest()
+            .permitAll()
+            .and()
+            .logout()
             .logoutSuccessHandler(new LogoutSuccessHandler() {
               @Override
               public void onLogoutSuccess(HttpServletRequest request,
@@ -75,19 +87,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 httpServletResponse.sendRedirect(baseURL);
               }
             })
-      .permitAll()
-      .and()
-      .exceptionHandling()
-      .authenticationEntryPoint(
-        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-      )
-      .and()
-      .oauth2Login()
-      .failureHandler(new AuthFailureHandler())
-            .successHandler(successHandler())
             .permitAll()
-      .tokenEndpoint()
-      .accessTokenResponseClient(authorizationCodeTokenResponseClient());
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(
+                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+            )
+            .and()
+            .oauth2Login()
+            .failureHandler(new AuthFailureHandler())
+            .userInfoEndpoint()
+            .oidcUserService(customOidcUserService).userService(customOAuth2UserService).and().successHandler(successHandler())
+            .permitAll().tokenEndpoint()
+            .accessTokenResponseClient(authorizationCodeTokenResponseClient());
+
   }
 
   @Bean
@@ -117,7 +130,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     converter.setTokenResponseConverter(new AuthAccessTokenResponseConverter());
 
     RestTemplate restTemplate = new RestTemplate(
-      Arrays.asList(new FormHttpMessageConverter(), converter)
+            Arrays.asList(new FormHttpMessageConverter(), converter)
     );
     restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
 
@@ -128,17 +141,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   private static class AuthFailureHandler
-    implements AuthenticationFailureHandler {
+          implements AuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void onAuthenticationFailure(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      AuthenticationException exception
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException exception
     )
-      throws IOException, ServletException {
+            throws IOException, ServletException {
       Map<String, Object> data = new HashMap<>();
       response.setContentType("application/json");
       response.setStatus(HttpStatus.UNAUTHORIZED.value());

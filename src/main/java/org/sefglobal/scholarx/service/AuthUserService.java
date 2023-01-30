@@ -41,7 +41,6 @@ public class AuthUserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         try {
             Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
-            populateEmailAddressFromLinkedIn(oAuth2UserRequest, attributes);
             populateImageUrl(attributes);
             return profileService.processUserRegistration(attributes);
         } catch (AuthenticationException ex) {
@@ -50,19 +49,6 @@ public class AuthUserService extends DefaultOAuth2UserService {
             // Throwing an instance of AuthenticationException will trigger the OAuth2AuthenticationFailureHandler
             throw new OAuth2AuthenticationProcessingException(ex.getMessage(), ex.getCause());
         }
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void populateEmailAddressFromLinkedIn(OAuth2UserRequest oAuth2UserRequest, Map<String, Object> attributes) throws OAuth2AuthenticationException {
-        String emailEndpointUri = env.getProperty("spring.security.oauth2.client.provider.linkedin.email-address-uri");
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + oAuth2UserRequest.getAccessToken().getTokenValue());
-        HttpEntity<?> entity = new HttpEntity<>("", headers);
-        ResponseEntity<Map> response = restTemplate.exchange(emailEndpointUri, HttpMethod.GET, entity, Map.class);
-        List<?> list = (List<?>) response.getBody().get("elements");
-        Map map = (Map<?, ?>) ((Map<?, ?>) list.get(0)).get("handle~");
-        attributes.putAll(map);
     }
 
     @SuppressWarnings("rawtypes")
@@ -75,7 +61,7 @@ public class AuthUserService extends DefaultOAuth2UserService {
             Map image = (Map<?, ?>) identifiers.get(0);
             attributes.put("imageUrl", image.get("identifier"));
         } else {
-            // Default profile image (If user has no LinkedIn profile image)
+            // Default profile image (If user has no profile image)
             attributes.put("imageUrl", "https://res.cloudinary.com/dsxobn1ln/image/upload/v1626966152/profile-pic_hvfryw.jpg");
         }
     }

@@ -5,23 +5,14 @@ spring:
     oauth2:
       client:
         registration:
-          linkedin:
+          google:
             client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT-SECRET}
-            client-authentication-method: post
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: r_liteprofile, r_emailaddress
-            client-name: Linkedin
-        provider:
-          linkedin:
-            authorization-uri: https://www.linkedin.com/oauth/v2/authorization
-            token-uri: https://www.linkedin.com/oauth/v2/accessToken
-            user-info-uri: https://api.linkedin.com/v2/me?projection=(id,localizedFirstName,localizedLastName,profilePicture(displayImage~:playableStreams))
-            user-name-attribute: id
-            email-address-uri: https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))
+            client-secret: ${CLIENT_SECRET}
+            scope: openid,profile,email
   jpa:
-    database: postgresql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
   datasource:

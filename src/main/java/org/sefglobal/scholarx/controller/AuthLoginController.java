@@ -17,7 +17,7 @@ public class AuthLoginController {
         String prevUrl = request.getHeader("Referer");
         request.getSession().setAttribute("prev_url", prevUrl);
         String[] urlSplitArray = request.getRequestURL().toString().split("/");
-        String redirectUrl = urlSplitArray[0] + "//" + urlSplitArray[2] + "/oauth2/authorization/linkedin";
+        String redirectUrl = urlSplitArray[0] + "//" + urlSplitArray[2] + "/oauth2/authorization/google";
         response.sendRedirect(redirectUrl);
     }
 }
