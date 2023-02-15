@@ -3,6 +3,7 @@ package org.sefglobal.scholarx.model;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -52,7 +53,8 @@ public abstract class BaseScholarxModel implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+
+    public Date getUpdated() {
         return updatedAt;
     }
 

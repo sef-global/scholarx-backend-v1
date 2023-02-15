@@ -14,12 +14,15 @@ import javax.persistence.Table;
 import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Entity
 @Table(name = "profile")
 @JsonIgnoreProperties({ "createdAt", "updatedAt", "enrolledUsers" })
-public class Profile extends BaseScholarxModel implements OAuth2User {
+public class Profile extends BaseScholarxModel implements OidcUser {
 
   @Column(length = 36, nullable = false)
   private String uid;
@@ -121,5 +124,20 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public Map<String, Object> getClaims() {
+    return null;
+  }
+
+  @Override
+  public OidcUserInfo getUserInfo() {
+    return null;
+  }
+
+  @Override
+  public OidcIdToken getIdToken() {
+    return null;
   }
 }

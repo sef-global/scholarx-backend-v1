@@ -19,7 +19,7 @@ public class CustomOidcUserService extends OidcUserService {
     private ProfileService profileService;
 
     @Override
-    public Profile loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+    public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         OidcUser oidcUser = super.loadUser(userRequest);
         try {
             return profileService.processUserRegistration(oidcUser.getAttributes());
@@ -27,6 +27,8 @@ public class CustomOidcUserService extends OidcUserService {
             throw ex;
         } catch (Exception ex) {
             ex.printStackTrace();
+            // Throwing an instance of AuthenticationException will trigger the
+            // OAuth2AuthenticationFailureHandler
             throw new OAuth2AuthenticationProcessingException(ex.getMessage(), ex.getCause());
         }
     }

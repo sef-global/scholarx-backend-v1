@@ -15,5 +15,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Profile findByEmail(String email);
     Boolean existsByUid(String uid);
     Boolean existsByEmail(String email);
-    Profile processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo);
+    Profile processUserRegistration(Map<String, Object> attributes);
 }
