@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,17 +12,24 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Entity
 @Table(name = "profile")
-@JsonIgnoreProperties({ "createdAt", "updatedAt", "enrolledUsers" })
+@JsonIgnoreProperties(value = {"createdAt", "updatedAt", "enrolledUsers",
+        "authenticationContextClass", "nonce", "subject", "issuer",
+        "audience", "expiresAt", "issuedAt", "authenticatedAt",
+        "authenticationMethods", "authorizedParty", "accessTokenHash",
+        "authorizationCodeHash", "fullName", "subject", "givenName",
+        "familyName", "middleName", "nickName", "preferredUsername",
+        "profile", "picture", "website", "emailVerified", "gender", "birthdate",
+        "zoneInfo", "locale", "phoneNumber", "phoneNumberVerified", "address"})
 public class Profile extends BaseScholarxModel implements OidcUser {
 
   @Column(length = 36, nullable = false)
@@ -31,10 +39,16 @@ public class Profile extends BaseScholarxModel implements OidcUser {
   private String email;
 
   @Column
-  private String name;
+  private String firstName;
+
+  @Column
+  private String lastName;
 
   @Column
   private String imageUrl;
+
+  @Column
+  private String linkedinUrl;
 
   @Column
   private Boolean hasConfirmedUserDetails;
@@ -65,8 +79,20 @@ public class Profile extends BaseScholarxModel implements OidcUser {
     this.email = email;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   public String getImageUrl() {
@@ -75,6 +101,14 @@ public class Profile extends BaseScholarxModel implements OidcUser {
 
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
+  }
+
+  public void setLinkedinUrl(String linkedinUrl) {
+    this.linkedinUrl = linkedinUrl;
+  }
+
+  public String getLinkedinUrl() {
+    return linkedinUrl;
   }
 
   public String getHeadline() {
@@ -123,12 +157,7 @@ public class Profile extends BaseScholarxModel implements OidcUser {
 
   @Override
   public String getName() {
-    return name;
-  }
-
-  @Override
-  public Map<String, Object> getClaims() {
-    return null;
+    return getFirstName().concat(getLastName());
   }
 
   @Override
@@ -138,6 +167,11 @@ public class Profile extends BaseScholarxModel implements OidcUser {
 
   @Override
   public OidcIdToken getIdToken() {
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getClaims() {
     return null;
   }
 }

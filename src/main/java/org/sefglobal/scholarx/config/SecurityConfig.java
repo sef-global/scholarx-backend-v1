@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 import org.sefglobal.scholarx.oauth.AuthAccessTokenResponseConverter;
-import org.sefglobal.scholarx.oauth.CustomOidcUserService;
 import org.sefglobal.scholarx.oauth.OAuthAuthenticationSuccessHandler;
-import org.sefglobal.scholarx.service.AuthUserService;
+import org.sefglobal.scholarx.service.CustomOidcUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +28,7 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -47,10 +44,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
+  @Lazy
   CustomOidcUserService customOidcUserService;
-
-  @Autowired
-  private AuthUserService customOAuth2UserService;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -96,11 +91,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .oauth2Login()
             .failureHandler(new AuthFailureHandler())
-            .userInfoEndpoint()
-            .oidcUserService(customOidcUserService).userService(customOAuth2UserService).and().successHandler(successHandler())
-            .permitAll().tokenEndpoint()
+            .successHandler(successHandler())
+            .permitAll()
+            .userInfoEndpoint().oidcUserService(customOidcUserService).and()
+            .tokenEndpoint()
             .accessTokenResponseClient(authorizationCodeTokenResponseClient());
-
   }
 
   @Bean

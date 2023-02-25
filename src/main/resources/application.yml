@@ -7,12 +7,9 @@ spring:
         registration:
           google:
             client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
-            scope: openid,profile,email
+            client-secret: ${CLIENT-SECRET}
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: postgresql
     hibernate:
       ddl-auto: update
   datasource:

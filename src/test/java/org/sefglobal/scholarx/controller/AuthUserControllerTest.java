@@ -36,7 +36,8 @@ public class AuthUserControllerTest {
 	public static Authentication getOauthAuthentication() {
 		Profile profile = new Profile();
 		profile.setId(1);
-		profile.setName("John Doe");
+		profile.setFirstName("John");
+		profile.setLastName("Doe");
 		return new OAuth2AuthenticationToken(profile, null, "linkedin");
 	}
 
@@ -44,7 +45,7 @@ public class AuthUserControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getMenteeingPrograms_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/me/programs/mentee")
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -56,7 +57,7 @@ public class AuthUserControllerTest {
 				.getMenteeingPrograms(anyLong());
 
 		mockMvc.perform(get("/api/me/programs/mentee")
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -68,7 +69,7 @@ public class AuthUserControllerTest {
 				.getMenteeingPrograms(anyLong());
 
 		mockMvc.perform(get("/api/me/programs/mentee")
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
 
@@ -76,7 +77,7 @@ public class AuthUserControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getMentoringPrograms_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/me/programs/mentor")
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -88,7 +89,7 @@ public class AuthUserControllerTest {
 				.getMentoringPrograms(anyLong(), any());
 
 		mockMvc.perform(get("/api/me/programs/mentor")
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -100,7 +101,7 @@ public class AuthUserControllerTest {
 				.getMentoringPrograms(anyLong(), any());
 
 		mockMvc.perform(get("/api/me/programs/mentor")
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
 
@@ -108,7 +109,7 @@ public class AuthUserControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getMentees_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/me/programs/{id}/mentees", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -120,7 +121,7 @@ public class AuthUserControllerTest {
 				.getMentees(anyLong(), anyLong(), any());
 
 		mockMvc.perform(get("/api/me/programs/{id}/mentees", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -132,7 +133,7 @@ public class AuthUserControllerTest {
 				.getMentees(anyLong(), anyLong(), any());
 
 		mockMvc.perform(get("/api/me/programs/{id}/mentees", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
 }

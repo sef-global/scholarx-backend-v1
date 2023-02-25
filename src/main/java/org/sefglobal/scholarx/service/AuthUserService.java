@@ -3,20 +3,14 @@ package org.sefglobal.scholarx.service;
 import org.sefglobal.scholarx.exception.OAuth2AuthenticationProcessingException;
 import org.sefglobal.scholarx.model.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -41,28 +35,12 @@ public class AuthUserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         try {
             Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
-            populateImageUrl(attributes);
             return profileService.processUserRegistration(attributes);
         } catch (AuthenticationException ex) {
             throw ex;
         } catch (Exception ex) {
             // Throwing an instance of AuthenticationException will trigger the OAuth2AuthenticationFailureHandler
             throw new OAuth2AuthenticationProcessingException(ex.getMessage(), ex.getCause());
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-    public void populateImageUrl(Map<String, Object> attributes) {
-        if (attributes.get("profilePicture") != null) {
-            Map profilePictureObject = (Map<?, ?>) attributes.get("profilePicture");
-            Map imageMetaData = (Map<?, ?>) profilePictureObject.get("displayImage~");
-            List<?> elements = (List<?>) imageMetaData.get("elements");
-            List<?> identifiers = (List<?>) ((Map<?, ?>) elements.get(0)).get("identifiers");
-            Map image = (Map<?, ?>) identifiers.get(0);
-            attributes.put("imageUrl", image.get("identifier"));
-        } else {
-            // Default profile image (If user has no profile image)
-            attributes.put("imageUrl", "https://res.cloudinary.com/dsxobn1ln/image/upload/v1626966152/profile-pic_hvfryw.jpg");
         }
     }
 }
