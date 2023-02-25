@@ -58,8 +58,8 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void addProgram_withValidData_thenReturns201() throws Exception {
 		mockMvc.perform(post("/api/admin/programs")
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(program)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(program)))
 				.andExpect(status().isCreated());
 	}
 
@@ -67,8 +67,8 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void addProgram_withValidData_thenReturnsValidResponseBody() throws Exception {
 		mockMvc.perform(post("/api/admin/programs")
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(program)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(program)))
 				.andReturn();
 
 		ArgumentCaptor<Program> programCaptor = ArgumentCaptor.forClass(Program.class);
@@ -84,8 +84,8 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void updateState_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(put("/api/admin/programs/{id}/state", programId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(program.getState())))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(program.getState())))
 				.andExpect(status().isOk());
 	}
 
@@ -97,8 +97,8 @@ public class ProgramControllerTest {
 				.updateState(anyLong());
 
 		mockMvc.perform(put("/api/admin/programs/{id}/state", programId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(program.getState())))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(program.getState())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -106,8 +106,8 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"ADMIN"})
 	void updateProgram_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(put("/api/admin/programs/{id}", programId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(program)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(program)))
 				.andExpect(status().isOk());
 	}
 
@@ -119,8 +119,8 @@ public class ProgramControllerTest {
 				.updateProgram(anyLong(), any(Program.class));
 
 		mockMvc.perform(put("/api/admin/programs/{id}", programId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(program)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(program)))
 				.andExpect(status().isNotFound());
 	}
 
@@ -189,9 +189,9 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void applyAsMentor_withValidData_thenReturns201() throws Exception {
 		mockMvc.perform(post("/api/programs/{id}/mentor", programId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(new Mentor())))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(new Mentor())))
 				.andExpect(status().isCreated());
 	}
 
@@ -199,9 +199,9 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void updateMentorApplication_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(put("/api/programs/{id}/mentor", programId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(new Mentor())))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(new Mentor())))
 				.andExpect(status().isOk());
 	}
 
@@ -213,9 +213,9 @@ public class ProgramControllerTest {
 				.updateMentorApplication(anyLong(), anyLong(), any(Mentor.class));
 
 		mockMvc.perform(put("/api/programs/{id}/mentor", programId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(new Mentor())))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(new Mentor())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -227,9 +227,9 @@ public class ProgramControllerTest {
 				.updateMentorApplication(anyLong(), anyLong(), any(Mentor.class));
 
 		mockMvc.perform(put("/api/programs/{id}/mentor", programId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(new Mentor())))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(new Mentor())))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -237,7 +237,7 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getLoggedInMentor_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/programs/{id}/mentor", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -249,7 +249,7 @@ public class ProgramControllerTest {
 				.getLoggedInMentor(anyLong(), anyLong());
 
 		mockMvc.perform(get("/api/programs/{id}/mentor", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -257,7 +257,7 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getAppliedMentors_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/programs/{id}/mentee/mentors", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -269,7 +269,7 @@ public class ProgramControllerTest {
 				.getAppliedMentorOfMentee(anyLong(), anyLong());
 
 		mockMvc.perform(get("/api/programs/{id}/mentee/mentors", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
 
@@ -277,7 +277,7 @@ public class ProgramControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void getSelectedMentor_withValidData_thenReturns200() throws Exception {
 		mockMvc.perform(get("/api/programs/{id}/mentee/mentor", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -289,7 +289,7 @@ public class ProgramControllerTest {
 				.getSelectedMentor(anyLong(), anyLong());
 
 		mockMvc.perform(get("/api/programs/{id}/mentee/mentor", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -301,7 +301,7 @@ public class ProgramControllerTest {
 				.getSelectedMentor(anyLong(), anyLong());
 
 		mockMvc.perform(get("/api/programs/{id}/mentee/mentor", programId)
-				.with(authentication(getOauthAuthentication())))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNoContent());
 	}
 

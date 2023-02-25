@@ -1,6 +1,7 @@
 package org.sefglobal.scholarx.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,15 +12,25 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 @Entity
 @Table(name = "profile")
-@JsonIgnoreProperties({ "createdAt", "updatedAt", "enrolledUsers" })
-public class Profile extends BaseScholarxModel implements OAuth2User {
+@JsonIgnoreProperties(value = {"createdAt", "updatedAt", "enrolledUsers",
+        "authenticationContextClass", "nonce", "subject", "issuer",
+        "audience", "expiresAt", "issuedAt", "authenticatedAt",
+        "authenticationMethods", "authorizedParty", "accessTokenHash",
+        "authorizationCodeHash", "fullName", "subject", "givenName",
+        "familyName", "middleName", "nickName", "preferredUsername",
+        "profile", "picture", "website", "emailVerified", "gender", "birthdate",
+        "zoneInfo", "locale", "phoneNumber", "phoneNumberVerified", "address"})
+public class Profile extends BaseScholarxModel implements OidcUser {
 
   @Column(length = 36, nullable = false)
   private String uid;
@@ -147,5 +158,20 @@ public class Profile extends BaseScholarxModel implements OAuth2User {
   @Override
   public String getName() {
     return getFirstName().concat(getLastName());
+  }
+
+  @Override
+  public OidcUserInfo getUserInfo() {
+    return null;
+  }
+
+  @Override
+  public OidcIdToken getIdToken() {
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getClaims() {
+    return null;
   }
 }

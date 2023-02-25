@@ -52,11 +52,11 @@ public abstract class BaseScholarxModel implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Date getLastUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setLastUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

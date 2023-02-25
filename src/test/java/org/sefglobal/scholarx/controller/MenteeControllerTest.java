@@ -78,9 +78,9 @@ public class MenteeControllerTest {
 		Map<String, Boolean> payload = new HashMap<>();
 		payload.put("isApproved", true);
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload))
-				.with(authentication(getOauthAuthentication())))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isOk());
 	}
 
@@ -94,9 +94,9 @@ public class MenteeControllerTest {
 				.approveOrRejectMentee(anyLong(), anyLong(), anyBoolean());
 
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload))
-				.with(authentication(getOauthAuthentication())))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isNotFound());
 	}
 
@@ -110,9 +110,9 @@ public class MenteeControllerTest {
 				.approveOrRejectMentee(anyLong(), anyLong(), anyBoolean());
 
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload))
-				.with(authentication(getOauthAuthentication())))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isUnauthorized());
 	}
 
@@ -126,9 +126,9 @@ public class MenteeControllerTest {
 				.approveOrRejectMentee(anyLong(), anyLong(), anyBoolean());
 
 		mockMvc.perform(put("/api/mentees/{menteeId}/state", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload))
-				.with(authentication(getOauthAuthentication())))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload))
+						.with(authentication(getOauthAuthentication())))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -138,8 +138,8 @@ public class MenteeControllerTest {
 		Map<String, Long> payload = new HashMap<>();
 		payload.put("mentorId", mentorId);
 		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isOk());
 	}
 
@@ -153,8 +153,8 @@ public class MenteeControllerTest {
 				.updateAssignedMentor(anyLong(), anyLong());
 
 		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isNotFound());
 	}
 
@@ -168,8 +168,8 @@ public class MenteeControllerTest {
 				.updateAssignedMentor(anyLong(), anyLong());
 
 		mockMvc.perform(put("/api/admin/mentees/{menteeId}/assign", menteeId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isBadRequest());
 	}
 

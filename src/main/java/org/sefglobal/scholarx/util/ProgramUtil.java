@@ -49,7 +49,7 @@ public class ProgramUtil {
 
             if (mentor.getState().name().equals("APPROVED")) {
 
-                message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
+                message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
                         "<b>Congratulations!</b><br />You have been selected by the " +
                         "ScholarX committee to be a mentor of the " + program.get().getTitle() +
                         " program. We will soon open up the program for students to " +
@@ -71,7 +71,7 @@ public class ProgramUtil {
 
             } else if (mentor.getState().name().equals("REJECTED")) {
 
-                message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
+                message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
                         "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
                         "However, due to the competitive nature of the mentor applications, your application " +
                         "did not make it to the final list of mentors for the program. We encourage you to try " +
@@ -97,7 +97,7 @@ public class ProgramUtil {
         List<Mentee> mentees = getMenteesWithoutDuplicatesByProgramId(id);
         // Notify mentees
         for (Mentee mentee : mentees) {
-            String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
+            String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
                     "Thank you very much for applying to the " + program.get().getTitle() + " program. Your application has been received. " +
                     "Mentors will soon review your applications and we will keep you posted on the progress via email. " +
                     "Until then, read more about student experience <a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via " +
@@ -121,7 +121,7 @@ public class ProgramUtil {
         // Notify mentors
         for (Mentor mentor : approvedMentors) {
 
-            String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
+            String message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
 
                     "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" +
                     "There are a few points that we would like to share with you with regard to the mentee applications.<br />"+
@@ -160,12 +160,12 @@ public class ProgramUtil {
 
         for (Mentor mentor : approvedMentors) {
 
-            String message = "Dear " + mentor.getProfile().getFirstName() + ",<br /><br />" +
+            String message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
                     "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make the first contact with them as we have instructed them to wait for your email.";
 
-            String logMsg = "Email sent to mentor " + mentor.getProfile().getFirstName() + " " + mentor.getProfile().getLastName() + " " +
+            String logMsg = "Email sent to mentor " + mentor.getProfile().getName() + " " +
                             "of " + mentor.getProfile().getEmail();
             log.info(logMsg);
 
@@ -182,9 +182,9 @@ public class ProgramUtil {
 
         for (Mentee mentee: approvedMentees) {
             Profile assignedMentor = mentee.getAssignedMentor().getProfile();
-            String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
+            String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
                     "<b>Congratulations!</b><br /> You have been accepted as a mentee to be mentored under  " +
-                    assignedMentor.getFirstName() + " " + assignedMentor.getLastName() + ". <br />" +
+                    assignedMentor.getName() + ". <br />" +
                     "You can check your mentor and their details by visiting the <b>ScholarX dashboard.</b> " +
                     "Please make sure not to contact your mentor until they do as we have instructed them to " +
                     "make the first contact.<br />"+
@@ -192,7 +192,7 @@ public class ProgramUtil {
                     "weeks to take you through next steps of the program and answer any questions you may have about " +
                     "the matching process that was undertaken to enable the mentor-mentee pairing.";
 
-            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
+            String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                         "of " + mentee.getProfile().getEmail();
 
             log.info(logMsg);
@@ -209,7 +209,7 @@ public class ProgramUtil {
         }
 
         for (Mentee mentee: discardedMentees) {
-            String message = "Dear " + mentee.getProfile().getFirstName() + ",<br /><br />" +
+            String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
                     "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
                     "However, We regret to inform you that your application couldn't make the cut this time." +
                     "We encourage you to try again next year and follow us on our social media channels for " +
@@ -217,7 +217,7 @@ public class ProgramUtil {
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
                     "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
 
-            String logMsg = "Email sent to mentee " + mentee.getProfile().getFirstName() + " " + mentee.getProfile().getLastName() + " " +
+            String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                             "of " + mentee.getProfile().getEmail();
             log.info(logMsg);
 
@@ -235,7 +235,7 @@ public class ProgramUtil {
 
     public void sendConfirmationEmails(long profileId, Optional<Program> program) throws MessagingException, IOException {
         Optional<Profile> profile = profileRepository.findById(profileId);
-        String message = "Dear " + profile.get().getFirstName() + ",<br /><br />" +
+        String message = "Dear " + profile.get().getName() + ",<br /><br />" +
                 "Thank you very much for applying to the " + program.get().getTitle() + " program. Your application has been received. " +
                 "You can view/edit your application by visiting the <b>ScholarX dashboard.</b> " +
                 "Reach out to us via " +

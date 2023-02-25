@@ -4,7 +4,7 @@ import org.sefglobal.scholarx.exception.OAuth2AuthenticationProcessingException;
 import org.sefglobal.scholarx.exception.UserAlreadyExistsAuthenticationException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Profile;
-import org.sefglobal.scholarx.oauth.LinkedInAuthUserInfo;
+import org.sefglobal.scholarx.oauth.GoogleAuthUserInfo;
 import org.sefglobal.scholarx.repository.ProfileRepository;
 import org.sefglobal.scholarx.util.ProfileType;
 import org.springframework.stereotype.Service;
@@ -28,49 +28,47 @@ public class ProfileService {
 
     public Profile processUserRegistration(Map<String, Object> attributes)
             throws OAuth2AuthenticationProcessingException, UserAlreadyExistsAuthenticationException {
-        LinkedInAuthUserInfo oAuth2UserInfo = new LinkedInAuthUserInfo(attributes);
-        if (StringUtils.isEmpty(oAuth2UserInfo.getFirstName())) {
+        GoogleAuthUserInfo googleAuthUserInfo = new GoogleAuthUserInfo(attributes);
+        if (StringUtils.isEmpty(googleAuthUserInfo.getName())) {
             throw new OAuth2AuthenticationProcessingException("Name not found from OAuth2 provider");
-        } else if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+        } else if (StringUtils.isEmpty(googleAuthUserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
-        Optional<Profile> profile = profileRepository.findByUid(oAuth2UserInfo.getUuid());
+        Optional<Profile> profile = profileRepository.findByUid(googleAuthUserInfo.getId());
         if (profile.isPresent()) {
-            profile.get().setFirstName(oAuth2UserInfo.getFirstName());
-            profile.get().setLastName(oAuth2UserInfo.getLastName());
-            profile.get().setImageUrl(oAuth2UserInfo.getImageUrl());
+            profile.get().setFirstName(googleAuthUserInfo.getName().split(" ",2)[0]);
+            profile.get().setLastName(googleAuthUserInfo.getName().split(" ",2)[1]);
+            profile.get().setImageUrl(googleAuthUserInfo.getImageUrl());
             return profileRepository.save(profile.get());
         } else {
-            return createProfile(oAuth2UserInfo);
+            return createProfile(googleAuthUserInfo);
         }
     }
 
-    public Profile createProfile(LinkedInAuthUserInfo oAuth2UserInfo) throws UserAlreadyExistsAuthenticationException {
-        if (oAuth2UserInfo.getUuid() != null && profileRepository.existsByUid(oAuth2UserInfo.getUuid())) {
-            throw new UserAlreadyExistsAuthenticationException("User with Uid " + oAuth2UserInfo.getUuid() + " already exist");
+    public Profile createProfile(GoogleAuthUserInfo oAuth2UserInfo) throws UserAlreadyExistsAuthenticationException {
+        if (oAuth2UserInfo.getId() != null && profileRepository.existsByUid(oAuth2UserInfo.getId())) {
+            throw new UserAlreadyExistsAuthenticationException(
+                    "User with Uid " + oAuth2UserInfo.getId() + " already exist");
         } else if (profileRepository.existsByEmail(oAuth2UserInfo.getEmail())) {
-            throw new UserAlreadyExistsAuthenticationException("User with email id " + oAuth2UserInfo.getEmail() + " already exist");
+            throw new UserAlreadyExistsAuthenticationException(
+                    "User with email id " + oAuth2UserInfo.getEmail() + " already exist");
         }
         Profile profile = buildProfile(oAuth2UserInfo);
         return profileRepository.save(profile);
     }
 
-    private Profile buildProfile(LinkedInAuthUserInfo oAuth2UserInfo) {
+    private Profile buildProfile(GoogleAuthUserInfo oAuth2UserInfo) {
         Profile profile = new Profile();
-        profile.setFirstName(oAuth2UserInfo.getFirstName());
-        profile.setLastName(oAuth2UserInfo.getLastName());
+        profile.setFirstName(oAuth2UserInfo.getName().split(" ", 2)[0]);
+        profile.setLastName(oAuth2UserInfo.getName().split(" ", 2)[1]);
         profile.setEmail(oAuth2UserInfo.getEmail());
-        profile.setUid(oAuth2UserInfo.getUuid());
+        profile.setUid(oAuth2UserInfo.getId());
         profile.setType(ProfileType.DEFAULT);
         profile.setImageUrl(oAuth2UserInfo.getImageUrl());
-//        TODO: set linkedin permissions to get r_basicprofile from the linkedin app
-        profile.setLinkedinUrl("https://www.linkedin.com/search/results/all/?keywords="+
-                oAuth2UserInfo.getFirstName()+"%20"+
-                oAuth2UserInfo.getLastName()+"&origin=TYPEAHEAD_ESCAPE_HATCH");
-        profile.setHasConfirmedUserDetails(false);
         Date now = Calendar.getInstance().getTime();
+        profile.setHasConfirmedUserDetails(false);
         profile.setCreatedAt(now);
-        profile.setUpdatedAt(now);
+        profile.setLastUpdatedAt(now);
         return profile;
     }
 
@@ -78,7 +76,7 @@ public class ProfileService {
             throws ResourceNotFoundException {
         Optional<Profile> optionalProfile = profileRepository.findById(profileId);
         if (!optionalProfile.isPresent()) {
-			String msg = "Error, User with id: " + profileId + " doesn't exist.";
+            String msg = "Error, User with id: " + profileId + " doesn't exist.";
             log.error(msg);
             throw new ResourceNotFoundException(msg);
         }

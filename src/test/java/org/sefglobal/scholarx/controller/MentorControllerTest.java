@@ -80,8 +80,8 @@ public class MentorControllerTest {
 		Map<String, EnrolmentState> payload = new HashMap<>();
 		payload.put("state", EnrolmentState.APPROVED);
 		mockMvc.perform(put("/api/admin/mentors/{id}/state", mentorId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isOk());
 	}
 
@@ -95,8 +95,8 @@ public class MentorControllerTest {
 				.updateState(anyLong(), any(EnrolmentState.class));
 
 		mockMvc.perform(put("/api/admin/mentors/{id}/state", mentorId)
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(payload)))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(payload)))
 				.andExpect(status().isNotFound());
 	}
 
@@ -104,9 +104,9 @@ public class MentorControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void applyAsMentee_withValidData_thenReturns201() throws Exception {
 		mockMvc.perform(post("/api/mentors/{id}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
 				.andExpect(status().isCreated());
 	}
 
@@ -114,9 +114,9 @@ public class MentorControllerTest {
 	@WithMockUser(username = "user", authorities = {"DEFAULT"})
 	void applyAsMentee_withValidData_thenReturnsValidResponseBody() throws Exception {
 		mockMvc.perform(post("/api/mentors/{id}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
 				.andReturn();
 
 		ArgumentCaptor<Mentee> menteeArgumentCaptor = ArgumentCaptor.forClass(Mentee.class);
@@ -136,9 +136,9 @@ public class MentorControllerTest {
 				.applyAsMentee(anyLong(), anyLong(), any(Mentee.class));
 
 		mockMvc.perform(post("/api/mentors/{id}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
 				.andExpect(status().isNotFound());
 	}
 
@@ -150,9 +150,9 @@ public class MentorControllerTest {
 				.applyAsMentee(anyLong(), anyLong(), any(Mentee.class));
 
 		mockMvc.perform(post("/api/mentors/{id}/mentee", mentorId)
-				.with(authentication(getOauthAuthentication()))
-				.contentType("application/json")
-				.content(objectMapper.writeValueAsString(mentee)))
+						.with(authentication(getOauthAuthentication()))
+						.contentType("application/json")
+						.content(objectMapper.writeValueAsString(mentee)))
 				.andExpect(status().isBadRequest());
 	}
 
