@@ -8,14 +8,21 @@ Backend of the ScholarX project
 * Java 
 * Maven
 * PostgreSQL
-* Linkedin Social Login App
+* Google Developer Account
 * Gmail Account with an App Password 
 
-### Setup Linkedin Social Login App
+### Setup Google Auth Client
 
-1. Create a new Linkedin App ([help?](https://docs.ultimatemember.com/article/142-social-login-linkedin-app-setup)) 
-2. Click on `Auth` tab and add `http://localhost:8080/login/oauth2/code/linkedin` as an authorised redirect URL
-3. Make Sure you have properly added the `Sign in with Linkedin product` under products tab
+Here are the steps you need to follow to configure Google for social login:
+- Go to [https://console.developers.google.com/](https://console.developers.google.com/) and register for a developer account.
+- Create a Google API Console project.
+- Once your Google App is open, click on the Credentials menu and then Create Credentials followed by Auth client ID.
+- Select Web Application as the Application type.
+- Give the client a name.
+- Fill in the Authorized redirect URIs field to include the redirect URI to your app: `http://<your-domain>/login/outh2/code/google`.
+  - example: `http://localhost:8080/login/outh2/code/google`
+- Click Create.
+Copy the client ID and client secret, as you'll need them later.
 
 ### Setup a gmail account with an app password
 1. Create a new gmail account if you don't have one already
@@ -28,28 +35,16 @@ Backend of the ScholarX project
 git clone https://github.com/<your profile name>/scholarx
 ```
 2. Open the cloned repo, Find and open the `application.yml` file
-3. Replace the `${client-id}` and `${client-secret}` with the values from the above linkedin social app  
+3. Replace the `${client-id}` and `${client-secret}` with the values from the above google auth client setup.  
 example:
 ```yaml
-          linkedin:
-            client-id: 324780jdsfg2u4
-            client-secret: MsdfsdfggsqPFh
-            client-authentication-method: post
-            authorization-grant-type: authorization_code
+        google:
+            client-id: 123456789123-456rtyfghvbnyui.apps.googleusercontent.com
+            client-secret: ABCDEF-qweqrtyuiopasdfghjklzxcv
 ```  
 
-4. Replace the mail `username` and `password` values with the generated `App Password` and the corresponding gmail address  
-example:
-```yaml
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: samplemail@gmail.com
-    password: jhdfklsdjjadskt
-    properties:
-```
 
-5. Replace the datasource dummy values with your local mysql server instance credentials  
+4. Replace the datasource dummy values with your local postgresql server instance credentials  
 example:
 ```yaml
   datasource:
@@ -57,6 +52,13 @@ example:
     username: rootuser
     password: rootpassword
     platform: postgres
+```
+
+5. Find and open the `simplejavamail.properties` file. Replace the mail `${EMAIL}` and `${APP_PASSWORD}` values with the generated `App Password` and the corresponding gmail address  
+example:
+```yaml
+  simplejavamail.smtp.username = example@gmail.com
+  simplejavamail.smtp.password = ytrewwqlkjmkolkj
 ```
 
 6. Run the application
