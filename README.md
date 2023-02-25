@@ -35,7 +35,7 @@ Copy the client ID and client secret, as you'll need them later.
 git clone https://github.com/<your profile name>/scholarx
 ```
 2. Open the cloned repo, Find and open the `application.yml` file
-3. Replace the `${client-id}` and `${client-secret}` with the values from the above google auth client setup.  
+3. Replace the `${CLIENT_ID}` and `${CLIENT-SECRET}` with the values from the above google auth client setup.  
 example:
 ```yaml
         google:
