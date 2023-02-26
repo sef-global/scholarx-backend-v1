@@ -105,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     configuration.setAllowedMethods(ImmutableList.of("GET", "POST", "PUT", "DELETE"));
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
-    configuration.setAllowedOrigins(ImmutableList.of("http://localhost:3000"));
+    configuration.setAllowedOrigins(ImmutableList.of("https://scholarx.sefglobal.org"));
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
