@@ -19,7 +19,7 @@ Here are the steps you need to follow to configure Google for social login:
 - Once your Google App is open, click on the Credentials menu and then Create Credentials followed by Auth client ID.
 - Select Web Application as the Application type.
 - Give the client a name.
-- Fill in the Authorized redirect URIs field to include the redirect URI to your app: `http://<your-domain>/login/outh2/code/google`.
+- Fill in the Authorized redirect URIs field to include the redirect URI to your app: `http://<your-domain>/login/oauth2/code/google`.
   - example: `http://localhost:8080/login/outh2/code/google`
 - Click Create.
 Copy the client ID and client secret, as you'll need them later.
