@@ -138,7 +138,7 @@ public class ProgramUtil {
                     "of subject areas, more mentors representing the same subject area etc. We will be choosing the potential mentees for those mentors "+
                     "as well during the second round of matching.</li><br />"+
                     "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
-                    "If you have any further queries please don't hesitate to contact us at"+
+                    "If you have any further queries please don't hesitate to contact us at "+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
@@ -211,10 +211,10 @@ public class ProgramUtil {
         for (Mentee mentee: discardedMentees) {
             String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
                     "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
-                    "However, We regret to inform you that your application couldn't make the cut this time." +
+                    "However, We regret to inform you that your application couldn't make the cut this time. " +
                     "We encourage you to try again next year and follow us on our social media channels for " +
                     "future programs. If you have any clarifications, please reach out to us via " +
-                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
+                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                     "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
