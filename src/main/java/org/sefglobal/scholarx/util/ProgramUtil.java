@@ -126,19 +126,19 @@ public class ProgramUtil {
                     "It is with much pleasure we inform you that we have completed the first round of mentor-mentee matching.<br />" +
                     "There are a few points that we would like to share with you with regard to the mentee applications.<br />"+
                     "<ul>"+
-                    "<li>The minimum word limit for each question of the application was introduced halfway through the application"+
+                    "<li>The minimum word limit for each question of the application was introduced halfway through the application "+
                     "period in order to enhance competitiveness. Due to this reason, the applications which were received at the earliest"+
                     " stage might contain relatively short answers.</li>"+
                     "<li>Mentor-mentee matching process consists of two rounds.</li>"+
-                    "<li>Some mentors have received an excess number of applications and we have selected potential mentees for those mentors"+
-                    "after a filtering process. We kindly request you to go through these applications and select the mentees of your choice"+
-                    "and decline the mentees who are not commendable enough before 28th April 11.59 p.m (IST), so that we can replace them during"+
+                    "<li>Some mentors have received an excess number of applications and we have selected potential mentees for those mentors "+
+                    "after a filtering process. We kindly request you to go through these applications and select the mentees of your choice "+
+                    "and decline the mentees who are not commendable enough before 28th April 11.59 p.m (IST), so that we can replace them during "+
                     "the second round of matching.</li>"+
-                    "<li>Some mentors have received less than the number of available slots or none, owing to facts such as lack of compatibility"+
-                    "of subject areas, more mentors representing the same subject area etc. We will be choosing the potential mentees for those mentors"+
+                    "<li>Some mentors have received less than the number of available slots or none, owing to facts such as lack of compatibility "+
+                    "of subject areas, more mentors representing the same subject area etc. We will be choosing the potential mentees for those mentors "+
                     "as well during the second round of matching.</li><br />"+
                     "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
-                    "If you have any further queries please don't hesitate to contact us at"+
+                    "If you have any further queries please don't hesitate to contact us at "+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
@@ -211,10 +211,10 @@ public class ProgramUtil {
         for (Mentee mentee: discardedMentees) {
             String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
                     "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
-                    "However, We regret to inform you that your application couldn't make the cut this time." +
+                    "However, We regret to inform you that your application couldn't make the cut this time. " +
                     "We encourage you to try again next year and follow us on our social media channels for " +
                     "future programs. If you have any clarifications, please reach out to us via " +
-                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
+                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
                     "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
