@@ -36,8 +36,9 @@ public class ProfileService {
         }
         Optional<Profile> profile = profileRepository.findByUid(googleAuthUserInfo.getId());
         if (profile.isPresent()) {
-            profile.get().setFirstName(googleAuthUserInfo.getName().split(" ",2)[0]);
-            profile.get().setLastName(googleAuthUserInfo.getName().split(" ",2)[1]);
+            String[] names = googleAuthUserInfo.getName().split(" ",2);
+            profile.get().setFirstName(names[0]);
+            profile.get().setLastName(names.length > 1 ? names[1] : "");
             profile.get().setImageUrl(googleAuthUserInfo.getImageUrl());
             return profileRepository.save(profile.get());
         } else {
@@ -45,26 +46,27 @@ public class ProfileService {
         }
     }
 
-    public Profile createProfile(GoogleAuthUserInfo oAuth2UserInfo) throws UserAlreadyExistsAuthenticationException {
-        if (oAuth2UserInfo.getId() != null && profileRepository.existsByUid(oAuth2UserInfo.getId())) {
+    public Profile createProfile(GoogleAuthUserInfo googleAuthUserInfo) throws UserAlreadyExistsAuthenticationException {
+        if (googleAuthUserInfo.getId() != null && profileRepository.existsByUid(googleAuthUserInfo.getId())) {
             throw new UserAlreadyExistsAuthenticationException(
-                    "User with Uid " + oAuth2UserInfo.getId() + " already exist");
-        } else if (profileRepository.existsByEmail(oAuth2UserInfo.getEmail())) {
+                    "User with Uid " + googleAuthUserInfo.getId() + " already exist");
+        } else if (profileRepository.existsByEmail(googleAuthUserInfo.getEmail())) {
             throw new UserAlreadyExistsAuthenticationException(
-                    "User with email id " + oAuth2UserInfo.getEmail() + " already exist");
+                    "User with email id " + googleAuthUserInfo.getEmail() + " already exist");
         }
-        Profile profile = buildProfile(oAuth2UserInfo);
+        Profile profile = buildProfile(googleAuthUserInfo);
         return profileRepository.save(profile);
     }
 
-    private Profile buildProfile(GoogleAuthUserInfo oAuth2UserInfo) {
+    private Profile buildProfile(GoogleAuthUserInfo googleAuthUserInfo) {
         Profile profile = new Profile();
-        profile.setFirstName(oAuth2UserInfo.getName().split(" ", 2)[0]);
-        profile.setLastName(oAuth2UserInfo.getName().split(" ", 2)[1]);
-        profile.setEmail(oAuth2UserInfo.getEmail());
-        profile.setUid(oAuth2UserInfo.getId());
+        String[] names = googleAuthUserInfo.getName().split(" ",2);
+        profile.setFirstName(names[0]);
+        profile.setLastName(names.length > 1 ? names[1] : "");
+        profile.setEmail(googleAuthUserInfo.getEmail());
+        profile.setUid(googleAuthUserInfo.getId());
         profile.setType(ProfileType.DEFAULT);
-        profile.setImageUrl(oAuth2UserInfo.getImageUrl());
+        profile.setImageUrl(googleAuthUserInfo.getImageUrl());
         Date now = Calendar.getInstance().getTime();
         profile.setHasConfirmedUserDetails(false);
         profile.setCreatedAt(now);
