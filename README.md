@@ -60,8 +60,12 @@ example:
   simplejavamail.smtp.username = example@gmail.com
   simplejavamail.smtp.password = ytrewwqlkjmkolkj
 ```
-
-6. Run the application
+6. Update the SecurityConfig.java to allow requests from the origin http://localhost:3000. The file path is scholarx/src/main/java/org/sefglobal/scholarx/config/SecurityConfig.java  
+example:
+```java
+  configuration.setAllowedOrigins(ImmutableList.of("http://localhost:3000"));
+```
+7. Run the application
 ```shell
 mvn spring-boot:run
 ```
