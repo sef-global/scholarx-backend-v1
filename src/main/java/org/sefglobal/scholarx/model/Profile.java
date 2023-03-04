@@ -157,7 +157,7 @@ public class Profile extends BaseScholarxModel implements OidcUser {
 
   @Override
   public String getName() {
-    return getFirstName().concat(getLastName());
+    return getFirstName()+" "+getLastName();
   }
 
   @Override
