@@ -13,7 +13,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.sefglobal.scholarx.util.ProfileType;
+import org.sefglobal.scholarx.util.Views;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -38,21 +40,26 @@ public class Profile extends BaseScholarxModel implements OidcUser {
   @Column(nullable = false)
   private String email;
 
+  @JsonView(Views.Public.class)
   @Column
   private String firstName;
 
+  @JsonView(Views.Public.class)
   @Column
   private String lastName;
 
+  @JsonView(Views.Public.class)
   @Column
   private String imageUrl;
 
+  @JsonView(Views.Public.class)
   @Column
   private String linkedinUrl;
 
   @Column
   private Boolean hasConfirmedUserDetails;
 
+  @JsonView(Views.Public.class)
   @Column(length = 50)
   private String headline;
 

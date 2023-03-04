@@ -3,12 +3,14 @@ package org.sefglobal.scholarx.controller;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+
+import com.fasterxml.jackson.annotation.JsonView;
 import org.sefglobal.scholarx.exception.BadRequestException;
-import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
 import org.sefglobal.scholarx.model.Mentee;
 import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.model.Profile;
+import org.sefglobal.scholarx.util.Views;
 import org.sefglobal.scholarx.service.MentorService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,12 +34,14 @@ public class MentorController {
     this.mentorService = mentorService;
   }
 
+  @JsonView(Views.Public.class)
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<Mentor> getAllMentors() {
     return mentorService.getAllMentors();
   }
 
+  @JsonView(Views.Public.class)
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public Mentor getMentorById(@PathVariable long id)

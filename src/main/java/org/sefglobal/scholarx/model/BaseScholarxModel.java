@@ -1,5 +1,7 @@
 package org.sefglobal.scholarx.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.sefglobal.scholarx.util.Views;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,6 +22,7 @@ import java.util.Date;
 public abstract class BaseScholarxModel implements Serializable {
 
     @Id
+    @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 

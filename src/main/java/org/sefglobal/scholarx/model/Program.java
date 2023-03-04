@@ -11,10 +11,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonView;
 import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.Views;
 
 @Entity
 @Table(name = "program")
+@JsonView(Views.Public.class)
 @JsonIgnoreProperties({ "createdAt", "updatedAt", "enrolledUsers" })
 public class Program extends BaseScholarxModel {
 

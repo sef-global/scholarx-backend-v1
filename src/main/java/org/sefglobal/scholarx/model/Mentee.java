@@ -1,6 +1,8 @@
 package org.sefglobal.scholarx.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.sefglobal.scholarx.util.Views;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "mentee")
+@JsonView(Views.Public.class)
 @JsonIgnoreProperties({"createdAt", "updatedAt"})
 public class Mentee extends EnrolledUser {
 
