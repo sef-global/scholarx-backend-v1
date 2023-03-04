@@ -62,7 +62,7 @@ example:
 ```
 6. Update the SecurityConfig.java to allow requests from the origin http://localhost:3000. The file path is scholarx/src/main/java/org/sefglobal/scholarx/config/SecurityConfig.java  
 example:
-```shell
+```java
   configuration.setAllowedOrigins(ImmutableList.of("http://localhost:3000"));
 ```
 7. Run the application
