@@ -2,6 +2,8 @@ package org.sefglobal.scholarx.controller;
 
 import java.util.List;
 import javax.validation.Valid;
+
+import com.fasterxml.jackson.annotation.JsonView;
 import org.sefglobal.scholarx.exception.BadRequestException;
 import org.sefglobal.scholarx.exception.NoContentException;
 import org.sefglobal.scholarx.exception.ResourceNotFoundException;
@@ -9,6 +11,7 @@ import org.sefglobal.scholarx.model.*;
 import org.sefglobal.scholarx.service.ProgramService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.sefglobal.scholarx.util.ProgramState;
+import org.sefglobal.scholarx.util.Views;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +47,7 @@ public class ProgramController {
     return programService.getProgramById(id);
   }
 
+  @JsonView(Views.Public.class)
   @GetMapping("/{id}/mentors")
   @ResponseStatus(HttpStatus.OK)
   public List<Mentor> getAllMentorsByProgramId(
@@ -89,6 +93,7 @@ public class ProgramController {
     return programService.getLoggedInMentor(id, profile.getId());
   }
 
+  @JsonView(Views.Public.class)
   @GetMapping("/{id}/mentee/mentors")
   @ResponseStatus(HttpStatus.OK)
   public Mentor getAppliedMentor(
@@ -103,6 +108,7 @@ public class ProgramController {
     );
   }
 
+  @JsonView(Views.Public.class)
   @GetMapping("/{id}/mentee/mentor")
   @ResponseStatus(HttpStatus.OK)
   public Mentor getSelectedMentor(
@@ -114,6 +120,7 @@ public class ProgramController {
     return programService.getSelectedMentor(id, profile.getId());
   }
 
+  @JsonView(Views.Public.class)
   @PutMapping("/{id}/mentee")
   @ResponseStatus(HttpStatus.OK)
   public Mentee updateMenteeData(
@@ -126,6 +133,7 @@ public class ProgramController {
     return programService.updateMenteeData(profile.getId(), id, mentee);
   }
 
+  @JsonView(Views.Public.class)
   @GetMapping("/{id}/mentee")
   @ResponseStatus(HttpStatus.OK)
   public Mentee getLoggedInMentee(
