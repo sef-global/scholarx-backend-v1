@@ -1,5 +1,6 @@
 package org.sefglobal.scholarx.controller.admin;
 
+import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 
@@ -9,6 +10,7 @@ import org.sefglobal.scholarx.model.Mentor;
 import org.sefglobal.scholarx.service.MentorService;
 import org.sefglobal.scholarx.util.EnrolmentState;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,19 @@ public class MentorController {
 
     public MentorController(MentorService mentorService) {
         this.mentorService = mentorService;
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Mentor> getAllMentors() {
+        return mentorService.getAllMentors();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mentor getMentorById(@PathVariable long id)
+            throws ResourceNotFoundException {
+        return mentorService.getMentorById(id);
     }
 
     @PutMapping("/{id}/state")
