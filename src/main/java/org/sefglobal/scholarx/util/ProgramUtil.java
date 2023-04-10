@@ -75,7 +75,7 @@ public class ProgramUtil {
                         "We understand that this news may be disappointing, and we encourage you to not be discouraged by this decision. Please know that this does not "+
                         "reflect on your abilities, potential or value as an individual. As you progress ahead on your academic or professional journey, we would be glad to have you as a mentor for future ScholarX programs.<br /><br />"+
                         "We appreciate your interest in our program and would like to wish you all the best in your future endeavors. We are grateful for the opportunity "+
-                        "to consider you for our program and encourage you to keep pursuing your goals and aspirations." +
+                        "to consider you for our program and encourage you to keep pursuing your goals and aspirations.<br /><br />" +
                         "Thank you again for considering our program and for the time you invested in your application. We hope you find success and fulfillment in your academic and professional pursuits." ;
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
