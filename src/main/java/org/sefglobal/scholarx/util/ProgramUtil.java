@@ -50,7 +50,7 @@ public class ProgramUtil {
             if (mentor.getState().name().equals("APPROVED")) {
 
                 message ="Dear" + mentor.getProfile().getName() + ",<br /><br />" +
-                        "I hope this email finds you in high spirits! I am delighted to inform you that you have been selected as a mentor for " + program.get().getTitle() + ", and we extend our heartfelt congratulations to you!" +
+                        "I hope this email finds you in high spirits! I am delighted to inform you that you have been selected as a mentor for " + program.get().getTitle() + ", and we extend our heartfelt congratulations to you! <br /><br />" +
                         "We received a large number of qualified applicants, and after a thorough review of all candidates, we are thrilled to invite you to accept a place in our program. Your profile stood out amongst the others, and we are confident that you will contribute positively to our program."+
                         "We understand that your hard work and dedication have brought you to this moment, and we recognize your exceptional talent, experience and potential in your respective fields. We are excited to have you join our community of learners and scholars." +
                         "We look forward to seeing the unique perspective and insights you will bring to the mentees and to the program. We believe that you will flourish in this year's edition of ScholarX, and we are thrilled to be a part of your academic or professional journey." +
