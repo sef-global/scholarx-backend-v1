@@ -49,15 +49,12 @@ public class ProgramUtil {
 
             if (mentor.getState().name().equals("APPROVED")) {
 
-                message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
-                        "<b>Congratulations!</b><br />You have been selected by the " +
-                        "ScholarX committee to be a mentor of the " + program.get().getTitle() +
-                        " program. We will soon open up the program for students to " +
-                        "apply and keep you posted on the progress via email. Until " +
-                        "then, read more about student experience " +
-                        "<a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via " +
-                        "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
-                        "for any clarifications.";
+                message ="Dear" + mentor.getProfile().getName() + ",<br /><br />" +
+                        "I hope this email finds you in high spirits! I am delighted to inform you that you have been selected as a mentor for " + program.get().getTitle() + ", and we extend our heartfelt congratulations to you! <br /><br />" +
+                        "We received a large number of qualified applicants, and after a thorough review of all candidates, we are thrilled to invite you to accept a place in our program. Your profile stood out amongst the others, and we are confident that you will contribute positively to our program.<br /><br />"+
+                        "We understand that your hard work and dedication have brought you to this moment, and we recognize your exceptional talent, experience and potential in your respective fields. We are excited to have you join our community of learners and scholars.<br /><br />" +
+                        "We look forward to seeing the unique perspective and insights you will bring to the mentees and to the program. We believe that you will flourish in this year's edition of ScholarX, and we are thrilled to be a part of your academic or professional journey.<br /><br />" +
+                        "Once again, congratulations on your selection! We cannot wait to have you on board. We will keep you informed on the next steps, and in the meantime would like to invite you to go through some of the resources that would be useful to thrive as a great mentor in  " + program.get().getTitle()  ;
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
@@ -72,12 +69,14 @@ public class ProgramUtil {
             } else if (mentor.getState().name().equals("REJECTED")) {
 
                 message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
-                        "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
-                        "However, due to the competitive nature of the mentor applications, your application " +
-                        "did not make it to the final list of mentors for the program. We encourage you to try " +
-                        "again next year and follow us on our social media channels for future programs. " +
-                        "If you have any clarifications, please reach out to us via " +
-                        "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
+                        "I hope this email finds you well. I wanted to take a moment to thank you for your interest in joining " + program.get().getTitle() + " as a mentor and for submitting your application. We appreciate the time and effort you put into it.<br /><br />"+
+                        "After careful review of your application and considering all of the candidates, we regret to inform you that we are unable to make you part of the mentor base at this time. We received a large number "+
+                        "of qualified applicants, and unfortunately, we could only accept a limited number of Mentors.<br /><br />" +
+                        "We understand that this news may be disappointing, and we encourage you to not be discouraged by this decision. Please know that this does not "+
+                        "reflect on your abilities, potential or value as an individual. As you progress ahead on your academic or professional journey, we would be glad to have you as a mentor for future ScholarX programs.<br /><br />"+
+                        "We appreciate your interest in our program and would like to wish you all the best in your future endeavors. We are grateful for the opportunity "+
+                        "to consider you for our program and encourage you to keep pursuing your goals and aspirations.<br /><br />" +
+                        "Thank you again for considering our program and for the time you invested in your application. We hope you find success and fulfillment in your academic and professional pursuits." ;
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
