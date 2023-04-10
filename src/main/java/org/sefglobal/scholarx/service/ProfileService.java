@@ -95,6 +95,7 @@ public class ProfileService {
             throw new ResourceNotFoundException(msg);
         }
         optionalUser.get().setEmail(profile.getEmail());
+        optionalUser.get().setLinkedinUrl(profile.getLinkedinUrl());
         optionalUser.get().setHasConfirmedUserDetails(true);
         return profileRepository.save(optionalUser.get());
     }
