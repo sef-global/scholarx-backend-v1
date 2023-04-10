@@ -69,7 +69,7 @@ public class ProgramUtil {
             } else if (mentor.getState().name().equals("REJECTED")) {
 
                 message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
-                        "I hope this email finds you well. I wanted to take a moment to thank you for your interest in joining " + program.get().getTitle() + " as a mentor and for submitting your application. We appreciate the time and effort you put into it."+
+                        "I hope this email finds you well. I wanted to take a moment to thank you for your interest in joining " + program.get().getTitle() + " as a mentor and for submitting your application. We appreciate the time and effort you put into it.<br /><br />"+
                         "After careful review of your application and considering all of the candidates, we regret to inform you that we are unable to make you part of the mentor base at this time. We received a large number "+
                         "of qualified applicants, and unfortunately, we could only accept a limited number of Mentors." +
                         "We understand that this news may be disappointing, and we encourage you to not be discouraged by this decision. Please know that this does not "+
