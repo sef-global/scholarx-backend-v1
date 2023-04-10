@@ -73,7 +73,7 @@ public class ProgramUtil {
                         "After careful review of your application and considering all of the candidates, we regret to inform you that we are unable to make you part of the mentor base at this time. We received a large number "+
                         "of qualified applicants, and unfortunately, we could only accept a limited number of Mentors.<br /><br />" +
                         "We understand that this news may be disappointing, and we encourage you to not be discouraged by this decision. Please know that this does not "+
-                        "reflect on your abilities, potential or value as an individual. As you progress ahead on your academic or professional journey, we would be glad to have you as mentor for future ScholarX programs"+
+                        "reflect on your abilities, potential or value as an individual. As you progress ahead on your academic or professional journey, we would be glad to have you as a mentor for future ScholarX programs.<br /><br />"+
                         "We appreciate your interest in our program and would like to wish you all the best in your future endeavors. We are grateful for the opportunity "+
                         "to consider you for our program and encourage you to keep pursuing your goals and aspirations." +
                         "Thank you again for considering our program and for the time you invested in your application. We hope you find success and fulfillment in your academic and professional pursuits." ;
