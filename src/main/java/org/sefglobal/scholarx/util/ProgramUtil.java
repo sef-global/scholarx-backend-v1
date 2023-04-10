@@ -71,7 +71,7 @@ public class ProgramUtil {
                 message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
                         "I hope this email finds you well. I wanted to take a moment to thank you for your interest in joining " + program.get().getTitle() + " as a mentor and for submitting your application. We appreciate the time and effort you put into it.<br /><br />"+
                         "After careful review of your application and considering all of the candidates, we regret to inform you that we are unable to make you part of the mentor base at this time. We received a large number "+
-                        "of qualified applicants, and unfortunately, we could only accept a limited number of Mentors." +
+                        "of qualified applicants, and unfortunately, we could only accept a limited number of Mentors.<br /><br />" +
                         "We understand that this news may be disappointing, and we encourage you to not be discouraged by this decision. Please know that this does not "+
                         "reflect on your abilities, potential or value as an individual. As you progress ahead on your academic or professional journey, we would be glad to have you as mentor for future ScholarX programs"+
                         "We appreciate your interest in our program and would like to wish you all the best in your future endeavors. We are grateful for the opportunity "+
