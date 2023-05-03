@@ -180,16 +180,12 @@ public class ProgramUtil {
         }
 
         for (Mentee mentee: approvedMentees) {
-            Profile assignedMentor = mentee.getAssignedMentor().getProfile();
             String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
-                    "<b>Congratulations!</b><br /> You have been accepted as a mentee to be mentored under  " +
-                    assignedMentor.getName() + ". <br />" +
-                    "You can check your mentor and their details by visiting the <b>ScholarX dashboard.</b> " +
-                    "Please make sure not to contact your mentor until they do as we have instructed them to " +
-                    "make the first contact.<br />"+
-                    "We will be holding an induction session for all successful ScholarX applicants over the coming " +
-                    "weeks to take you through next steps of the program and answer any questions you may have about " +
-                    "the matching process that was undertaken to enable the mentor-mentee pairing.";
+            "We are delighted to inform you that you have been selected for our undergraduate program, and we extend our heartfelt congratulations to you!"+ "<br /><br />"+
+            "We received a large number of qualified applicants, and after a thorough review of all candidates, we are thrilled to offer you a place in our program. Your application stood out amongst the others, and we are confident that you will contribute positively to our program." + "<br /><br />"+
+            "We believe that you have great potential to succeed in your academic and professional pursuits, and we are excited to have you join our community of learners and scholars." + "<br /><br />"+
+            "To emphasize the importance of completing the program, you have received a valuable opportunity. If, for any reason, you are uncertain about completing the program within the 6-month timeline, please inform our admissions team as soon as possible, so we can provide the opportunity to another deserving student."+"<br /><br />"+
+            "Once again, congratulations on your selection! We cannot wait to have you on board." ;
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                         "of " + mentee.getProfile().getEmail();
@@ -209,12 +205,11 @@ public class ProgramUtil {
 
         for (Mentee mentee: discardedMentees) {
             String message = "Dear " + mentee.getProfile().getName() + ",<br /><br />" +
-                    "Thank you very much for taking your time to apply for the " + program.get().getTitle() + " program. " +
-                    "However, We regret to inform you that your application couldn't make the cut this time. " +
-                    "We encourage you to try again next year and follow us on our social media channels for " +
-                    "future programs. If you have any clarifications, please reach out to us via " +
-                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
-                    "You can check your application details by visiting the <b>ScholarX dashboard.</b>";
+            "We wanted to take a moment to thank you for your interest in the ScholarX program and for submitting your application. We appreciate the time and effort you put into it."+ "<br /><br />" +
+            "After a careful review of your application and considering all of the candidates, we regret to inform you that we are unable to offer you admission at this time. We received a large number of qualified applicants, and unfortunately, we could only accept a limited number of students." + "<br /><br />" +
+            "However, we want to encourage you not to be discouraged by this decision. We recognize that the admissions process can be competitive, and we understand that this news may be disappointing. Please know that this does not reflect on your abilities, potential, or value as an individual." + "<br /><br />" +
+            "We do offer the possibility for you to apply again next year if you meet the eligibility criteria. We invite you to stay engaged with us by attending our events, reaching out to our admissions team, and taking advantage of any opportunities to connect with our current students and alumni." + "<br /><br />" +
+            "Thank you again for considering our program and for the time you invested in your application. We wish you all the best in your future endeavours." ;
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                             "of " + mentee.getProfile().getEmail();
