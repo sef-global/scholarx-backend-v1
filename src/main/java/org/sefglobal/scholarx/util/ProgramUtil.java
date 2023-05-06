@@ -54,7 +54,8 @@ public class ProgramUtil {
                         "We received a large number of qualified applicants, and after a thorough review of all candidates, we are thrilled to invite you to accept a place in our program. Your profile stood out amongst the others, and we are confident that you will contribute positively to our program.<br /><br />"+
                         "We understand that your hard work and dedication have brought you to this moment, and we recognize your exceptional talent, experience and potential in your respective fields. We are excited to have you join our community of learners and scholars.<br /><br />" +
                         "We look forward to seeing the unique perspective and insights you will bring to the mentees and to the program. We believe that you will flourish in this year's edition of ScholarX, and we are thrilled to be a part of your academic or professional journey.<br /><br />" +
-                        "Once again, congratulations on your selection! We cannot wait to have you on board. We will keep you informed on the next steps, and in the meantime would like to invite you to go through some of the resources that would be useful to thrive as a great mentor in  " + program.get().getTitle()  ;
+                        "Once again, congratulations on your selection! We cannot wait to have you on board. We will keep you informed on the next steps, and in the meantime would like to invite you to go through some of the resources that would be useful to thrive as a great mentor in  " + program.get().getTitle() + "<br /><br />" +
+                        "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
@@ -76,7 +77,8 @@ public class ProgramUtil {
                         "reflect on your abilities, potential or value as an individual. As you progress ahead on your academic or professional journey, we would be glad to have you as a mentor for future ScholarX programs.<br /><br />"+
                         "We appreciate your interest in our program and would like to wish you all the best in your future endeavors. We are grateful for the opportunity "+
                         "to consider you for our program and encourage you to keep pursuing your goals and aspirations.<br /><br />" +
-                        "Thank you again for considering our program and for the time you invested in your application. We hope you find success and fulfillment in your academic and professional pursuits." ;
+                        "Thank you again for considering our program and for the time you invested in your application. We hope you find success and fulfillment in your academic and professional pursuits." +
+                        "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
@@ -101,7 +103,8 @@ public class ProgramUtil {
                     "Mentors will soon review your applications and we will keep you posted on the progress via email. " +
                     "Until then, read more about student experience <a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via " +
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
-                    "for any clarifications.";
+                    "for any clarifications." +
+                    "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
 
@@ -138,7 +141,8 @@ public class ProgramUtil {
                     "as well during the second round of matching.</li><br />"+
                     "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
                     "If you have any further queries please don't hesitate to contact us at "+
-                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>";
+                    "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
+                    "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
@@ -162,7 +166,8 @@ public class ProgramUtil {
             String message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
                     "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
-                    "Please make the first contact with them as we have instructed them to wait for your email.";
+                    "Please make the first contact with them as we have instructed them to wait for your email." +
+                    "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             String logMsg = "Email sent to mentor " + mentor.getProfile().getName() + " " +
                             "of " + mentor.getProfile().getEmail();
@@ -185,7 +190,8 @@ public class ProgramUtil {
             "We received a large number of qualified applicants, and after a thorough review of all candidates, we are thrilled to offer you a place in our program. Your application stood out amongst the others, and we are confident that you will contribute positively to our program." + "<br /><br />"+
             "We believe that you have great potential to succeed in your academic and professional pursuits, and we are excited to have you join our community of learners and scholars." + "<br /><br />"+
             "To emphasize the importance of completing the program, you have received a valuable opportunity. If, for any reason, you are uncertain about completing the program within the 6-month timeline, please inform our admissions team as soon as possible, so we can provide the opportunity to another deserving student."+"<br /><br />"+
-            "Once again, congratulations on your selection! We cannot wait to have you on board." ;
+            "Once again, congratulations on your selection! We cannot wait to have you on board." +
+            "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                         "of " + mentee.getProfile().getEmail();
@@ -209,7 +215,8 @@ public class ProgramUtil {
             "After a careful review of your application and considering all of the candidates, we regret to inform you that we are unable to offer you admission at this time. We received a large number of qualified applicants, and unfortunately, we could only accept a limited number of students." + "<br /><br />" +
             "However, we want to encourage you not to be discouraged by this decision. We recognize that the admissions process can be competitive, and we understand that this news may be disappointing. Please know that this does not reflect on your abilities, potential, or value as an individual." + "<br /><br />" +
             "We do offer the possibility for you to apply again next year if you meet the eligibility criteria. We invite you to stay engaged with us by attending our events, reaching out to our admissions team, and taking advantage of any opportunities to connect with our current students and alumni." + "<br /><br />" +
-            "Thank you again for considering our program and for the time you invested in your application. We wish you all the best in your future endeavours." ;
+            "Thank you again for considering our program and for the time you invested in your application. We wish you all the best in your future endeavours." +
+            "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                             "of " + mentee.getProfile().getEmail();
@@ -234,7 +241,8 @@ public class ProgramUtil {
                 "You can view/edit your application by visiting the <b>ScholarX dashboard.</b> " +
                 "Reach out to us via " +
                 "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
-                "for any clarifications.";
+                "for any clarifications." +
+                "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
         emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
 
