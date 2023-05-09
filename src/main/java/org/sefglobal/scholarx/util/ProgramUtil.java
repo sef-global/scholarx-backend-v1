@@ -166,7 +166,7 @@ public class ProgramUtil {
             String message = "Dear " + mentor.getProfile().getName() + ",<br /><br />" +
                     "<b>Congratulations!</b><br />Your list of students is now finalised. " +
                     "You can check your mentees and their contact details by visiting the <b>ScholarX dashboard.</b> " +
-                    "Please make the first contact with them as we have instructed them to wait for your email." +
+                    "Please make the first contact with them as we have instructed them to wait for your email. " +
                     "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             String logMsg = "Email sent to mentor " + mentor.getProfile().getName() + " " +
