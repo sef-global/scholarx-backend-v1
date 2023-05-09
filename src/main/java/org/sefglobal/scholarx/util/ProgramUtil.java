@@ -142,7 +142,7 @@ public class ProgramUtil {
                     "We appreciate your enthusiasm in being a part of this journey and kindly request your cooperation in completing this matching process as well.<br />"+
                     "If you have any further queries please don't hesitate to contact us at "+
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a>" +
-                    "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
+                    " To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             emailService.sendEmail(mentor.getProfile().getEmail(), program.get().getTitle(), message, true);
 
