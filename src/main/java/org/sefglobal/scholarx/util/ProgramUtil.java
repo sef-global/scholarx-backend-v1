@@ -103,7 +103,7 @@ public class ProgramUtil {
                     "Mentors will soon review your applications and we will keep you posted on the progress via email. " +
                     "Until then, read more about student experience <a href=\"https://medium.com/search?q=scholarx\">here</a> and reach out to us via " +
                     "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
-                    "for any clarifications." +
+                    "for any clarifications. " +
                     "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             emailService.sendEmail(mentee.getProfile().getEmail(), program.get().getTitle(), message, false);
