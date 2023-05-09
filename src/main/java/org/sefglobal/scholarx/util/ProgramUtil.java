@@ -55,7 +55,7 @@ public class ProgramUtil {
                         "We understand that your hard work and dedication have brought you to this moment, and we recognize your exceptional talent, experience and potential in your respective fields. We are excited to have you join our community of learners and scholars.<br /><br />" +
                         "We look forward to seeing the unique perspective and insights you will bring to the mentees and to the program. We believe that you will flourish in this year's edition of ScholarX, and we are thrilled to be a part of your academic or professional journey.<br /><br />" +
                         "Once again, congratulations on your selection! We cannot wait to have you on board. We will keep you informed on the next steps, and in the meantime would like to invite you to go through some of the resources that would be useful to thrive as a great mentor in  " + program.get().getTitle() + "<br /><br />" +
-                        "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
+                        " To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
                 emailService.sendEmail(mentor.getProfile().getEmail(), StringUtils.capitalize(mentor.getState().name()), message, false);
 
