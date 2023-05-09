@@ -190,7 +190,7 @@ public class ProgramUtil {
             "We received a large number of qualified applicants, and after a thorough review of all candidates, we are thrilled to offer you a place in our program. Your application stood out amongst the others, and we are confident that you will contribute positively to our program." + "<br /><br />"+
             "We believe that you have great potential to succeed in your academic and professional pursuits, and we are excited to have you join our community of learners and scholars." + "<br /><br />"+
             "To emphasize the importance of completing the program, you have received a valuable opportunity. If, for any reason, you are uncertain about completing the program within the 6-month timeline, please inform our admissions team as soon as possible, so we can provide the opportunity to another deserving student."+"<br /><br />"+
-            "Once again, congratulations on your selection! We cannot wait to have you on board." +
+            "Once again, congratulations on your selection! We cannot wait to have you on board. " +
             "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
