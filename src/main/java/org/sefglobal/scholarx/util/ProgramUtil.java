@@ -241,7 +241,7 @@ public class ProgramUtil {
                 "You can view/edit your application by visiting the <b>ScholarX dashboard.</b> " +
                 "Reach out to us via " +
                 "<a href=\"mailto:sustainableedufoundation@gmail.com\">sustainableedufoundation@gmail.com</a> " +
-                "for any clarifications." +
+                "for any clarifications. " +
                 "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
         emailService.sendEmail(profile.get().getEmail(), program.get().getTitle(), message, true);
