@@ -216,7 +216,7 @@ public class ProgramUtil {
             "However, we want to encourage you not to be discouraged by this decision. We recognize that the admissions process can be competitive, and we understand that this news may be disappointing. Please know that this does not reflect on your abilities, potential, or value as an individual." + "<br /><br />" +
             "We do offer the possibility for you to apply again next year if you meet the eligibility criteria. We invite you to stay engaged with us by attending our events, reaching out to our admissions team, and taking advantage of any opportunities to connect with our current students and alumni." + "<br /><br />" +
             "Thank you again for considering our program and for the time you invested in your application. We wish you all the best in your future endeavours." +
-            "To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
+            " To ensure that you receive our emails and they do not go to your spam folder, please add sustainableedufoundation@gmail.com to your email whitelist.";
 
             String logMsg = "Email sent to mentee " + mentee.getProfile().getName() + " " +
                             "of " + mentee.getProfile().getEmail();
